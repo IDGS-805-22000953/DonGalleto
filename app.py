@@ -31,6 +31,25 @@ def cliente():
 def page_not_found(e):
         return render_template('404.html'), 404
 
+@app.route('/cliente/pedidos')
+def modificar():
+    # create_form=forms.UserForm2(request.form)
+    # if request.method == "GET":
+    #     id = request.args.get('id')
+    #     alum1 = db.session.query(Alumnos).filter(Alumnos.id == id).first()
+    #     create_form.nombre.data=alum1.nombre
+    #     create_form.apaterno.data=alum1.apaterno
+    #     create_form.email.data=alum1.email
+    # if request.method == "POST":
+    #     id = create_form.id.data
+    #     id = request.args.get('id')
+    #     alum1 = db.session.query(Alumnos).filter(Alumnos.id == id).first()
+    #     alum1.nombre = create_form.nombre.data
+    #     alum1.apaterno = create_form.apaterno.data
+    #     alum1.email = create_form.email.data
+    #     db.session.commit()
+    #     return redirect(url_for('index'))
+    return render_template("Cliente/pedidos.html")        
 
 if __name__ == '__main__':
     csrf.init_app(app)

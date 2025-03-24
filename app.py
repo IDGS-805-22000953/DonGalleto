@@ -20,6 +20,11 @@ from models import (
     CorteVentas
 )
 
+
+from models import db
+from models import db, Galleta, PresentacionGalleta
+
+
 app = Flask(__name__)
 app.config.from_object(DevelopmentConfig)
 app.secret_key = "supersecretkey"  # Asegurar sesiones
@@ -32,10 +37,49 @@ csrf = CSRFProtect(app)
 def index():
     return render_template("index.html")
 
+
+
 @app.route("/central")
 def central():
     return render_template("Central/inicioCentral.html")
 
+
+#PRODUCCION
+# 🔹 Mostrar todas las galletas con sus presentaciones
+@app.route("/produccion")
+def produccion():
+    galletas = Galleta.query.all()
+    presentaciones = {g.id: PresentacionGalleta.query.filter_by(idGalleta=g.id).all() for g in galletas}
+    return render_template("Produccion/inicioProduccion.html", galletas=galletas, presentaciones=presentaciones)
+
+# 🔹 Filtrar solo por piezas
+@app.route("/piezas")
+def piezas():
+    presentaciones = PresentacionGalleta.query.filter_by(tipoPresentacion="piezas").all()
+    return render_template("Produccion/inicioProduccion.html", presentaciones=presentaciones, filtro="piezas")
+
+# 🔹 Filtrar solo por gramaje
+@app.route("/gramaje")
+def gramaje():
+    presentaciones = PresentacionGalleta.query.filter_by(tipoPresentacion="gramos").all()
+    return render_template("Produccion/inicioProduccion.html", presentaciones=presentaciones, filtro="gramaje")
+
+# 🔹 Filtrar solo por paquete (1kg y 700g)
+@app.route("/paquete")
+def paquete():
+    presentaciones = PresentacionGalleta.query.filter(PresentacionGalleta.tipoPresentacion.in_(["1kg", "700g"])).all()
+    return render_template("Produccion/inicioProduccion.html", presentaciones=presentaciones, filtro="paquete")
+
+
+#COCINA
+@app.route("/cocina")
+def cocina():
+    
+    return render_template("Cocina/cocina.html")
+
+
+
+#Clientes
 @app.route("/cliente")
 def cliente():
     return render_template("Cliente/inicioCliente.html")

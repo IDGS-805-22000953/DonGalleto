@@ -81,6 +81,16 @@ class Galleta(db.Model):
     fechaCaducidad = db.Column(db.Date, nullable=False)
     rutaFoto = db.Column(db.String(255))
 
+    presentaciones = db.relationship('PresentacionGalleta', backref='galleta', lazy=True)
+
+# 🔹 Nueva Tabla: Presentaciones de Galletas
+class PresentacionGalleta(db.Model):
+    __tablename__ = 'presentacionesGalletas'
+    id = db.Column(db.Integer, primary_key=True)
+    idGalleta = db.Column(db.Integer, db.ForeignKey('galletas.id'), nullable=False)
+    tipoPresentacion = db.Column(db.Enum('piezas', 'gramos', '1kg', '700g'), nullable=False)
+    cantidad = db.Column(db.Integer, nullable=False)
+
 class Produccion(db.Model):
     __tablename__ = 'produccion'
     id = db.Column(db.Integer, primary_key=True)
@@ -100,8 +110,7 @@ class DetallePedido(db.Model):
     __tablename__ = 'detallePedido'
     id = db.Column(db.Integer, primary_key=True)
     idPedido = db.Column(db.Integer, db.ForeignKey('pedidos.id'), nullable=False)
-    idGalleta = db.Column(db.Integer, db.ForeignKey('galletas.id'), nullable=False)
-    tipoPresentacion = db.Column(db.Enum('piezas', 'gramos', '1kg', '700g'), nullable=False)
+    idPresentacion = db.Column(db.Integer, db.ForeignKey('presentacionesGalletas.id'), nullable=False)
     cantidad = db.Column(db.Integer, nullable=False)
     subtotal = db.Column(db.Numeric(10, 2), nullable=False)
 

@@ -1,0 +1,106 @@
+{% extends "Central/layout.html" %}
+
+{% block content %}
+<div class="container mx-auto p-4 flex gap-6">
+    
+    <!-- Lado Izquierdo -->
+    <div class="w-1/2">
+        <h1 class="text-3xl font-bold text-gray-800 mb-6">Produccion</h1>
+        
+        <div class="bg-white p-6 rounded-lg shadow-md mb-6">
+            <h2 class="text-xl font-semibold text-gray-700 mb-4">Galletas Disponibles</h2>
+            <table class="min-w-full bg-white border border-gray-200">
+                <thead>
+                    <tr>
+                        <th class="px-4 py-2 border-b">Galleta</th>
+                        <th class="px-4 py-2 border-b">Presentación</th>
+                        <th class="px-4 py-2 border-b">Cantidad</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if filtro %}
+                        {% for presentacion in presentaciones %}
+                        <tr>
+                            <td class="px-4 py-2 border-b">{{ presentacion.galleta.nombre }}</td>
+                            <td class="px-4 py-2 border-b">{{ presentacion.tipoPresentacion }}</td>
+                            <td class="px-4 py-2 border-b">{{ presentacion.cantidad }}</td>
+                        </tr>
+                        {% endfor %}
+                    {% else %}
+                        {% for galleta in galletas %}
+                        <tr>
+                            <td class="px-4 py-2 border-b">{{ galleta.nombre }}</td>
+                            <td class="px-4 py-2 border-b">
+                                {% for presentacion in presentaciones[galleta.id] %}
+                                    <span class="block text-sm text-gray-600">{{ presentacion.tipoPresentacion }}: {{ presentacion.cantidad }}</span>
+                                {% endfor %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    {% endif %}
+                </tbody>
+            </table>
+
+            <h2 class="text-xl font-semibold text-gray-700 mb-4">Cantidades</h2>
+            <div class="flex gap-4">
+                <a href="/piezas"
+                    class="focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5">
+                    Piezas
+                </a>
+                <a href="/gramaje"
+                    class="focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5">
+                    Gramaje
+                </a>
+                <a href="/paquete"
+                    class="focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5">
+                    Paquete
+                </a>
+            </div>
+        </div>
+    </div>
+
+    
+    <div class="w-1/2">
+        
+        <div class="flex justify-end mb-4">
+            <a href="/cocina"
+                class="focus:outline-none text-white bg-[#9C6E66] hover:bg-[#7A5A52] focus:ring-4 focus:ring-[#9C6E66] font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2">
+                Cocina
+            </a>
+        </div>
+
+      
+        <div class="bg-white p-6 rounded-lg shadow-md mb-6">
+            <h2 class="text-xl font-semibold text-gray-700 mb-4">Alertas de Cocina</h2>
+            <table class="min-w-full bg-white border border-gray-200">
+                <thead>
+                    <tr>
+                        <th class="px-4 py-2 border-b">Galleta</th>
+                        <th class="px-4 py-2 border-b">Estado</th>
+                        <th class="px-4 py-2 border-b">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                </tbody>
+            </table>
+        </div>
+
+        
+        <div class="bg-white p-6 rounded-lg shadow-md">
+            <h2 class="text-xl font-semibold text-gray-700 mb-4">Galletas Producidas Hoy</h2>
+            <table class="min-w-full bg-white border border-gray-200">
+                <thead>
+                    <tr>
+                        <th class="px-4 py-2 border-b">Nombre</th>
+                        <th class="px-4 py-2 border-b">Cantidad</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

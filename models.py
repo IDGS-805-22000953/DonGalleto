@@ -62,7 +62,6 @@ class Receta(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     nombreReceta = db.Column(db.String(50), nullable=False)
     descripcion = db.Column(db.Text)
-    rutaFoto = db.Column(db.String(255))
 
 class RecetaInsumos(db.Model):
     __tablename__ = 'recetaInsumos'
@@ -80,6 +79,7 @@ class Galleta(db.Model):
     stock = db.Column(db.Integer, nullable=False)
     idReceta = db.Column(db.Integer, db.ForeignKey('recetas.id'), nullable=False)
     fechaCaducidad = db.Column(db.Date, nullable=False)
+    rutaFoto = db.Column(db.String(255))
 
 class Produccion(db.Model):
     __tablename__ = 'produccion'

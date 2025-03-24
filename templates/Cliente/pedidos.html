@@ -7,91 +7,77 @@
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link href="https://unpkg.com/flowbite@1.4.7/dist/flowbite.min.css" rel="stylesheet">
     <script src="https://unpkg.com/flowbite@1.4.7/dist/flowbite.js" defer></script>
+    <style>
+        .galleta-card {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+        .galleta-img {
+            width: 100%;
+            height: 200px; /* Altura fija para las imágenes */
+            object-fit: cover; /* Ajusta la imagen sin deformarla */
+        }
+        .galleta-content {
+            flex-grow: 1; /* Hace que el contenido ocupe el espacio restante */
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+    </style>
 </head>
 <body class="bg-gray-100">
     <div class="container mx-auto p-4">
         <h1 class="text-3xl font-bold mb-4">Catálogo de Galletas</h1>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            <div class="bg-white p-4 shadow-md rounded-lg">
-                <img src="galleta1.jpg" alt="Galleta de Chocolate" class="w-full h-48 object-cover rounded-md">
-                <h2 class="text-xl font-semibold mt-2">Galleta de Chocolate</h2>
-                <p class="text-gray-700 mt-1">Precio: $2.00</p>
-                <button class="btn bg-blue-500 text-white px-4 py-2 rounded-md mt-2" onclick="addToCart('Galleta de Chocolate', 2.00)">Agregar al Carrito</button>
+            {% for galleta in galletas %}
+            <div class="bg-white p-4 shadow-md rounded-lg galleta-card">
+                <!-- Mostrar la imagen de la galleta -->
+                <img src="{{ url_for('static', filename=galleta.rutaFoto) }}" alt="{{ galleta.nombre }}" class="galleta-img">
+                <div class="galleta-content">
+                    <h2 class="text-xl font-semibold mt-2">{{ galleta.nombre }}</h2>
+                    <p class="text-gray-700 mt-1">Precio: ${{ galleta.precio }}</p>
+                    <a href="{{ url_for('guardar_pedido', id=galleta.id) }}" class="btn bg-blue-500 text-white px-4 py-2 rounded-md mt-2 w-full text-center">Agregar al Carrito</a>
+                </div>
             </div>
-            <div class="bg-white p-4 shadow-md rounded-lg">
-                <img src="galleta2.jpg" alt="Galleta de Vainilla" class="w-full h-48 object-cover rounded-md">
-                <h2 class="text-xl font-semibold mt-2">Galleta de Vainilla</h2>
-                <p class="text-gray-700 mt-1">Precio: $1.50</p>
-                <button class="btn bg-blue-500 text-white px-4 py-2 rounded-md mt-2" onclick="addToCart('Galleta de Vainilla', 1.50)">Agregar al Carrito</button>
-            </div>
+            {% endfor %}
         </div>
 
         <h1 class="text-3xl font-bold mt-8 mb-4">Carrito de Compras</h1>
-        <div class="bg-white p-4 shadow-md rounded-lg" id="cart">
-            <!-- Los productos del carrito se agregarán aquí -->
+        <div class="bg-white p-4 shadow-md rounded-lg">
+            {% if carrito %}
+                {% for item in carrito %}
+                <div class="flex justify-between mb-2">
+                    <span>{{ item.nombre }} - ${{ item.precio }}</span>
+                    <a href="{{ url_for('eliminar_carrito', index=loop.index0) }}" class="btn bg-red-500 text-white px-4 py-2 rounded-md">Eliminar</a>
+                </div>
+                {% endfor %}
+                <p><strong>Total: ${{ carrito | sum(attribute="precio") }}</strong></p>
+            {% else %}
+                <p>No hay productos en el carrito</p>
+            {% endif %}
         </div>
 
         <h1 class="text-3xl font-bold mt-8 mb-4">Realizar Pedido</h1>
-        <form id="order-form" class="bg-white p-4 shadow-md rounded-lg">
+        <form action="{{ url_for('guardar_pedido') }}" method="post" class="bg-white p-4 shadow-md rounded-lg">
             <div class="mb-4">
                 <label for="name" class="block text-gray-700">Nombre:</label>
-                <input type="text" id="name" name="name" class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                <input type="text" id="name" name="name" class="w-full px-4 py-2 border rounded-md" required>
             </div>
             <div class="mb-4">
                 <label for="address" class="block text-gray-700">Dirección:</label>
-                <input type="text" id="address" name="address" class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                <input type="text" id="address" name="address" class="w-full px-4 py-2 border rounded-md" required>
             </div>
             <div class="mb-4">
                 <label for="payment" class="block text-gray-700">Método de Pago:</label>
-                <select id="payment" name="payment" class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                <select id="payment" name="payment" class="w-full px-4 py-2 border rounded-md" required>
                     <option value="tarjeta">Tarjeta de Crédito</option>
                     <option value="paypal">PayPal</option>
                     <option value="transferencia">Transferencia Bancaria</option>
                 </select>
             </div>
-            <button type="submit" class="btn bg-blue-500 text-white px-4 py-2 rounded-md">Realizar Pedido</button>
+            <button type="submit" class="btn bg-blue-500 text-white px-4 py-2 rounded-md w-full">Realizar Pedido</button>
         </form>
     </div>
-
-    <script>
-        const cart = [];
-
-        function addToCart(name, price) {
-            cart.push({ name, price });
-            updateCart();
-        }
-
-        function updateCart() {
-            const cartDiv = document.getElementById('cart');
-            cartDiv.innerHTML = '';
-            let total = 0;
-            cart.forEach((item, index) => {
-                const itemDiv = document.createElement('div');
-                itemDiv.classList.add('flex', 'justify-between', 'mb-2');
-                itemDiv.innerHTML = `
-                    <span>${item.name} - $${item.price.toFixed(2)}</span>
-                    <button class="btn bg-red-500 text-white px-4 py-2 rounded-md" onclick="removeFromCart(${index})">Eliminar</button>
-                `;
-                cartDiv.appendChild(itemDiv);
-                total += item.price;
-            });
-            const totalDiv = document.createElement('div');
-            totalDiv.innerHTML = `<strong>Total: $${total.toFixed(2)}</strong>`;
-            cartDiv.appendChild(totalDiv);
-        }
-
-        function removeFromCart(index) {
-            cart.splice(index, 1);
-            updateCart();
-        }
-
-        document.getElementById('order-form').addEventListener('submit', function(event) {
-            event.preventDefault();
-            alert('Pedido realizado con éxito!');
-            cart.length = 0;
-            updateCart();
-            document.getElementById('order-form').reset();
-        });
-    </script>
 </body>
 </html>

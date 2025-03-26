@@ -1,5 +1,6 @@
 # Ignorar archivos de configuración y lockfiles
 .env
+.venv
 config.py
 node_modules/
 package-lock.json

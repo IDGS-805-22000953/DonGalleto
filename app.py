@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, jsonify, session, flash
 from flask_wtf.csrf import CSRFProtect
 from config import DevelopmentConfig
+from datetime import datetime
 from models import (
     db,
     Usuario,
@@ -29,6 +30,7 @@ app = Flask(__name__)
 app.config.from_object(DevelopmentConfig)
 app.secret_key = "supersecretkey"  # Asegurar sesiones
 csrf = CSRFProtect(app)
+db.init_app(app)
 
 # =======================
 # Rutas principales
@@ -191,12 +193,42 @@ def guardar_pedido():
         db.session.rollback()
         return jsonify({"error": str(e)}), 500
 
+
+
+# prueba ventas
+
+@app.route('/ventas')
+def ventas():
+    # Obtener todas las galletas con sus presentaciones
+    galletas = Galleta.query.options(db.joinedload(Galleta.presentaciones)).all()
+    
+    # Procesar los datos para la vista
+    galletas_data = []
+    for galleta in galletas:
+        presentaciones = ", ".join([f"{p.cantidad} {p.tipoPresentacion}" 
+                                  for p in galleta.presentaciones])
+        galletas_data.append({
+            'id': galleta.id,
+            'nombre': galleta.nombre,
+            'descripcion': galleta.descripcion,
+            'precio': galleta.precio,
+            'stock': galleta.stock,
+            'presentaciones': presentaciones,
+            'rutaFoto': galleta.rutaFoto
+        })
+    
+    return render_template('Ventas/ventas2.html', galletas=galletas_data)
+
+
+
+
+
+
 # =======================
 # Iniciar aplicación
 # =======================
 if __name__ == '__main__':
     csrf.init_app(app)
-    db.init_app(app)
     with app.app_context():
         db.create_all()
     app.run(debug=True)

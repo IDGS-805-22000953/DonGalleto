@@ -1,0 +1,38 @@
+2025-03-26 23:02:14,904 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2025-03-26 23:02:14,904 - INFO - [33mPress CTRL+C to quit[0m
+2025-03-26 23:02:14,920 - INFO -  * Restarting with stat
+2025-03-26 23:02:27,903 - WARNING -  * Debugger is active!
+2025-03-26 23:02:27,930 - INFO -  * Debugger PIN: 604-629-930
+2025-03-26 23:04:57,479 - INFO -  * Detected change in 'C:\\Users\\Crepa\\Desktop\\Carpetas\\UTL\\IDGS805\\DonGalleto\\app.py', reloading
+2025-03-26 23:04:57,746 - INFO -  * Restarting with stat
+2025-03-26 23:05:07,825 - WARNING -  * Debugger is active!
+2025-03-26 23:05:07,853 - INFO -  * Debugger PIN: 604-629-930
+2025-03-26 23:05:38,880 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2025-03-26 23:05:38,882 - INFO - [33mPress CTRL+C to quit[0m
+2025-03-26 23:05:38,887 - INFO -  * Restarting with stat
+2025-03-26 23:05:46,510 - WARNING -  * Debugger is active!
+2025-03-26 23:05:46,528 - INFO -  * Debugger PIN: 604-629-930
+2025-03-26 23:06:07,026 - INFO -  * Detected change in 'C:\\Users\\Crepa\\Desktop\\Carpetas\\UTL\\IDGS805\\DonGalleto\\app.py', reloading
+2025-03-26 23:06:07,160 - INFO -  * Restarting with stat
+2025-03-26 23:06:14,845 - WARNING -  * Debugger is active!
+2025-03-26 23:06:14,861 - INFO -  * Debugger PIN: 604-629-930
+2025-03-26 23:07:48,062 - INFO -  * Detected change in 'C:\\Users\\Crepa\\Desktop\\Carpetas\\UTL\\IDGS805\\DonGalleto\\app.py', reloading
+2025-03-26 23:07:48,425 - INFO -  * Restarting with stat
+2025-03-26 23:07:56,161 - WARNING -  * Debugger is active!
+2025-03-26 23:07:56,167 - INFO -  * Debugger PIN: 604-629-930
+2025-03-26 23:08:04,227 - INFO -  * Detected change in 'C:\\Users\\Crepa\\Desktop\\Carpetas\\UTL\\IDGS805\\DonGalleto\\app.py', reloading
+2025-03-26 23:08:04,405 - INFO -  * Restarting with stat
+2025-03-26 23:08:11,618 - WARNING -  * Debugger is active!
+2025-03-26 23:08:11,620 - INFO -  * Debugger PIN: 604-629-930
+2025-03-26 23:11:22,862 - INFO - 127.0.0.1 - - [26/Mar/2025 23:11:22] "GET / HTTP/1.1" 200 -
+2025-03-26 23:11:23,094 - INFO - 127.0.0.1 - - [26/Mar/2025 23:11:23] "GET /static/css/output.css HTTP/1.1" 200 -
+2025-03-26 23:11:23,295 - INFO - 127.0.0.1 - - [26/Mar/2025 23:11:23] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2025-03-26 23:11:26,018 - INFO - 127.0.0.1 - - [26/Mar/2025 23:11:26] "GET /central HTTP/1.1" 200 -
+2025-03-26 23:11:26,055 - INFO - 127.0.0.1 - - [26/Mar/2025 23:11:26] "[36mGET /static/css/output.css HTTP/1.1[0m" 304 -
+2025-03-26 23:11:29,380 - INFO - 127.0.0.1 - - [26/Mar/2025 23:11:29] "[33mGET /cliente HTTP/1.1[0m" 404 -
+2025-03-26 23:11:43,508 - INFO -  * Detected change in 'C:\\Users\\Crepa\\Desktop\\Carpetas\\UTL\\IDGS805\\DonGalleto\\app.py', reloading
+2025-03-26 23:11:43,685 - INFO -  * Restarting with stat
+2025-03-26 23:11:50,988 - WARNING -  * Debugger is active!
+2025-03-26 23:11:51,004 - INFO -  * Debugger PIN: 604-629-930

@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+</head>
+<body>
+    <h1>Dashboard de Ventas</h1>
+
+    <h2>📌 Ventas Diarias</h2>
+    <p>Promedio de {{ promedio_diario }} galletas diarias</p>
+
+    <h2>📌 Productos Más Vendidos</h2>
+    <ul>
+        {% for producto in productos_mas_vendidos %}
+            <li>{{ producto }}</li>
+        {% endfor %}
+    </ul>
+
+    <h2>📌 Presentaciones Más Vendidas</h2>
+    <p>{{ presentacion_mas_vendida }}</p>
+
+</body>
+</html>

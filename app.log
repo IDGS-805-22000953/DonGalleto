@@ -36,3 +36,68 @@
 2025-03-26 23:11:43,685 - INFO -  * Restarting with stat
 2025-03-26 23:11:50,988 - WARNING -  * Debugger is active!
 2025-03-26 23:11:51,004 - INFO -  * Debugger PIN: 604-629-930
+2025-03-26 23:39:16,568 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2025-03-26 23:39:16,568 - INFO - [33mPress CTRL+C to quit[0m
+2025-03-26 23:39:16,570 - INFO -  * Restarting with stat
+2025-03-26 23:39:22,068 - WARNING -  * Debugger is active!
+2025-03-26 23:39:22,071 - INFO -  * Debugger PIN: 545-067-783
+2025-03-26 23:40:25,362 - INFO -  * Detected change in 'C:\\Users\\Caval\\OneDrive\\Documents\\VSCODES\\DonGalleto\\app.py', reloading
+2025-03-26 23:40:25,434 - INFO -  * Restarting with stat
+2025-03-26 23:40:30,786 - WARNING -  * Debugger is active!
+2025-03-26 23:40:30,789 - INFO -  * Debugger PIN: 545-067-783
+2025-03-26 23:40:31,846 - INFO -  * Detected change in 'C:\\Users\\Caval\\OneDrive\\Documents\\VSCODES\\DonGalleto\\app.py', reloading
+2025-03-26 23:40:31,897 - INFO -  * Restarting with stat
+2025-03-26 23:52:17,021 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2025-03-26 23:52:17,021 - INFO - [33mPress CTRL+C to quit[0m
+2025-03-26 23:52:17,022 - INFO -  * Restarting with stat
+2025-03-26 23:52:22,628 - WARNING -  * Debugger is active!
+2025-03-26 23:52:22,631 - INFO -  * Debugger PIN: 545-067-783
+2025-03-26 23:53:21,881 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2025-03-26 23:53:21,882 - INFO - [33mPress CTRL+C to quit[0m
+2025-03-26 23:53:21,883 - INFO -  * Restarting with stat
+2025-03-26 23:53:27,321 - WARNING -  * Debugger is active!
+2025-03-26 23:53:27,323 - INFO -  * Debugger PIN: 545-067-783
+2025-03-26 23:53:50,828 - INFO -  * Detected change in 'C:\\Users\\Caval\\OneDrive\\Documents\\VSCODES\\DonGalleto\\app.py', reloading
+2025-03-26 23:53:50,894 - INFO -  * Restarting with stat
+2025-03-26 23:53:56,255 - WARNING -  * Debugger is active!
+2025-03-26 23:53:56,258 - INFO -  * Debugger PIN: 545-067-783
+2025-03-26 23:54:20,398 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2025-03-26 23:54:20,398 - INFO - [33mPress CTRL+C to quit[0m
+2025-03-26 23:55:42,606 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2025-03-26 23:55:42,606 - INFO - [33mPress CTRL+C to quit[0m
+2025-03-26 23:57:15,787 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2025-03-26 23:57:15,787 - INFO - [33mPress CTRL+C to quit[0m
+2025-03-26 23:57:48,765 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2025-03-26 23:57:48,765 - INFO - [33mPress CTRL+C to quit[0m
+2025-03-26 23:57:48,767 - INFO -  * Restarting with stat
+2025-03-26 23:57:49,290 - WARNING -  * Debugger is active!
+2025-03-26 23:57:49,294 - INFO -  * Debugger PIN: 545-067-783
+2025-03-27 00:18:52,685 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2025-03-27 00:18:52,685 - INFO - [33mPress CTRL+C to quit[0m
+2025-03-27 00:18:52,687 - INFO -  * Restarting with stat
+2025-03-27 00:18:55,460 - WARNING -  * Debugger is active!
+2025-03-27 00:18:55,464 - INFO -  * Debugger PIN: 545-067-783
+2025-03-27 00:19:51,479 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2025-03-27 00:19:51,479 - INFO - [33mPress CTRL+C to quit[0m
+2025-03-27 00:20:03,397 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2025-03-27 00:20:03,397 - INFO - [33mPress CTRL+C to quit[0m
+2025-03-27 00:20:03,398 - INFO -  * Restarting with stat
+2025-03-27 00:20:06,171 - WARNING -  * Debugger is active!
+2025-03-27 00:20:06,173 - INFO -  * Debugger PIN: 545-067-783
+2025-03-27 00:20:22,849 - INFO - 127.0.0.1 - - [27/Mar/2025 00:20:22] "GET / HTTP/1.1" 200 -
+2025-03-27 00:20:22,913 - INFO - 127.0.0.1 - - [27/Mar/2025 00:20:22] "GET /static/css/output.css HTTP/1.1" 200 -
+2025-03-27 00:20:23,091 - INFO - 127.0.0.1 - - [27/Mar/2025 00:20:23] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2025-03-27 00:20:46,622 - INFO - 127.0.0.1 - - [27/Mar/2025 00:20:46] "[33mGET /index HTTP/1.1[0m" 404 -
+2025-03-27 00:21:04,806 - INFO - 127.0.0.1 - - [27/Mar/2025 00:21:04] "GET /central HTTP/1.1" 200 -
+2025-03-27 00:21:04,818 - INFO - 127.0.0.1 - - [27/Mar/2025 00:21:04] "[36mGET /static/css/output.css HTTP/1.1[0m" 304 -
+2025-03-27 00:21:07,550 - INFO - 127.0.0.1 - - [27/Mar/2025 00:21:07] "[33mGET /produccion HTTP/1.1[0m" 404 -

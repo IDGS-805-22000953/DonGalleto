@@ -4,7 +4,7 @@ import datetime
 db = SQLAlchemy()
 
 class Usuario(db.Model):
-    _tablename_ = 'usuarios'
+    __tablename__ = 'usuarios'
     id = db.Column(db.Integer, primary_key=True)
     nombreUsuario = db.Column(db.String(50), nullable=False)
     apellidoPa = db.Column(db.String(50), nullable=False)
@@ -15,7 +15,7 @@ class Usuario(db.Model):
     fechaRegistro = db.Column(db.TIMESTAMP, server_default=db.func.current_timestamp())
 
 class Cliente(db.Model):
-    _tablename_ = 'clientes'
+    __tablename__ = 'clientes'
     id = db.Column(db.Integer, primary_key=True)
     nombre = db.Column(db.String(50), nullable=False)
     apellidoPa = db.Column(db.String(50), nullable=False)
@@ -24,10 +24,10 @@ class Cliente(db.Model):
     fechaRegistro = db.Column(db.TIMESTAMP, server_default=db.func.current_timestamp())
 
 class Insumo(db.Model):
-    _tablename_ = 'insumos'
+    __tablename__ = 'insumos'
     id = db.Column(db.Integer, primary_key=True)
     nombre = db.Column(db.String(50), nullable=False)
-    fechaIngreso = db.Column(db.TIMESTAMP, server_default=db.func.current_timestamp())
+    fechaIngreso = db.Column(db.Date, server_default=db.func.current_date())
     fechaCaducidad = db.Column(db.Date, nullable=False)
     cantidad = db.Column(db.Numeric(10, 2), nullable=False)
     unidadMedida = db.Column(db.String(20))
@@ -36,7 +36,7 @@ class Insumo(db.Model):
     porcentajeMerma = db.Column(db.Numeric(5, 2), nullable=False)
 
 class Proveedor(db.Model):
-    _tablename_ = 'proveedores'
+    __tablename__ = 'proveedores'
     id = db.Column(db.Integer, primary_key=True)
     nombreProveedor = db.Column(db.String(50), nullable=False)
     direccion = db.Column(db.String(100))
@@ -44,34 +44,35 @@ class Proveedor(db.Model):
     telefono = db.Column(db.String(15), nullable=False)
 
 class InsumosProveedor(db.Model):
-    _tablename_ = 'insumosProveedor'
+    __tablename__ = 'insumosProveedor'
     id = db.Column(db.Integer, primary_key=True)
     idProveedor = db.Column(db.Integer, db.ForeignKey('proveedores.id'), nullable=False)
     idInsumo = db.Column(db.Integer, db.ForeignKey('insumos.id'), nullable=False)
     precio = db.Column(db.Numeric(10, 2))
 
 class PagoProveedor(db.Model):
-    _tablename_ = 'pagoProveedor'
+    __tablename__ = 'pagoProveedor'
     id = db.Column(db.Integer, primary_key=True)
     idProveedor = db.Column(db.Integer, db.ForeignKey('proveedores.id'), nullable=False)
     monto = db.Column(db.Numeric(10, 2), nullable=False)
     fechaPago = db.Column(db.DateTime, default=datetime.datetime.now)
 
 class Receta(db.Model):
-    _tablename_ = 'recetas'
+    __tablename__ = 'recetas'
     id = db.Column(db.Integer, primary_key=True)
     nombreReceta = db.Column(db.String(50), nullable=False)
     descripcion = db.Column(db.Text)
+    rutaFoto = db.Column(db.String(255))
 
 class RecetaInsumos(db.Model):
-    _tablename_ = 'recetaInsumos'
+    __tablename__ = 'recetaInsumos'
     id = db.Column(db.Integer, primary_key=True)
     idReceta = db.Column(db.Integer, db.ForeignKey('recetas.id'), nullable=False)
     idInsumo = db.Column(db.Integer, db.ForeignKey('insumos.id'), nullable=False)
     cantidadInsumo = db.Column(db.Numeric(10, 2), nullable=False)
 
 class Galleta(db.Model):
-    _tablename_ = 'galletas'
+    __tablename__ = 'galletas'
     id = db.Column(db.Integer, primary_key=True)
     nombre = db.Column(db.String(50), nullable=False)
     descripcion = db.Column(db.Text)
@@ -81,10 +82,10 @@ class Galleta(db.Model):
     presentaciones = db.relationship('PresentacionGalleta', backref='galleta', lazy=True)
 
 class PresentacionGalleta(db.Model):
-    _tablename_ = 'presentacionesGalletas'
+    __tablename__ = 'presentacionesGalletas'
     id = db.Column(db.Integer, primary_key=True)
     idGalleta = db.Column(db.Integer, db.ForeignKey('galletas.id'), nullable=False)
-    tipoPresentacion = db.Column(db.Enum('piezas', 'gramos', '1kg', '700g'), nullable=False)
+    tipoPresentacion = db.Column(db.Enum('Piezas', 'Gramos', '1kg', '700g'), nullable=False)
     cantidad = db.Column(db.Integer, nullable=False)  # Cantidad de unidades/gramos según la presentación
     precio = db.Column(db.Numeric(10, 2), nullable=False)  # Precios sugeridos:
         # 'piezas': 5.00 c/u (paquete individual)
@@ -95,14 +96,21 @@ class PresentacionGalleta(db.Model):
     fechaCaducidad = db.Column(db.Date, nullable=False)
 
 class Produccion(db.Model):
-    _tablename_ = 'produccion'
+    __tablename__ = 'produccion'
     id = db.Column(db.Integer, primary_key=True)
     idReceta = db.Column(db.Integer, db.ForeignKey('recetas.id'), nullable=False)
+    idGalleta = db.Column(db.Integer, db.ForeignKey('galletas.id'), nullable=False)  
     cantidadProducida = db.Column(db.Integer, nullable=False)
-    fechaProduccion = db.Column(db.TIMESTAMP, server_default=db.func.current_timestamp())
+    fechaProduccion = db.Column(db.Date, server_default=db.func.current_date())  
+
+    # Relación con Galleta
+    galleta = db.relationship('Galleta', backref='producciones')
+    receta = db.relationship('Receta', backref='producciones')
+
+
 
 class Pedido(db.Model):
-    _tablename_ = 'pedidos'
+    __tablename__ = 'pedidos'
     id = db.Column(db.Integer, primary_key=True)
     idCliente = db.Column(db.Integer, db.ForeignKey('clientes.id'), nullable=False)
     fechaPedido = db.Column(db.TIMESTAMP, server_default=db.func.current_timestamp())
@@ -110,7 +118,7 @@ class Pedido(db.Model):
     estado = db.Column(db.Enum('pendiente', 'listo', 'entregado', 'cancelado'), nullable=False, default='pendiente')
 
 class DetallePedido(db.Model):
-    _tablename_ = 'detallePedido'
+    __tablename__ = 'detallePedido'
     id = db.Column(db.Integer, primary_key=True)
     idPedido = db.Column(db.Integer, db.ForeignKey('pedidos.id'), nullable=False)
     idPresentacion = db.Column(db.Integer, db.ForeignKey('presentacionesGalletas.id'), nullable=False)
@@ -118,14 +126,14 @@ class DetallePedido(db.Model):
     subtotal = db.Column(db.Numeric(10, 2), nullable=False)
 
 class Venta(db.Model):
-    _tablename_ = 'ventas'
+    __tablename__ = 'ventas'
     id = db.Column(db.Integer, primary_key=True)
     idPedido = db.Column(db.Integer, db.ForeignKey('pedidos.id'), nullable=False)
     fechaVenta = db.Column(db.TIMESTAMP, server_default=db.func.current_timestamp())
     total = db.Column(db.Numeric(10, 2), nullable=False)
 
 class Merma(db.Model):
-    _tablename_ = 'merma'
+    __tablename__ = 'merma'
     id = db.Column(db.Integer, primary_key=True)
     tipo = db.Column(db.Enum('insumo', 'galleta'), nullable=False)
     idInsumo = db.Column(db.Integer, db.ForeignKey('insumos.id'))
@@ -135,7 +143,21 @@ class Merma(db.Model):
     fechaRegistro = db.Column(db.TIMESTAMP, server_default=db.func.current_timestamp())
 
 class CorteVentas(db.Model):
-    _tablename_ = 'corteVentas'
+    __tablename__ = 'corteVentas'
     id = db.Column(db.Integer, primary_key=True)
     fecha = db.Column(db.Date, nullable=False)
     totalVentas = db.Column(db.Numeric(10, 2), nullable=False)
+    
+class EstatusProduccion(db.Model):
+    __tablename__ = 'estatusProduccion'
+    id = db.Column(db.Integer, primary_key=True)
+    idGalleta = db.Column(db.Integer, db.ForeignKey('galletas.id'), nullable=False)
+    nombreGalleta = db.Column(db.String(50), nullable=False)
+    estatus = db.Column(db.Enum('En preparacion', 'Horneando', 'Enfriando'), default='En preparacion')
+    tiempoEstimado = db.Column(db.Integer, nullable=False)  
+    fechaInicio = db.Column(db.TIMESTAMP, server_default=db.func.current_timestamp())
+    idPresentacion = db.Column(db.Integer, db.ForeignKey('presentacionesGalletas.id'), nullable=False)  
+
+    galleta = db.relationship('Galleta', backref='estatusProduccion', lazy=True)
+    presentacion = db.relationship('PresentacionGalleta', backref='estatusProduccion', lazy=True) 
+

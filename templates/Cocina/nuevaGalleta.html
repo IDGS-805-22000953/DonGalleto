@@ -1,0 +1,45 @@
+{% extends "Central/layout.html" %}
+
+{% block content %}
+<div class="container mx-auto p-4 flex gap-6">
+    
+   
+    <div class="w-1/2">
+        <h1 class="text-3xl font-bold text-gray-800 mb-6">Crear Nueva Galleta</h1>
+        
+        <form action="{{ url_for('cocina.nueva_galleta') }}" method="POST" enctype="multipart/form-data">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            
+            
+            <label class="block font-semibold">Nombre de la Receta</label>
+            <input type="text" name="nombre" class="w-full border rounded p-2" required>
+        
+          
+            <label class="block font-semibold mt-4">Descripción</label>
+            <textarea name="descripcion" class="w-full border rounded p-2"></textarea>
+        
+            <label class="block font-semibold mt-4">Selecciona los Insumos y su Cantidad</label>
+            <div class="border rounded p-2">
+                {% for insumo in insumos %}
+                <div class="flex items-center gap-2">
+                    <input type="checkbox" name="insumos" value="{{ insumo.id }}">
+                    <label>{{ insumo.nombre }} (Disponible: {{ insumo.cantidad }} {{ insumo.unidadMedida }})</label>
+                    <input type="number" name="cantidad_{{ insumo.id }}" class="border rounded p-1 w-20" min="1" max="{{ insumo.cantidad }}" placeholder="Cantidad">
+                </div>
+                {% endfor %}
+            </div>
+        
+            
+            <label class="block font-semibold mt-4">Subir Imagen</label>
+            <input type="file" name="imagen" accept="image/*" class="w-full border rounded p-2">
+        
+           
+            <button type="submit" class="mt-4 bg-blue-500 text-white px-4 py-2 rounded">Crear Galleta</button>
+        </form>
+        
+        
+        
+        <a href="{{ url_for('cocina.cocina') }}" class="block mt-4 text-blue-600">Volver</a>
+    </div>
+</div>
+{% endblock %}

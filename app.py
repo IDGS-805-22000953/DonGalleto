@@ -104,5 +104,6 @@ def page_not_found(e):
 if __name__ == '__main__':
     csrf.init_app(app)
     with app.app_context():
+        
         db.create_all()
     app.run(debug=True)

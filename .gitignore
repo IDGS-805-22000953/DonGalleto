@@ -8,3 +8,4 @@ static/css/output.css
 __pycache__/
 *.pyc
 env/
+app.log

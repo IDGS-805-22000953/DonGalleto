@@ -3,7 +3,7 @@
 {% block content %}
 <div class="container mx-auto p-4 flex gap-6">
     
-    <!-- Lado Izquierdo -->
+   
     <div class="w-1/2">
         <h1 class="text-3xl font-bold text-gray-800 mb-6">Produccion</h1>
         
@@ -15,45 +15,64 @@
                         <th class="px-4 py-2 border-b">Galleta</th>
                         <th class="px-4 py-2 border-b">Presentación</th>
                         <th class="px-4 py-2 border-b">Cantidad</th>
+                        <th class="px-4 py-2 border-b">Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% if filtro %}
+                        <tr>
+                            <td colspan="4" class="text-center text-xl py-2">Filtrando por {{ filtro }}</td>
+                        </tr>
+                        {% endif %}
                         {% for presentacion in presentaciones %}
                         <tr>
                             <td class="px-4 py-2 border-b">{{ presentacion.galleta.nombre }}</td>
                             <td class="px-4 py-2 border-b">{{ presentacion.tipoPresentacion }}</td>
-                            <td class="px-4 py-2 border-b">{{ presentacion.cantidad }}</td>
-                        </tr>
-                        {% endfor %}
-                    {% else %}
-                        {% for galleta in galletas %}
-                        <tr>
-                            <td class="px-4 py-2 border-b">{{ galleta.nombre }}</td>
                             <td class="px-4 py-2 border-b">
-                                {% for presentacion in presentaciones[galleta.id] %}
-                                    <span class="block text-sm text-gray-600">{{ presentacion.tipoPresentacion }}: {{ presentacion.cantidad }}</span>
-                                {% endfor %}
+                                {% if presentacion.tipoPresentacion == "Piezas" and presentacion.stock < 25 %}
+                                    <span class="text-red-500">{{ presentacion.stock }}</span>
+                                {% elif presentacion.tipoPresentacion == "Gramos" and presentacion.stock < 250 %}
+                                    <span class="text-red-500">{{ presentacion.stock }}</span>
+                                {% elif presentacion.tipoPresentacion == "1kg" and presentacion.stock < 6 %}
+                                    <span class="text-red-500">{{ presentacion.stock }}</span>
+                                {% elif presentacion.tipoPresentacion == "700g" and presentacion.stock < 6 %}
+                                    <span class="text-red-500">{{ presentacion.stock }}</span>
+                                {% else %}
+                                    {{ presentacion.stock }}
+                                {% endif %}
+                            </td>
+                            <td class="px-4 py-2 border-b">
+                                <form
+                                action="{{ url_for('produccion.iniciar_produccion', presentacion_id=presentacion.id) }}"
+                                method="POST">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                <button type="submit"
+                                    class="bg-blue-600 text-white rounded-lg px-5 py-2.5">Producir</button>
+                            </form>
                             </td>
                         </tr>
                         {% endfor %}
-                    {% endif %}
                 </tbody>
             </table>
+        
 
             <h2 class="text-xl font-semibold text-gray-700 mb-4">Cantidades</h2>
             <div class="flex gap-4">
-                <a href="/piezas"
+                <a href="{{ url_for('produccion.piezas') }}" 
                     class="focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5">
                     Piezas
                 </a>
-                <a href="/gramaje"
+                <a href="{{ url_for('produccion.gramaje') }}"
                     class="focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5">
                     Gramaje
                 </a>
-                <a href="/paquete"
+                <a href="{{ url_for('produccion.paquete1') }}"
                     class="focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5">
-                    Paquete
+                    Paquete 1kg
+                </a>
+                <a href="{{ url_for('produccion.paquete2') }}"
+                    class="focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5">
+                    Paquete 700g
                 </a>
             </div>
         </div>
@@ -63,7 +82,7 @@
     <div class="w-1/2">
         
         <div class="flex justify-end mb-4">
-            <a href="/cocina"
+            <a href="{{ url_for('cocina.cocina') }}"
                 class="focus:outline-none text-white bg-[#9C6E66] hover:bg-[#7A5A52] focus:ring-4 focus:ring-[#9C6E66] font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2">
                 Cocina
             </a>
@@ -77,12 +96,24 @@
                     <tr>
                         <th class="px-4 py-2 border-b">Galleta</th>
                         <th class="px-4 py-2 border-b">Estado</th>
-                        <th class="px-4 py-2 border-b">Acciones</th>
+                        <th class="px-4 py-2 border-b">Presentacion</th>
+                        <th class="px-4 py-2 border-b">Tiempo Estimado</th>
                     </tr>
                 </thead>
                 <tbody>
-                    
+                    {% for alerta, tipoPresentacion in alertas %}
+                    <tr class="bg-yellow-200 rounded-lg">
+                        <td class="px-4 py-2 border-b rounded-l-lg">{{ alerta.nombreGalleta }}</td>
+                        <td class="px-4 py-2 border-b">{{ alerta.estatus }}</td>
+                        <td class="px-4 py-2 border-b">{{ tipoPresentacion }}</td>
+                        <td class="px-4 py-2 border-b">{{ alerta.tiempoEstimado }} min</td>
+                          
+                    </tr>
+                    {% endfor %}
                 </tbody>
+                
+                
+                 
             </table>
         </div>
 
@@ -94,13 +125,29 @@
                     <tr>
                         <th class="px-4 py-2 border-b">Nombre</th>
                         <th class="px-4 py-2 border-b">Cantidad</th>
+                        <th class="px-4 py-2 border-b">Fecha</th>
                     </tr>
                 </thead>
                 <tbody>
-                    
+                    {% if producciones_hoy %}
+                        {% for produccion in producciones_hoy %}
+                        <tr>
+                            <td class="px-4 py-2 border-b">{{ produccion.galleta.nombre }}</td>
+                            <td class="px-4 py-2 border-b">{{ produccion.cantidadProducida }}</td>
+                            <td class="px-4 py-2 border-b">{{ produccion.fechaProduccion }}</td>
+                        </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr>
+                            <td colspan="3" class="text-center text-xl py-4 text-gray-500">
+                                No se han producido galletas hoy
+                            </td>
+                        </tr>
+                    {% endif %}
                 </tbody>
             </table>
         </div>
+        
     </div>
 </div>
 {% endblock %}

@@ -1,52 +1,92 @@
-from flask import Blueprint,Flask, render_template, request, redirect, url_for, jsonify, session, flash
-from flask_wtf.csrf import CSRFProtect
-from config import DevelopmentConfig
-from datetime import datetime
-from models.models import (
-    db,
-    Usuario,
-    Cliente,
-    Insumo,
-    Proveedor,
-    InsumosProveedor,
-    PagoProveedor,
-    Receta,
-    RecetaInsumos,
-    Galleta,
-    Produccion,
-    Pedido,
-    DetallePedido,
-    Venta,
-    Merma,
-    CorteVentas,
-    PresentacionGalleta
-)
-
+from flask import Blueprint, render_template, request, redirect, url_for, flash
+from models.models import db, Galleta,Produccion, PresentacionGalleta, EstatusProduccion
+from datetime import datetime, date
 
 produccion_bp = Blueprint('produccion', __name__)
 
-#PRODUCCION
-# 🔹 Mostrar todas las galletas con sus presentaciones
 @produccion_bp.route("/produccion")
 def produccion():
     galletas = Galleta.query.all()
-    presentaciones = {g.id: PresentacionGalleta.query.filter_by(idGalleta=g.id).all() for g in galletas}
-    return render_template("Produccion/inicioProduccion.html", galletas=galletas, presentaciones=presentaciones)
+    presentaciones = PresentacionGalleta.query.all()
+    
+  
+    alertas = db.session.query(
+        EstatusProduccion,
+        PresentacionGalleta.tipoPresentacion
+    ).join(
+        PresentacionGalleta, EstatusProduccion.idPresentacion == PresentacionGalleta.id
+    ).all()
 
-# 🔹 Filtrar solo por piezas
+ 
+    today = date.today()
+
+   
+    producciones_hoy = Produccion.query.filter(
+        Produccion.fechaProduccion == today
+    ).all()
+
+    return render_template(
+        "Produccion/inicioProduccion.html", 
+        galletas=galletas, 
+        presentaciones=presentaciones, 
+        alertas=alertas,
+        producciones_hoy=producciones_hoy,
+        today=today.strftime('%Y-%m-%d')
+    )
+
+
 @produccion_bp.route("/piezas")
 def piezas():
     presentaciones = PresentacionGalleta.query.filter_by(tipoPresentacion="piezas").all()
     return render_template("Produccion/inicioProduccion.html", presentaciones=presentaciones, filtro="piezas")
 
-# 🔹 Filtrar solo por gramaje
 @produccion_bp.route("/gramaje")
 def gramaje():
     presentaciones = PresentacionGalleta.query.filter_by(tipoPresentacion="gramos").all()
-    return render_template("Produccion/inicioProduccion.html", presentaciones=presentaciones, filtro="gramaje")
+    alertas = db.session.query(
+        EstatusProduccion,
+        PresentacionGalleta.tipoPresentacion
+    ).join(
+        PresentacionGalleta, EstatusProduccion.idPresentacion == PresentacionGalleta.id
+    ).all()
+    return render_template("Produccion/inicioProduccion.html", presentaciones=presentaciones, alertas=alertas, filtro="gramaje")
 
-# 🔹 Filtrar solo por paquete (1kg y 700g)
-@produccion_bp.route("/paquete")
-def paquete():
-    presentaciones = PresentacionGalleta.query.filter(PresentacionGalleta.tipoPresentacion.in_(["1kg", "700g"])).all()
-    return render_template("Produccion/inicioProduccion.html", presentaciones=presentaciones, filtro="paquete")
+@produccion_bp.route("/paquete1")
+def paquete1():
+    presentaciones = PresentacionGalleta.query.filter(PresentacionGalleta.tipoPresentacion.in_(["1kg"])).all()
+    return render_template("Produccion/inicioProduccion.html", presentaciones=presentaciones, filtro="paquete1")
+
+@produccion_bp.route("/paquete2")
+def paquete2():
+    presentaciones = PresentacionGalleta.query.filter(PresentacionGalleta.tipoPresentacion.in_(["700g"])).all()
+    return render_template("Produccion/inicioProduccion.html", presentaciones=presentaciones, filtro="paquete2")
+
+@produccion_bp.route("/iniciar_produccion/<int:presentacion_id>", methods=["POST"])
+def iniciar_produccion(presentacion_id):
+    
+    presentacion = PresentacionGalleta.query.get_or_404(presentacion_id)
+    
+   
+    galleta = presentacion.galleta
+
+   
+    estatus_existente = EstatusProduccion.query.filter_by(idGalleta=galleta.id, idPresentacion=presentacion.id, estatus="En preparacion").first()
+
+    if estatus_existente:
+        flash(f"La producción de {galleta.nombre} ({presentacion.tipoPresentacion}) ya está en proceso.", "warning")
+    else:
+       
+        estatus = EstatusProduccion(
+            idGalleta=galleta.id,
+            nombreGalleta=galleta.nombre,
+            estatus="En preparacion",
+            tiempoEstimado=30,  
+            idPresentacion=presentacion.id 
+        )
+
+        db.session.add(estatus)
+        db.session.commit()
+
+        flash(f"Producción de {galleta.nombre} ({presentacion.tipoPresentacion}) iniciada con éxito.", "success")
+    
+    return redirect(url_for('produccion.produccion'))

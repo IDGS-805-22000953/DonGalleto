@@ -2247,3 +2247,294 @@
 2025-03-29 21:24:08,717 - INFO -  * Debugger PIN: 357-411-700
 2025-03-29 21:26:05,517 - INFO -  * Detected change in 'C:\\Users\\Crepa\\Desktop\\Carpetas\\UTL\\IDGS805\\DonGalleto\\models\\models.py', reloading
 2025-03-29 21:26:05,677 - INFO -  * Restarting with stat
+2025-03-30 14:19:14,483 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2025-03-30 14:19:14,483 - INFO - [33mPress CTRL+C to quit[0m
+2025-03-30 14:19:14,485 - INFO -  * Restarting with stat
+2025-03-30 14:19:19,557 - WARNING -  * Debugger is active!
+2025-03-30 14:19:19,562 - INFO -  * Debugger PIN: 545-067-783
+2025-03-30 14:19:36,953 - INFO - 127.0.0.1 - - [30/Mar/2025 14:19:36] "GET /ventas/ventas HTTP/1.1" 200 -
+2025-03-30 14:19:37,016 - INFO - 127.0.0.1 - - [30/Mar/2025 14:19:37] "GET /static/css/output.css HTTP/1.1" 200 -
+2025-03-30 14:19:37,175 - INFO - 127.0.0.1 - - [30/Mar/2025 14:19:37] "[32mGET /static//9j/4AAQSkZJRgABAQAAAQABAAD//gA7Q1JFQVRPUjogZ2QtanBlZyB2MS4wICh1c2luZyBJSkcgSlBFRyB2ODApLCBxdWFsaXR5ID0gODIK/9sAQwAGBAQFBAQGBQUFBgYGBwkOCQkICAkSDQ0KDhUSFhYVEhQUFxohHBcYHxkUFB0nHR8iIyUlJRYcKSwoJCshJCUk/9sAQwEGBgYJCAkRCQkRJBgUGCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQ HTTP/1.1[0m" 308 -
+2025-03-30 14:19:37,191 - INFO - 127.0.0.1 - - [30/Mar/2025 14:19:37] "[33mGET /static/9j/4AAQSkZJRgABAQAAAQABAAD/gA7Q1JFQVRPUjogZ2QtanBlZyB2MS4wICh1c2luZyBJSkcgSlBFRyB2ODApLCBxdWFsaXR5ID0gODIK/9sAQwAGBAQFBAQGBQUFBgYGBwkOCQkICAkSDQ0KDhUSFhYVEhQUFxohHBcYHxkUFB0nHR8iIyUlJRYcKSwoJCshJCUk/9sAQwEGBgYJCAkRCQkRJBgUGCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQ HTTP/1.1[0m" 404 -
+2025-03-30 14:19:37,273 - INFO - 127.0.0.1 - - [30/Mar/2025 14:19:37] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2025-03-30 14:21:40,433 - INFO -  * Detected change in 'C:\\Users\\Caval\\OneDrive\\Documents\\VSCODES\\DonGalleto\\routes\\ventas\\routes.py', reloading
+2025-03-30 14:21:40,501 - INFO -  * Restarting with stat
+2025-03-30 14:21:45,658 - WARNING -  * Debugger is active!
+2025-03-30 14:21:45,661 - INFO -  * Debugger PIN: 545-067-783
+2025-03-30 14:21:46,722 - INFO -  * Detected change in 'C:\\Users\\Caval\\OneDrive\\Documents\\VSCODES\\DonGalleto\\routes\\ventas\\routes.py', reloading
+2025-03-30 14:21:46,788 - INFO -  * Restarting with stat
+2025-03-30 14:21:51,924 - WARNING -  * Debugger is active!
+2025-03-30 14:21:51,926 - INFO -  * Debugger PIN: 545-067-783
+2025-03-30 14:26:16,246 - INFO -  * Detected change in 'C:\\Users\\Caval\\OneDrive\\Documents\\VSCODES\\DonGalleto\\routes\\ventas\\routes.py', reloading
+2025-03-30 14:26:16,316 - INFO -  * Restarting with stat
+2025-03-30 14:26:21,401 - WARNING -  * Debugger is active!
+2025-03-30 14:26:21,404 - INFO -  * Debugger PIN: 545-067-783
+2025-03-30 14:26:45,937 - INFO -  * Detected change in 'C:\\Users\\Caval\\OneDrive\\Documents\\VSCODES\\DonGalleto\\routes\\ventas\\routes.py', reloading
+2025-03-30 14:26:46,000 - INFO -  * Restarting with stat
+2025-03-30 14:26:51,114 - WARNING -  * Debugger is active!
+2025-03-30 14:26:51,116 - INFO -  * Debugger PIN: 545-067-783
+2025-03-30 14:27:12,591 - INFO -  * Detected change in 'C:\\Users\\Caval\\OneDrive\\Documents\\VSCODES\\DonGalleto\\routes\\ventas\\routes.py', reloading
+2025-03-30 14:27:12,653 - INFO -  * Restarting with stat
+2025-03-30 14:27:17,972 - WARNING -  * Debugger is active!
+2025-03-30 14:27:17,975 - INFO -  * Debugger PIN: 545-067-783
+2025-03-30 14:28:56,252 - INFO - 127.0.0.1 - - [30/Mar/2025 14:28:56] "GET /ventas/ventas HTTP/1.1" 200 -
+2025-03-30 14:28:56,304 - INFO - 127.0.0.1 - - [30/Mar/2025 14:28:56] "[36mGET /static/css/output.css HTTP/1.1[0m" 304 -
+2025-03-30 14:28:56,306 - INFO - 127.0.0.1 - - [30/Mar/2025 14:28:56] "[33mGET /static/9j/4AAQSkZJRgABAQAAAQABAAD/gA7Q1JFQVRPUjogZ2QtanBlZyB2MS4wICh1c2luZyBJSkcgSlBFRyB2ODApLCBxdWFsaXR5ID0gODIK/9sAQwAGBAQFBAQGBQUFBgYGBwkOCQkICAkSDQ0KDhUSFhYVEhQUFxohHBcYHxkUFB0nHR8iIyUlJRYcKSwoJCshJCUk/9sAQwEGBgYJCAkRCQkRJBgUGCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQ HTTP/1.1[0m" 404 -
+2025-03-30 14:30:19,104 - INFO - 127.0.0.1 - - [30/Mar/2025 14:30:19] "GET /ventas/ventas HTTP/1.1" 200 -
+2025-03-30 14:30:19,114 - INFO - 127.0.0.1 - - [30/Mar/2025 14:30:19] "[36mGET /static/css/output.css HTTP/1.1[0m" 304 -
+2025-03-30 14:30:19,128 - INFO - 127.0.0.1 - - [30/Mar/2025 14:30:19] "[33mGET /static/9j/4AAQSkZJRgABAQAAAQABAAD/gA7Q1JFQVRPUjogZ2QtanBlZyB2MS4wICh1c2luZyBJSkcgSlBFRyB2ODApLCBxdWFsaXR5ID0gODIK/9sAQwAGBAQFBAQGBQUFBgYGBwkOCQkICAkSDQ0KDhUSFhYVEhQUFxohHBcYHxkUFB0nHR8iIyUlJRYcKSwoJCshJCUk/9sAQwEGBgYJCAkRCQkRJBgUGCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQ HTTP/1.1[0m" 404 -
+2025-03-30 14:30:21,075 - INFO - 127.0.0.1 - - [30/Mar/2025 14:30:21] "GET /ventas/ventas HTTP/1.1" 200 -
+2025-03-30 14:30:21,085 - INFO - 127.0.0.1 - - [30/Mar/2025 14:30:21] "[36mGET /static/css/output.css HTTP/1.1[0m" 304 -
+2025-03-30 14:30:21,097 - INFO - 127.0.0.1 - - [30/Mar/2025 14:30:21] "[33mGET /static/9j/4AAQSkZJRgABAQAAAQABAAD/gA7Q1JFQVRPUjogZ2QtanBlZyB2MS4wICh1c2luZyBJSkcgSlBFRyB2ODApLCBxdWFsaXR5ID0gODIK/9sAQwAGBAQFBAQGBQUFBgYGBwkOCQkICAkSDQ0KDhUSFhYVEhQUFxohHBcYHxkUFB0nHR8iIyUlJRYcKSwoJCshJCUk/9sAQwEGBgYJCAkRCQkRJBgUGCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQ HTTP/1.1[0m" 404 -
+2025-03-30 14:31:51,982 - INFO - 127.0.0.1 - - [30/Mar/2025 14:31:51] "GET /ventas/ventas HTTP/1.1" 200 -
+2025-03-30 14:31:51,992 - INFO - 127.0.0.1 - - [30/Mar/2025 14:31:51] "[36mGET /static/css/output.css HTTP/1.1[0m" 304 -
+2025-03-30 14:31:51,993 - INFO - 127.0.0.1 - - [30/Mar/2025 14:31:51] "[33mGET /static/9j/4AAQSkZJRgABAQAAAQABAAD/gA7Q1JFQVRPUjogZ2QtanBlZyB2MS4wICh1c2luZyBJSkcgSlBFRyB2ODApLCBxdWFsaXR5ID0gODIK/9sAQwAGBAQFBAQGBQUFBgYGBwkOCQkICAkSDQ0KDhUSFhYVEhQUFxohHBcYHxkUFB0nHR8iIyUlJRYcKSwoJCshJCUk/9sAQwEGBgYJCAkRCQkRJBgUGCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQ HTTP/1.1[0m" 404 -
+2025-03-30 14:34:18,739 - INFO - 127.0.0.1 - - [30/Mar/2025 14:34:18] "[33mPOST /guardar_venta HTTP/1.1[0m" 404 -
+2025-03-30 14:35:54,582 - INFO -  * Detected change in 'C:\\Users\\Caval\\OneDrive\\Documents\\VSCODES\\DonGalleto\\routes\\ventas\\routes.py', reloading
+2025-03-30 14:35:54,656 - INFO -  * Restarting with stat
+2025-03-30 14:35:59,977 - WARNING -  * Debugger is active!
+2025-03-30 14:35:59,979 - INFO -  * Debugger PIN: 545-067-783
+2025-03-30 14:36:00,248 - INFO - 127.0.0.1 - - [30/Mar/2025 14:36:00] "GET /ventas/ventas HTTP/1.1" 200 -
+2025-03-30 14:36:00,301 - INFO - 127.0.0.1 - - [30/Mar/2025 14:36:00] "GET /static/css/output.css HTTP/1.1" 200 -
+2025-03-30 14:36:00,460 - INFO - 127.0.0.1 - - [30/Mar/2025 14:36:00] "[32mGET /static//9j/4AAQSkZJRgABAQAAAQABAAD//gA7Q1JFQVRPUjogZ2QtanBlZyB2MS4wICh1c2luZyBJSkcgSlBFRyB2ODApLCBxdWFsaXR5ID0gODIK/9sAQwAGBAQFBAQGBQUFBgYGBwkOCQkICAkSDQ0KDhUSFhYVEhQUFxohHBcYHxkUFB0nHR8iIyUlJRYcKSwoJCshJCUk/9sAQwEGBgYJCAkRCQkRJBgUGCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQ HTTP/1.1[0m" 308 -
+2025-03-30 14:36:00,486 - INFO - 127.0.0.1 - - [30/Mar/2025 14:36:00] "[33mGET /static/9j/4AAQSkZJRgABAQAAAQABAAD/gA7Q1JFQVRPUjogZ2QtanBlZyB2MS4wICh1c2luZyBJSkcgSlBFRyB2ODApLCBxdWFsaXR5ID0gODIK/9sAQwAGBAQFBAQGBQUFBgYGBwkOCQkICAkSDQ0KDhUSFhYVEhQUFxohHBcYHxkUFB0nHR8iIyUlJRYcKSwoJCshJCUk/9sAQwEGBgYJCAkRCQkRJBgUGCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQ HTTP/1.1[0m" 404 -
+2025-03-30 14:36:00,600 - INFO - 127.0.0.1 - - [30/Mar/2025 14:36:00] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2025-03-30 14:36:05,842 - INFO - 127.0.0.1 - - [30/Mar/2025 14:36:05] "[33mPOST /guardar_venta HTTP/1.1[0m" 404 -
+2025-03-30 14:36:18,344 - INFO - 127.0.0.1 - - [30/Mar/2025 14:36:18] "GET /ventas/ventas HTTP/1.1" 200 -
+2025-03-30 14:36:18,372 - INFO - 127.0.0.1 - - [30/Mar/2025 14:36:18] "GET /static/css/output.css HTTP/1.1" 200 -
+2025-03-30 14:36:18,374 - INFO - 127.0.0.1 - - [30/Mar/2025 14:36:18] "[32mGET /static//9j/4AAQSkZJRgABAQAAAQABAAD//gA7Q1JFQVRPUjogZ2QtanBlZyB2MS4wICh1c2luZyBJSkcgSlBFRyB2ODApLCBxdWFsaXR5ID0gODIK/9sAQwAGBAQFBAQGBQUFBgYGBwkOCQkICAkSDQ0KDhUSFhYVEhQUFxohHBcYHxkUFB0nHR8iIyUlJRYcKSwoJCshJCUk/9sAQwEGBgYJCAkRCQkRJBgUGCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQ HTTP/1.1[0m" 308 -
+2025-03-30 14:36:18,392 - INFO - 127.0.0.1 - - [30/Mar/2025 14:36:18] "[33mGET /static/9j/4AAQSkZJRgABAQAAAQABAAD/gA7Q1JFQVRPUjogZ2QtanBlZyB2MS4wICh1c2luZyBJSkcgSlBFRyB2ODApLCBxdWFsaXR5ID0gODIK/9sAQwAGBAQFBAQGBQUFBgYGBwkOCQkICAkSDQ0KDhUSFhYVEhQUFxohHBcYHxkUFB0nHR8iIyUlJRYcKSwoJCshJCUk/9sAQwEGBgYJCAkRCQkRJBgUGCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQ HTTP/1.1[0m" 404 -
+2025-03-30 14:36:18,567 - INFO - 127.0.0.1 - - [30/Mar/2025 14:36:18] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2025-03-30 14:36:26,945 - INFO - 127.0.0.1 - - [30/Mar/2025 14:36:26] "[33mPOST /guardar_venta HTTP/1.1[0m" 404 -
+2025-03-30 14:40:07,484 - INFO - 127.0.0.1 - - [30/Mar/2025 14:40:07] "GET /ventas/ventas HTTP/1.1" 200 -
+2025-03-30 14:40:07,507 - INFO - 127.0.0.1 - - [30/Mar/2025 14:40:07] "GET /static/css/output.css HTTP/1.1" 200 -
+2025-03-30 14:40:07,507 - INFO - 127.0.0.1 - - [30/Mar/2025 14:40:07] "[32mGET /static//9j/4AAQSkZJRgABAQAAAQABAAD//gA7Q1JFQVRPUjogZ2QtanBlZyB2MS4wICh1c2luZyBJSkcgSlBFRyB2ODApLCBxdWFsaXR5ID0gODIK/9sAQwAGBAQFBAQGBQUFBgYGBwkOCQkICAkSDQ0KDhUSFhYVEhQUFxohHBcYHxkUFB0nHR8iIyUlJRYcKSwoJCshJCUk/9sAQwEGBgYJCAkRCQkRJBgUGCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQ HTTP/1.1[0m" 308 -
+2025-03-30 14:40:07,678 - INFO - 127.0.0.1 - - [30/Mar/2025 14:40:07] "[33mGET /static/9j/4AAQSkZJRgABAQAAAQABAAD/gA7Q1JFQVRPUjogZ2QtanBlZyB2MS4wICh1c2luZyBJSkcgSlBFRyB2ODApLCBxdWFsaXR5ID0gODIK/9sAQwAGBAQFBAQGBQUFBgYGBwkOCQkICAkSDQ0KDhUSFhYVEhQUFxohHBcYHxkUFB0nHR8iIyUlJRYcKSwoJCshJCUk/9sAQwEGBgYJCAkRCQkRJBgUGCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQ HTTP/1.1[0m" 404 -
+2025-03-30 14:40:07,808 - INFO - 127.0.0.1 - - [30/Mar/2025 14:40:07] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2025-03-30 14:40:14,892 - INFO - The CSRF token is missing.
+2025-03-30 14:40:14,892 - INFO - 127.0.0.1 - - [30/Mar/2025 14:40:14] "[31m[1mPOST /ventas/guardar_venta HTTP/1.1[0m" 400 -
+2025-03-30 14:41:51,000 - INFO - 127.0.0.1 - - [30/Mar/2025 14:41:51] "GET /ventas/ventas HTTP/1.1" 200 -
+2025-03-30 14:41:51,026 - INFO - 127.0.0.1 - - [30/Mar/2025 14:41:51] "GET /static/css/output.css HTTP/1.1" 200 -
+2025-03-30 14:41:51,027 - INFO - 127.0.0.1 - - [30/Mar/2025 14:41:51] "[32mGET /static//9j/4AAQSkZJRgABAQAAAQABAAD//gA7Q1JFQVRPUjogZ2QtanBlZyB2MS4wICh1c2luZyBJSkcgSlBFRyB2ODApLCBxdWFsaXR5ID0gODIK/9sAQwAGBAQFBAQGBQUFBgYGBwkOCQkICAkSDQ0KDhUSFhYVEhQUFxohHBcYHxkUFB0nHR8iIyUlJRYcKSwoJCshJCUk/9sAQwEGBgYJCAkRCQkRJBgUGCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQ HTTP/1.1[0m" 308 -
+2025-03-30 14:41:51,197 - INFO - 127.0.0.1 - - [30/Mar/2025 14:41:51] "[33mGET /static/9j/4AAQSkZJRgABAQAAAQABAAD/gA7Q1JFQVRPUjogZ2QtanBlZyB2MS4wICh1c2luZyBJSkcgSlBFRyB2ODApLCBxdWFsaXR5ID0gODIK/9sAQwAGBAQFBAQGBQUFBgYGBwkOCQkICAkSDQ0KDhUSFhYVEhQUFxohHBcYHxkUFB0nHR8iIyUlJRYcKSwoJCshJCUk/9sAQwEGBgYJCAkRCQkRJBgUGCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQ HTTP/1.1[0m" 404 -
+2025-03-30 14:41:51,324 - INFO - 127.0.0.1 - - [30/Mar/2025 14:41:51] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2025-03-30 14:41:55,973 - INFO - The CSRF token is missing.
+2025-03-30 14:41:55,974 - INFO - 127.0.0.1 - - [30/Mar/2025 14:41:55] "[31m[1mPOST /ventas/guardar_venta HTTP/1.1[0m" 400 -
+2025-03-30 14:52:39,416 - INFO -  * Detected change in 'C:\\Users\\Caval\\OneDrive\\Documents\\VSCODES\\DonGalleto\\routes\\ventas\\routes.py', reloading
+2025-03-30 14:52:39,509 - INFO -  * Restarting with stat
+2025-03-30 15:01:05,325 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2025-03-30 15:01:05,325 - INFO - [33mPress CTRL+C to quit[0m
+2025-03-30 15:01:05,327 - INFO -  * Restarting with stat
+2025-03-30 15:01:10,692 - WARNING -  * Debugger is active!
+2025-03-30 15:01:10,695 - INFO -  * Debugger PIN: 545-067-783
+2025-03-30 15:01:11,035 - INFO - 127.0.0.1 - - [30/Mar/2025 15:01:11] "GET /ventas/ventas HTTP/1.1" 200 -
+2025-03-30 15:01:11,085 - INFO - 127.0.0.1 - - [30/Mar/2025 15:01:11] "GET /static/css/output.css HTTP/1.1" 200 -
+2025-03-30 15:01:11,371 - INFO - 127.0.0.1 - - [30/Mar/2025 15:01:11] "[32mGET /static//img/lemon-drops.jpg HTTP/1.1[0m" 308 -
+2025-03-30 15:01:11,372 - INFO - 127.0.0.1 - - [30/Mar/2025 15:01:11] "[32mGET /static//img/butter-cookies.jpg HTTP/1.1[0m" 308 -
+2025-03-30 15:01:11,374 - INFO - 127.0.0.1 - - [30/Mar/2025 15:01:11] "[32mGET /static//img/avena-pasas.jpg HTTP/1.1[0m" 308 -
+2025-03-30 15:01:11,374 - INFO - 127.0.0.1 - - [30/Mar/2025 15:01:11] "[32mGET /static//9j/4AAQSkZJRgABAQAAAQABAAD//gA7Q1JFQVRPUjogZ2QtanBlZyB2MS4wICh1c2luZyBJSkcgSlBFRyB2ODApLCBxdWFsaXR5ID0gODIK/9sAQwAGBAQFBAQGBQUFBgYGBwkOCQkICAkSDQ0KDhUSFhYVEhQUFxohHBcYHxkUFB0nHR8iIyUlJRYcKSwoJCshJCUk/9sAQwEGBgYJCAkRCQkRJBgUGCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQ HTTP/1.1[0m" 308 -
+2025-03-30 15:01:11,378 - INFO - 127.0.0.1 - - [30/Mar/2025 15:01:11] "[33mGET /static/img/lemon-drops.jpg HTTP/1.1[0m" 404 -
+2025-03-30 15:01:11,379 - INFO - 127.0.0.1 - - [30/Mar/2025 15:01:11] "[33mGET /static/img/butter-cookies.jpg HTTP/1.1[0m" 404 -
+2025-03-30 15:01:11,382 - INFO - 127.0.0.1 - - [30/Mar/2025 15:01:11] "[33mGET /static/img/avena-pasas.jpg HTTP/1.1[0m" 404 -
+2025-03-30 15:01:11,385 - INFO - 127.0.0.1 - - [30/Mar/2025 15:01:11] "[33mGET /static/9j/4AAQSkZJRgABAQAAAQABAAD/gA7Q1JFQVRPUjogZ2QtanBlZyB2MS4wICh1c2luZyBJSkcgSlBFRyB2ODApLCBxdWFsaXR5ID0gODIK/9sAQwAGBAQFBAQGBQUFBgYGBwkOCQkICAkSDQ0KDhUSFhYVEhQUFxohHBcYHxkUFB0nHR8iIyUlJRYcKSwoJCshJCUk/9sAQwEGBgYJCAkRCQkRJBgUGCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQ HTTP/1.1[0m" 404 -
+2025-03-30 15:01:11,393 - INFO - 127.0.0.1 - - [30/Mar/2025 15:01:11] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2025-03-30 15:02:08,252 - INFO - The CSRF token is missing.
+2025-03-30 15:02:08,252 - INFO - 127.0.0.1 - - [30/Mar/2025 15:02:08] "[31m[1mPOST /ventas/agregar_al_carrito HTTP/1.1[0m" 400 -
+2025-03-30 15:02:08,293 - INFO - 127.0.0.1 - - [30/Mar/2025 15:02:08] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2025-03-30 15:03:17,452 - INFO - The CSRF token is missing.
+2025-03-30 15:03:17,452 - INFO - 127.0.0.1 - - [30/Mar/2025 15:03:17] "[31m[1mPOST /ventas/agregar_al_carrito HTTP/1.1[0m" 400 -
+2025-03-30 15:03:17,480 - INFO - 127.0.0.1 - - [30/Mar/2025 15:03:17] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2025-03-30 15:03:22,772 - INFO - 127.0.0.1 - - [30/Mar/2025 15:03:22] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2025-03-30 15:03:25,133 - INFO - The CSRF token is missing.
+2025-03-30 15:03:25,133 - INFO - 127.0.0.1 - - [30/Mar/2025 15:03:25] "[31m[1mPOST /ventas/agregar_al_carrito HTTP/1.1[0m" 400 -
+2025-03-30 15:03:25,165 - INFO - 127.0.0.1 - - [30/Mar/2025 15:03:25] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2025-03-30 15:03:26,808 - INFO - 127.0.0.1 - - [30/Mar/2025 15:03:26] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2025-03-30 15:03:47,194 - INFO - The CSRF token is missing.
+2025-03-30 15:03:47,195 - INFO - 127.0.0.1 - - [30/Mar/2025 15:03:47] "[31m[1mPOST /ventas/agregar_al_carrito HTTP/1.1[0m" 400 -
+2025-03-30 15:03:47,227 - INFO - 127.0.0.1 - - [30/Mar/2025 15:03:47] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2025-03-30 15:05:43,320 - INFO -  * Detected change in 'C:\\Users\\Caval\\OneDrive\\Documents\\VSCODES\\DonGalleto\\app.py', reloading
+2025-03-30 15:05:43,419 - INFO -  * Restarting with stat
+2025-03-30 15:05:48,571 - WARNING -  * Debugger is active!
+2025-03-30 15:05:48,573 - INFO -  * Debugger PIN: 545-067-783
+2025-03-30 15:09:42,693 - INFO -  * Detected change in 'C:\\Users\\Caval\\OneDrive\\Documents\\VSCODES\\DonGalleto\\forms.py', reloading
+2025-03-30 15:09:42,766 - INFO -  * Restarting with stat
+2025-03-30 15:09:47,963 - WARNING -  * Debugger is active!
+2025-03-30 15:09:47,968 - INFO -  * Debugger PIN: 545-067-783
+2025-03-30 15:20:48,299 - INFO -  * Detected change in 'C:\\Users\\Caval\\OneDrive\\Documents\\VSCODES\\DonGalleto\\routes\\ventas\\routes.py', reloading
+2025-03-30 15:20:48,394 - INFO -  * Restarting with stat
+2025-03-30 15:20:53,689 - WARNING -  * Debugger is active!
+2025-03-30 15:20:53,692 - INFO -  * Debugger PIN: 545-067-783
+2025-03-30 15:21:16,284 - INFO - The CSRF token is missing.
+2025-03-30 15:21:16,284 - INFO - 127.0.0.1 - - [30/Mar/2025 15:21:16] "[31m[1mPOST /ventas/agregar_al_carrito HTTP/1.1[0m" 400 -
+2025-03-30 15:21:16,312 - INFO - 127.0.0.1 - - [30/Mar/2025 15:21:16] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2025-03-30 15:21:21,022 - INFO - 127.0.0.1 - - [30/Mar/2025 15:21:21] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2025-03-30 15:21:26,169 - INFO - The CSRF token is missing.
+2025-03-30 15:21:26,169 - INFO - 127.0.0.1 - - [30/Mar/2025 15:21:26] "[31m[1mPOST /ventas/agregar_al_carrito HTTP/1.1[0m" 400 -
+2025-03-30 15:21:26,206 - INFO - 127.0.0.1 - - [30/Mar/2025 15:21:26] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2025-03-30 15:21:27,727 - INFO - 127.0.0.1 - - [30/Mar/2025 15:21:27] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2025-03-30 15:21:29,196 - INFO - 127.0.0.1 - - [30/Mar/2025 15:21:29] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2025-03-30 15:23:33,076 - INFO -  * Detected change in 'C:\\Users\\Caval\\OneDrive\\Documents\\VSCODES\\DonGalleto\\app.py', reloading
+2025-03-30 15:23:33,149 - INFO -  * Restarting with stat
+2025-03-30 15:23:38,319 - WARNING -  * Debugger is active!
+2025-03-30 15:23:38,322 - INFO -  * Debugger PIN: 545-067-783
+2025-03-30 15:23:39,385 - INFO -  * Detected change in 'C:\\Users\\Caval\\OneDrive\\Documents\\VSCODES\\DonGalleto\\app.py', reloading
+2025-03-30 15:23:39,448 - INFO -  * Restarting with stat
+2025-03-30 15:23:44,600 - WARNING -  * Debugger is active!
+2025-03-30 15:23:44,602 - INFO -  * Debugger PIN: 545-067-783
+2025-03-30 15:24:39,761 - INFO -  * Detected change in 'C:\\Users\\Caval\\OneDrive\\Documents\\VSCODES\\DonGalleto\\app.py', reloading
+2025-03-30 15:24:39,826 - INFO -  * Restarting with stat
+2025-03-30 15:24:45,173 - WARNING -  * Debugger is active!
+2025-03-30 15:24:45,176 - INFO -  * Debugger PIN: 545-067-783
+2025-03-30 15:24:50,323 - INFO -  * Detected change in 'C:\\Users\\Caval\\OneDrive\\Documents\\VSCODES\\DonGalleto\\app.py', reloading
+2025-03-30 15:24:50,389 - INFO -  * Restarting with stat
+2025-03-30 15:24:55,494 - WARNING -  * Debugger is active!
+2025-03-30 15:24:55,496 - INFO -  * Debugger PIN: 545-067-783
+2025-03-30 15:25:10,860 - INFO -  * Detected change in 'C:\\Users\\Caval\\OneDrive\\Documents\\VSCODES\\DonGalleto\\app.py', reloading
+2025-03-30 15:25:10,926 - INFO -  * Restarting with stat
+2025-03-30 15:25:16,127 - WARNING -  * Debugger is active!
+2025-03-30 15:25:16,130 - INFO -  * Debugger PIN: 545-067-783
+2025-03-30 15:25:26,372 - INFO -  * Detected change in 'C:\\Users\\Caval\\OneDrive\\Documents\\VSCODES\\DonGalleto\\forms.py', reloading
+2025-03-30 15:25:26,469 - INFO -  * Restarting with stat
+2025-03-30 15:25:31,808 - WARNING -  * Debugger is active!
+2025-03-30 15:25:31,811 - INFO -  * Debugger PIN: 545-067-783
+2025-03-30 15:25:43,615 - INFO - 127.0.0.1 - - [30/Mar/2025 15:25:43] "GET /ventas/ventas HTTP/1.1" 200 -
+2025-03-30 15:25:43,671 - INFO - 127.0.0.1 - - [30/Mar/2025 15:25:43] "GET /static/css/output.css HTTP/1.1" 200 -
+2025-03-30 15:25:43,761 - INFO - 127.0.0.1 - - [30/Mar/2025 15:25:43] "[32mGET /static//img/lemon-drops.jpg HTTP/1.1[0m" 308 -
+2025-03-30 15:25:43,762 - INFO - 127.0.0.1 - - [30/Mar/2025 15:25:43] "[32mGET /static//img/butter-cookies.jpg HTTP/1.1[0m" 308 -
+2025-03-30 15:25:43,764 - INFO - 127.0.0.1 - - [30/Mar/2025 15:25:43] "[32mGET /static//img/avena-pasas.jpg HTTP/1.1[0m" 308 -
+2025-03-30 15:25:43,766 - INFO - 127.0.0.1 - - [30/Mar/2025 15:25:43] "[32mGET /static//9j/4AAQSkZJRgABAQAAAQABAAD//gA7Q1JFQVRPUjogZ2QtanBlZyB2MS4wICh1c2luZyBJSkcgSlBFRyB2ODApLCBxdWFsaXR5ID0gODIK/9sAQwAGBAQFBAQGBQUFBgYGBwkOCQkICAkSDQ0KDhUSFhYVEhQUFxohHBcYHxkUFB0nHR8iIyUlJRYcKSwoJCshJCUk/9sAQwEGBgYJCAkRCQkRJBgUGCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQ HTTP/1.1[0m" 308 -
+2025-03-30 15:25:43,782 - INFO - 127.0.0.1 - - [30/Mar/2025 15:25:43] "[33mGET /static/img/lemon-drops.jpg HTTP/1.1[0m" 404 -
+2025-03-30 15:25:43,784 - INFO - 127.0.0.1 - - [30/Mar/2025 15:25:43] "[33mGET /static/img/butter-cookies.jpg HTTP/1.1[0m" 404 -
+2025-03-30 15:25:43,787 - INFO - 127.0.0.1 - - [30/Mar/2025 15:25:43] "[33mGET /static/img/avena-pasas.jpg HTTP/1.1[0m" 404 -
+2025-03-30 15:25:43,793 - INFO - 127.0.0.1 - - [30/Mar/2025 15:25:43] "[33mGET /static/9j/4AAQSkZJRgABAQAAAQABAAD/gA7Q1JFQVRPUjogZ2QtanBlZyB2MS4wICh1c2luZyBJSkcgSlBFRyB2ODApLCBxdWFsaXR5ID0gODIK/9sAQwAGBAQFBAQGBQUFBgYGBwkOCQkICAkSDQ0KDhUSFhYVEhQUFxohHBcYHxkUFB0nHR8iIyUlJRYcKSwoJCshJCUk/9sAQwEGBgYJCAkRCQkRJBgUGCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQ HTTP/1.1[0m" 404 -
+2025-03-30 15:25:43,805 - INFO - 127.0.0.1 - - [30/Mar/2025 15:25:43] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2025-03-30 15:25:47,594 - INFO - 127.0.0.1 - - [30/Mar/2025 15:25:47] "[32mPOST /ventas/agregar_al_carrito HTTP/1.1[0m" 302 -
+2025-03-30 15:25:47,854 - INFO - 127.0.0.1 - - [30/Mar/2025 15:25:47] "[35m[1mGET /ventas/ventas HTTP/1.1[0m" 500 -
+2025-03-30 15:25:47,883 - INFO - 127.0.0.1 - - [30/Mar/2025 15:25:47] "GET /ventas/ventas?__debugger__=yes&cmd=resource&f=style.css HTTP/1.1" 200 -
+2025-03-30 15:25:47,910 - INFO - 127.0.0.1 - - [30/Mar/2025 15:25:47] "GET /ventas/ventas?__debugger__=yes&cmd=resource&f=debugger.js HTTP/1.1" 200 -
+2025-03-30 15:25:47,934 - INFO - 127.0.0.1 - - [30/Mar/2025 15:25:47] "GET /ventas/ventas?__debugger__=yes&cmd=resource&f=console.png HTTP/1.1" 200 -
+2025-03-30 15:25:47,937 - INFO - 127.0.0.1 - - [30/Mar/2025 15:25:47] "GET /ventas/ventas?__debugger__=yes&cmd=resource&f=console.png HTTP/1.1" 200 -
+2025-03-30 15:26:57,538 - INFO -  * Detected change in 'C:\\Users\\Caval\\OneDrive\\Documents\\VSCODES\\DonGalleto\\routes\\ventas\\routes.py', reloading
+2025-03-30 15:26:57,618 - INFO -  * Restarting with stat
+2025-03-30 15:27:02,838 - WARNING -  * Debugger is active!
+2025-03-30 15:27:02,841 - INFO -  * Debugger PIN: 545-067-783
+2025-03-30 15:27:49,837 - INFO - 127.0.0.1 - - [30/Mar/2025 15:27:49] "GET /ventas/ventas HTTP/1.1" 200 -
+2025-03-30 15:27:49,884 - INFO - 127.0.0.1 - - [30/Mar/2025 15:27:49] "GET /static/css/output.css HTTP/1.1" 200 -
+2025-03-30 15:27:49,975 - INFO - 127.0.0.1 - - [30/Mar/2025 15:27:49] "[32mGET /static//img/lemon-drops.jpg HTTP/1.1[0m" 308 -
+2025-03-30 15:27:49,976 - INFO - 127.0.0.1 - - [30/Mar/2025 15:27:49] "[32mGET /static//img/butter-cookies.jpg HTTP/1.1[0m" 308 -
+2025-03-30 15:27:49,977 - INFO - 127.0.0.1 - - [30/Mar/2025 15:27:49] "[32mGET /static//img/avena-pasas.jpg HTTP/1.1[0m" 308 -
+2025-03-30 15:27:49,979 - INFO - 127.0.0.1 - - [30/Mar/2025 15:27:49] "[32mGET /static//9j/4AAQSkZJRgABAQAAAQABAAD//gA7Q1JFQVRPUjogZ2QtanBlZyB2MS4wICh1c2luZyBJSkcgSlBFRyB2ODApLCBxdWFsaXR5ID0gODIK/9sAQwAGBAQFBAQGBQUFBgYGBwkOCQkICAkSDQ0KDhUSFhYVEhQUFxohHBcYHxkUFB0nHR8iIyUlJRYcKSwoJCshJCUk/9sAQwEGBgYJCAkRCQkRJBgUGCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQ HTTP/1.1[0m" 308 -
+2025-03-30 15:27:49,982 - INFO - 127.0.0.1 - - [30/Mar/2025 15:27:49] "[33mGET /static/img/lemon-drops.jpg HTTP/1.1[0m" 404 -
+2025-03-30 15:27:49,987 - INFO - 127.0.0.1 - - [30/Mar/2025 15:27:49] "[33mGET /static/img/butter-cookies.jpg HTTP/1.1[0m" 404 -
+2025-03-30 15:27:49,994 - INFO - 127.0.0.1 - - [30/Mar/2025 15:27:49] "[33mGET /static/img/avena-pasas.jpg HTTP/1.1[0m" 404 -
+2025-03-30 15:27:49,994 - INFO - 127.0.0.1 - - [30/Mar/2025 15:27:49] "[33mGET /static/9j/4AAQSkZJRgABAQAAAQABAAD/gA7Q1JFQVRPUjogZ2QtanBlZyB2MS4wICh1c2luZyBJSkcgSlBFRyB2ODApLCBxdWFsaXR5ID0gODIK/9sAQwAGBAQFBAQGBQUFBgYGBwkOCQkICAkSDQ0KDhUSFhYVEhQUFxohHBcYHxkUFB0nHR8iIyUlJRYcKSwoJCshJCUk/9sAQwEGBgYJCAkRCQkRJBgUGCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQ HTTP/1.1[0m" 404 -
+2025-03-30 15:27:50,001 - INFO - 127.0.0.1 - - [30/Mar/2025 15:27:50] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2025-03-30 15:30:02,111 - INFO - 127.0.0.1 - - [30/Mar/2025 15:30:02] "[32mPOST /ventas/agregar_al_carrito HTTP/1.1[0m" 302 -
+2025-03-30 15:30:02,326 - INFO - 127.0.0.1 - - [30/Mar/2025 15:30:02] "GET /ventas/ventas HTTP/1.1" 200 -
+2025-03-30 15:30:02,340 - INFO - 127.0.0.1 - - [30/Mar/2025 15:30:02] "[36mGET /static/css/output.css HTTP/1.1[0m" 304 -
+2025-03-30 15:30:02,351 - INFO - 127.0.0.1 - - [30/Mar/2025 15:30:02] "[33mGET /static/img/butter-cookies.jpg HTTP/1.1[0m" 404 -
+2025-03-30 15:30:02,352 - INFO - 127.0.0.1 - - [30/Mar/2025 15:30:02] "[33mGET /static/img/avena-pasas.jpg HTTP/1.1[0m" 404 -
+2025-03-30 15:30:02,353 - INFO - 127.0.0.1 - - [30/Mar/2025 15:30:02] "[33mGET /static/9j/4AAQSkZJRgABAQAAAQABAAD/gA7Q1JFQVRPUjogZ2QtanBlZyB2MS4wICh1c2luZyBJSkcgSlBFRyB2ODApLCBxdWFsaXR5ID0gODIK/9sAQwAGBAQFBAQGBQUFBgYGBwkOCQkICAkSDQ0KDhUSFhYVEhQUFxohHBcYHxkUFB0nHR8iIyUlJRYcKSwoJCshJCUk/9sAQwEGBgYJCAkRCQkRJBgUGCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQ HTTP/1.1[0m" 404 -
+2025-03-30 15:30:02,353 - INFO - 127.0.0.1 - - [30/Mar/2025 15:30:02] "[33mGET /static/img/lemon-drops.jpg HTTP/1.1[0m" 404 -
+2025-03-30 15:30:13,651 - INFO - 127.0.0.1 - - [30/Mar/2025 15:30:13] "[32mPOST /ventas/agregar_al_carrito HTTP/1.1[0m" 302 -
+2025-03-30 15:30:13,879 - INFO - 127.0.0.1 - - [30/Mar/2025 15:30:13] "GET /ventas/ventas HTTP/1.1" 200 -
+2025-03-30 15:30:13,894 - INFO - 127.0.0.1 - - [30/Mar/2025 15:30:13] "[36mGET /static/css/output.css HTTP/1.1[0m" 304 -
+2025-03-30 15:30:13,906 - INFO - 127.0.0.1 - - [30/Mar/2025 15:30:13] "[33mGET /static/9j/4AAQSkZJRgABAQAAAQABAAD/gA7Q1JFQVRPUjogZ2QtanBlZyB2MS4wICh1c2luZyBJSkcgSlBFRyB2ODApLCBxdWFsaXR5ID0gODIK/9sAQwAGBAQFBAQGBQUFBgYGBwkOCQkICAkSDQ0KDhUSFhYVEhQUFxohHBcYHxkUFB0nHR8iIyUlJRYcKSwoJCshJCUk/9sAQwEGBgYJCAkRCQkRJBgUGCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQ HTTP/1.1[0m" 404 -
+2025-03-30 15:30:13,906 - INFO - 127.0.0.1 - - [30/Mar/2025 15:30:13] "[33mGET /static/img/butter-cookies.jpg HTTP/1.1[0m" 404 -
+2025-03-30 15:30:13,907 - INFO - 127.0.0.1 - - [30/Mar/2025 15:30:13] "[33mGET /static/img/avena-pasas.jpg HTTP/1.1[0m" 404 -
+2025-03-30 15:30:13,907 - INFO - 127.0.0.1 - - [30/Mar/2025 15:30:13] "[33mGET /static/img/lemon-drops.jpg HTTP/1.1[0m" 404 -
+2025-03-30 15:30:17,266 - INFO - 127.0.0.1 - - [30/Mar/2025 15:30:17] "[32mPOST /ventas/procesar_pedido HTTP/1.1[0m" 302 -
+2025-03-30 15:30:17,479 - INFO - 127.0.0.1 - - [30/Mar/2025 15:30:17] "GET /ventas/ventas HTTP/1.1" 200 -
+2025-03-30 15:30:17,495 - INFO - 127.0.0.1 - - [30/Mar/2025 15:30:17] "[36mGET /static/css/output.css HTTP/1.1[0m" 304 -
+2025-03-30 15:30:17,508 - INFO - 127.0.0.1 - - [30/Mar/2025 15:30:17] "[33mGET /static/9j/4AAQSkZJRgABAQAAAQABAAD/gA7Q1JFQVRPUjogZ2QtanBlZyB2MS4wICh1c2luZyBJSkcgSlBFRyB2ODApLCBxdWFsaXR5ID0gODIK/9sAQwAGBAQFBAQGBQUFBgYGBwkOCQkICAkSDQ0KDhUSFhYVEhQUFxohHBcYHxkUFB0nHR8iIyUlJRYcKSwoJCshJCUk/9sAQwEGBgYJCAkRCQkRJBgUGCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQ HTTP/1.1[0m" 404 -
+2025-03-30 15:30:17,508 - INFO - 127.0.0.1 - - [30/Mar/2025 15:30:17] "[33mGET /static/img/avena-pasas.jpg HTTP/1.1[0m" 404 -
+2025-03-30 15:30:17,509 - INFO - 127.0.0.1 - - [30/Mar/2025 15:30:17] "[33mGET /static/img/butter-cookies.jpg HTTP/1.1[0m" 404 -
+2025-03-30 15:30:17,511 - INFO - 127.0.0.1 - - [30/Mar/2025 15:30:17] "[33mGET /static/img/lemon-drops.jpg HTTP/1.1[0m" 404 -
+2025-03-30 15:31:00,831 - INFO - 127.0.0.1 - - [30/Mar/2025 15:31:00] "[32mPOST /ventas/agregar_al_carrito HTTP/1.1[0m" 302 -
+2025-03-30 15:31:01,045 - INFO - 127.0.0.1 - - [30/Mar/2025 15:31:01] "GET /ventas/ventas HTTP/1.1" 200 -
+2025-03-30 15:31:01,059 - INFO - 127.0.0.1 - - [30/Mar/2025 15:31:01] "[36mGET /static/css/output.css HTTP/1.1[0m" 304 -
+2025-03-30 15:31:01,070 - INFO - 127.0.0.1 - - [30/Mar/2025 15:31:01] "[33mGET /static/9j/4AAQSkZJRgABAQAAAQABAAD/gA7Q1JFQVRPUjogZ2QtanBlZyB2MS4wICh1c2luZyBJSkcgSlBFRyB2ODApLCBxdWFsaXR5ID0gODIK/9sAQwAGBAQFBAQGBQUFBgYGBwkOCQkICAkSDQ0KDhUSFhYVEhQUFxohHBcYHxkUFB0nHR8iIyUlJRYcKSwoJCshJCUk/9sAQwEGBgYJCAkRCQkRJBgUGCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQ HTTP/1.1[0m" 404 -
+2025-03-30 15:31:01,071 - INFO - 127.0.0.1 - - [30/Mar/2025 15:31:01] "[33mGET /static/img/avena-pasas.jpg HTTP/1.1[0m" 404 -
+2025-03-30 15:31:01,073 - INFO - 127.0.0.1 - - [30/Mar/2025 15:31:01] "[33mGET /static/img/butter-cookies.jpg HTTP/1.1[0m" 404 -
+2025-03-30 15:31:01,073 - INFO - 127.0.0.1 - - [30/Mar/2025 15:31:01] "[33mGET /static/img/lemon-drops.jpg HTTP/1.1[0m" 404 -
+2025-03-30 15:31:04,255 - INFO - 127.0.0.1 - - [30/Mar/2025 15:31:04] "[32mPOST /ventas/procesar_pedido HTTP/1.1[0m" 302 -
+2025-03-30 15:31:04,463 - INFO - 127.0.0.1 - - [30/Mar/2025 15:31:04] "GET /ventas/ventas HTTP/1.1" 200 -
+2025-03-30 15:31:04,477 - INFO - 127.0.0.1 - - [30/Mar/2025 15:31:04] "[36mGET /static/css/output.css HTTP/1.1[0m" 304 -
+2025-03-30 15:31:04,488 - INFO - 127.0.0.1 - - [30/Mar/2025 15:31:04] "[33mGET /static/9j/4AAQSkZJRgABAQAAAQABAAD/gA7Q1JFQVRPUjogZ2QtanBlZyB2MS4wICh1c2luZyBJSkcgSlBFRyB2ODApLCBxdWFsaXR5ID0gODIK/9sAQwAGBAQFBAQGBQUFBgYGBwkOCQkICAkSDQ0KDhUSFhYVEhQUFxohHBcYHxkUFB0nHR8iIyUlJRYcKSwoJCshJCUk/9sAQwEGBgYJCAkRCQkRJBgUGCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQ HTTP/1.1[0m" 404 -
+2025-03-30 15:31:04,489 - INFO - 127.0.0.1 - - [30/Mar/2025 15:31:04] "[33mGET /static/img/avena-pasas.jpg HTTP/1.1[0m" 404 -
+2025-03-30 15:31:04,489 - INFO - 127.0.0.1 - - [30/Mar/2025 15:31:04] "[33mGET /static/img/butter-cookies.jpg HTTP/1.1[0m" 404 -
+2025-03-30 15:31:04,489 - INFO - 127.0.0.1 - - [30/Mar/2025 15:31:04] "[33mGET /static/img/lemon-drops.jpg HTTP/1.1[0m" 404 -
+2025-03-30 15:31:56,782 - INFO - 127.0.0.1 - - [30/Mar/2025 15:31:56] "[32mPOST /ventas/agregar_al_carrito HTTP/1.1[0m" 302 -
+2025-03-30 15:31:56,991 - INFO - 127.0.0.1 - - [30/Mar/2025 15:31:56] "GET /ventas/ventas HTTP/1.1" 200 -
+2025-03-30 15:31:57,008 - INFO - 127.0.0.1 - - [30/Mar/2025 15:31:57] "[36mGET /static/css/output.css HTTP/1.1[0m" 304 -
+2025-03-30 15:31:57,020 - INFO - 127.0.0.1 - - [30/Mar/2025 15:31:57] "[33mGET /static/9j/4AAQSkZJRgABAQAAAQABAAD/gA7Q1JFQVRPUjogZ2QtanBlZyB2MS4wICh1c2luZyBJSkcgSlBFRyB2ODApLCBxdWFsaXR5ID0gODIK/9sAQwAGBAQFBAQGBQUFBgYGBwkOCQkICAkSDQ0KDhUSFhYVEhQUFxohHBcYHxkUFB0nHR8iIyUlJRYcKSwoJCshJCUk/9sAQwEGBgYJCAkRCQkRJBgUGCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQ HTTP/1.1[0m" 404 -
+2025-03-30 15:31:57,021 - INFO - 127.0.0.1 - - [30/Mar/2025 15:31:57] "[33mGET /static/img/avena-pasas.jpg HTTP/1.1[0m" 404 -
+2025-03-30 15:31:57,023 - INFO - 127.0.0.1 - - [30/Mar/2025 15:31:57] "[33mGET /static/img/butter-cookies.jpg HTTP/1.1[0m" 404 -
+2025-03-30 15:31:57,023 - INFO - 127.0.0.1 - - [30/Mar/2025 15:31:57] "[33mGET /static/img/lemon-drops.jpg HTTP/1.1[0m" 404 -
+2025-03-30 15:32:03,934 - INFO - 127.0.0.1 - - [30/Mar/2025 15:32:03] "[32mPOST /ventas/procesar_pedido HTTP/1.1[0m" 302 -
+2025-03-30 15:32:04,142 - INFO - 127.0.0.1 - - [30/Mar/2025 15:32:04] "GET /ventas/ventas HTTP/1.1" 200 -
+2025-03-30 15:32:04,156 - INFO - 127.0.0.1 - - [30/Mar/2025 15:32:04] "[36mGET /static/css/output.css HTTP/1.1[0m" 304 -
+2025-03-30 15:32:04,169 - INFO - 127.0.0.1 - - [30/Mar/2025 15:32:04] "[33mGET /static/9j/4AAQSkZJRgABAQAAAQABAAD/gA7Q1JFQVRPUjogZ2QtanBlZyB2MS4wICh1c2luZyBJSkcgSlBFRyB2ODApLCBxdWFsaXR5ID0gODIK/9sAQwAGBAQFBAQGBQUFBgYGBwkOCQkICAkSDQ0KDhUSFhYVEhQUFxohHBcYHxkUFB0nHR8iIyUlJRYcKSwoJCshJCUk/9sAQwEGBgYJCAkRCQkRJBgUGCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQ HTTP/1.1[0m" 404 -
+2025-03-30 15:32:04,170 - INFO - 127.0.0.1 - - [30/Mar/2025 15:32:04] "[33mGET /static/img/lemon-drops.jpg HTTP/1.1[0m" 404 -
+2025-03-30 15:32:04,170 - INFO - 127.0.0.1 - - [30/Mar/2025 15:32:04] "[33mGET /static/img/butter-cookies.jpg HTTP/1.1[0m" 404 -
+2025-03-30 15:32:04,170 - INFO - 127.0.0.1 - - [30/Mar/2025 15:32:04] "[33mGET /static/img/avena-pasas.jpg HTTP/1.1[0m" 404 -
+2025-03-30 15:44:27,461 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2025-03-30 15:44:27,462 - INFO - [33mPress CTRL+C to quit[0m
+2025-03-30 15:44:27,463 - INFO -  * Restarting with stat
+2025-03-30 15:44:32,536 - WARNING -  * Debugger is active!
+2025-03-30 15:44:32,538 - INFO -  * Debugger PIN: 545-067-783
+2025-03-30 15:45:09,904 - INFO - 127.0.0.1 - - [30/Mar/2025 15:45:09] "[35m[1mGET /ventas/ventas HTTP/1.1[0m" 500 -
+2025-03-30 15:45:09,963 - INFO - 127.0.0.1 - - [30/Mar/2025 15:45:09] "[36mGET /ventas/ventas?__debugger__=yes&cmd=resource&f=debugger.js HTTP/1.1[0m" 304 -
+2025-03-30 15:45:09,964 - INFO - 127.0.0.1 - - [30/Mar/2025 15:45:09] "[36mGET /ventas/ventas?__debugger__=yes&cmd=resource&f=style.css HTTP/1.1[0m" 304 -
+2025-03-30 15:45:09,975 - INFO - 127.0.0.1 - - [30/Mar/2025 15:45:09] "[36mGET /ventas/ventas?__debugger__=yes&cmd=resource&f=console.png HTTP/1.1[0m" 304 -
+2025-03-30 15:45:35,169 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2025-03-30 15:45:35,169 - INFO - [33mPress CTRL+C to quit[0m
+2025-03-30 15:45:35,170 - INFO -  * Restarting with stat
+2025-03-30 15:45:40,254 - WARNING -  * Debugger is active!
+2025-03-30 15:45:40,256 - INFO -  * Debugger PIN: 545-067-783
+2025-03-30 15:47:47,727 - INFO -  * Detected change in 'C:\\Users\\Caval\\OneDrive\\Documents\\VSCODES\\DonGalleto\\routes\\ventas\\routes.py', reloading
+2025-03-30 15:47:47,779 - INFO -  * Restarting with stat
+2025-03-30 15:47:52,920 - WARNING -  * Debugger is active!
+2025-03-30 15:47:52,923 - INFO -  * Debugger PIN: 545-067-783
+2025-03-30 15:48:54,866 - INFO - 127.0.0.1 - - [30/Mar/2025 15:48:54] "GET / HTTP/1.1" 200 -
+2025-03-30 15:48:54,938 - INFO - 127.0.0.1 - - [30/Mar/2025 15:48:54] "GET /static/css/output.css HTTP/1.1" 200 -
+2025-03-30 15:48:55,116 - INFO - 127.0.0.1 - - [30/Mar/2025 15:48:55] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2025-03-30 15:49:02,239 - INFO - 127.0.0.1 - - [30/Mar/2025 15:49:02] "GET /ventas/ventas HTTP/1.1" 200 -
+2025-03-30 15:49:02,254 - INFO - 127.0.0.1 - - [30/Mar/2025 15:49:02] "[36mGET /static/css/output.css HTTP/1.1[0m" 304 -
+2025-03-30 17:10:00,578 - INFO - 127.0.0.1 - - [30/Mar/2025 17:10:00] "[35m[1mGET /ventas/ventas HTTP/1.1[0m" 500 -
+2025-03-30 17:10:00,591 - INFO - 127.0.0.1 - - [30/Mar/2025 17:10:00] "GET /ventas/ventas?__debugger__=yes&cmd=resource&f=style.css HTTP/1.1" 200 -
+2025-03-30 17:10:00,592 - INFO - 127.0.0.1 - - [30/Mar/2025 17:10:00] "GET /ventas/ventas?__debugger__=yes&cmd=resource&f=debugger.js HTTP/1.1" 200 -
+2025-03-30 17:10:00,599 - INFO - 127.0.0.1 - - [30/Mar/2025 17:10:00] "GET /ventas/ventas?__debugger__=yes&cmd=resource&f=console.png HTTP/1.1" 200 -
+2025-03-30 17:10:00,603 - INFO - 127.0.0.1 - - [30/Mar/2025 17:10:00] "[36mGET /ventas/ventas?__debugger__=yes&cmd=resource&f=console.png HTTP/1.1[0m" 304 -
+2025-03-30 17:10:02,494 - INFO - 127.0.0.1 - - [30/Mar/2025 17:10:02] "GET /ventas/ventas HTTP/1.1" 200 -
+2025-03-30 17:10:02,504 - INFO - 127.0.0.1 - - [30/Mar/2025 17:10:02] "[36mGET /static/css/output.css HTTP/1.1[0m" 304 -
+2025-03-30 17:10:02,505 - INFO - 127.0.0.1 - - [30/Mar/2025 17:10:02] "[32mGET /static//9j/4AAQSkZJRgABAQAAAQABAAD//gA7Q1JFQVRPUjogZ2QtanBlZyB2MS4wICh1c2luZyBJSkcgSlBFRyB2ODApLCBxdWFsaXR5ID0gODIK/9sAQwAGBAQFBAQGBQUFBgYGBwkOCQkICAkSDQ0KDhUSFhYVEhQUFxohHBcYHxkUFB0nHR8iIyUlJRYcKSwoJCshJCUk/9sAQwEGBgYJCAkRCQkRJBgUGCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQ HTTP/1.1[0m" 308 -
+2025-03-30 17:10:02,520 - INFO - 127.0.0.1 - - [30/Mar/2025 17:10:02] "[33mGET /static/9j/4AAQSkZJRgABAQAAAQABAAD/gA7Q1JFQVRPUjogZ2QtanBlZyB2MS4wICh1c2luZyBJSkcgSlBFRyB2ODApLCBxdWFsaXR5ID0gODIK/9sAQwAGBAQFBAQGBQUFBgYGBwkOCQkICAkSDQ0KDhUSFhYVEhQUFxohHBcYHxkUFB0nHR8iIyUlJRYcKSwoJCshJCUk/9sAQwEGBgYJCAkRCQkRJBgUGCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQ HTTP/1.1[0m" 404 -
+2025-03-30 17:10:07,004 - INFO - 127.0.0.1 - - [30/Mar/2025 17:10:07] "GET /ventas/ventas HTTP/1.1" 200 -
+2025-03-30 17:10:07,013 - INFO - 127.0.0.1 - - [30/Mar/2025 17:10:07] "[36mGET /static/css/output.css HTTP/1.1[0m" 304 -
+2025-03-30 17:10:07,027 - INFO - 127.0.0.1 - - [30/Mar/2025 17:10:07] "[33mGET /static/9j/4AAQSkZJRgABAQAAAQABAAD/gA7Q1JFQVRPUjogZ2QtanBlZyB2MS4wICh1c2luZyBJSkcgSlBFRyB2ODApLCBxdWFsaXR5ID0gODIK/9sAQwAGBAQFBAQGBQUFBgYGBwkOCQkICAkSDQ0KDhUSFhYVEhQUFxohHBcYHxkUFB0nHR8iIyUlJRYcKSwoJCshJCUk/9sAQwEGBgYJCAkRCQkRJBgUGCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQ HTTP/1.1[0m" 404 -
+2025-03-30 17:10:24,440 - INFO - 127.0.0.1 - - [30/Mar/2025 17:10:24] "[32mPOST /ventas/agregar_al_carrito HTTP/1.1[0m" 302 -
+2025-03-30 17:10:24,645 - INFO - 127.0.0.1 - - [30/Mar/2025 17:10:24] "GET /ventas/ventas HTTP/1.1" 200 -
+2025-03-30 17:10:24,658 - INFO - 127.0.0.1 - - [30/Mar/2025 17:10:24] "[36mGET /static/css/output.css HTTP/1.1[0m" 304 -
+2025-03-30 17:10:24,671 - INFO - 127.0.0.1 - - [30/Mar/2025 17:10:24] "[33mGET /static/9j/4AAQSkZJRgABAQAAAQABAAD/gA7Q1JFQVRPUjogZ2QtanBlZyB2MS4wICh1c2luZyBJSkcgSlBFRyB2ODApLCBxdWFsaXR5ID0gODIK/9sAQwAGBAQFBAQGBQUFBgYGBwkOCQkICAkSDQ0KDhUSFhYVEhQUFxohHBcYHxkUFB0nHR8iIyUlJRYcKSwoJCshJCUk/9sAQwEGBgYJCAkRCQkRJBgUGCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQ HTTP/1.1[0m" 404 -
+2025-03-30 17:19:31,783 - INFO -  * Detected change in 'C:\\Users\\Caval\\OneDrive\\Documents\\VSCODES\\DonGalleto\\models\\models.py', reloading
+2025-03-30 17:19:31,898 - INFO -  * Restarting with stat
+2025-03-30 17:23:40,293 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2025-03-30 17:23:40,293 - INFO - [33mPress CTRL+C to quit[0m
+2025-03-30 17:23:40,295 - INFO -  * Restarting with stat
+2025-03-30 17:23:45,558 - WARNING -  * Debugger is active!
+2025-03-30 17:23:45,562 - INFO -  * Debugger PIN: 545-067-783
+2025-03-30 17:23:45,842 - INFO - 127.0.0.1 - - [30/Mar/2025 17:23:45] "GET /ventas/ventas HTTP/1.1" 200 -
+2025-03-30 17:23:45,877 - INFO - 127.0.0.1 - - [30/Mar/2025 17:23:45] "GET /static/css/output.css HTTP/1.1" 200 -
+2025-03-30 17:23:45,879 - INFO - 127.0.0.1 - - [30/Mar/2025 17:23:45] "[33mGET /static/9j/4AAQSkZJRgABAQAAAQABAAD/gA7Q1JFQVRPUjogZ2QtanBlZyB2MS4wICh1c2luZyBJSkcgSlBFRyB2ODApLCBxdWFsaXR5ID0gODIK/9sAQwAGBAQFBAQGBQUFBgYGBwkOCQkICAkSDQ0KDhUSFhYVEhQUFxohHBcYHxkUFB0nHR8iIyUlJRYcKSwoJCshJCUk/9sAQwEGBgYJCAkRCQkRJBgUGCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQ HTTP/1.1[0m" 404 -
+2025-03-30 17:36:31,846 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2025-03-30 17:36:31,846 - INFO - [33mPress CTRL+C to quit[0m
+2025-03-30 17:36:31,847 - INFO -  * Restarting with stat
+2025-03-30 17:36:37,189 - WARNING -  * Debugger is active!
+2025-03-30 17:36:37,191 - INFO -  * Debugger PIN: 545-067-783

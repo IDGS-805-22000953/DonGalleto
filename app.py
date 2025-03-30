@@ -1,28 +1,12 @@
-from flask import Flask, render_template, request, redirect, url_for, jsonify, session, flash
+from flask import Flask, render_template
 from flask_wtf.csrf import CSRFProtect
 from config import DevelopmentConfig
-from sqlalchemy.exc import SAWarning
-from datetime import datetime
-from flask_login import LoginManager
 import logging
 from models.models import (
-    db,
-    Usuario,
-    Cliente,
-    Insumo,
-    Proveedor,
-    InsumosProveedor,
-    PagoProveedor,
-    Receta,
-    RecetaInsumos,
-    Galleta,
-    Produccion,
-    Pedido,
-    DetallePedido,
-    Venta,
-    Merma,
-    CorteVentas
+    db
 )
+
+
 from routes.clientes.routes import clientes_bp
 from routes.cocina.routes import cocina_bp
 from routes.produccion.routes import produccion_bp
@@ -36,9 +20,8 @@ logging.basicConfig(
 )
 app = Flask(__name__)
 app.config.from_object(DevelopmentConfig)
-
-app.secret_key = "supersecretkey"  # Asegurar sesiones
 csrf = CSRFProtect(app)
+
 db.init_app(app)
 
 

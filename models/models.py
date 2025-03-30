@@ -1,5 +1,7 @@
 from flask_sqlalchemy import SQLAlchemy
 import datetime
+from datetime import date
+
 
 db = SQLAlchemy()
 
@@ -12,7 +14,7 @@ class Usuario(db.Model):
     correo = db.Column(db.String(50), unique=True, nullable=False)
     contrasenia = db.Column(db.String(255), nullable=False)
     rol = db.Column(db.Enum('admin', 'empleado'), nullable=False)
-    fechaRegistro = db.Column(db.TIMESTAMP, server_default=db.func.current_timestamp())
+    fechaRegistro = db.Column(db.Date, default=datetime.date.today)
 
 class Cliente(db.Model):
     __tablename__ = 'clientes'
@@ -21,13 +23,13 @@ class Cliente(db.Model):
     apellidoPa = db.Column(db.String(50), nullable=False)
     correo = db.Column(db.String(50), unique=True, nullable=False)
     contrasenia = db.Column(db.String(255), nullable=False)
-    fechaRegistro = db.Column(db.TIMESTAMP, server_default=db.func.current_timestamp())
+    fechaRegistro = db.Column(db.Date, default=datetime.date.today)
 
 class Insumo(db.Model):
     __tablename__ = 'insumos'
     id = db.Column(db.Integer, primary_key=True)
     nombre = db.Column(db.String(50), nullable=False)
-    fechaIngreso = db.Column(db.Date, server_default=db.func.current_date())
+    fechaIngreso = db.Column(db.TIMESTAMP, server_default=db.func.current_timestamp())
     fechaCaducidad = db.Column(db.Date, nullable=False)
     cantidad = db.Column(db.Numeric(10, 2), nullable=False)
     unidadMedida = db.Column(db.String(20))
@@ -101,7 +103,7 @@ class Produccion(db.Model):
     idReceta = db.Column(db.Integer, db.ForeignKey('recetas.id'), nullable=False)
     idGalleta = db.Column(db.Integer, db.ForeignKey('galletas.id'), nullable=False)  
     cantidadProducida = db.Column(db.Integer, nullable=False)
-    fechaProduccion = db.Column(db.Date, server_default=db.func.current_date())  
+    fechaProduccion = db.Column(db.Date, default=date.today) 
 
     # Relación con Galleta
     galleta = db.relationship('Galleta', backref='producciones')
@@ -109,28 +111,28 @@ class Produccion(db.Model):
 
 
 
-class Pedido(db.Model):
+""" class Pedido(db.Model):
     __tablename__ = 'pedidos'
     id = db.Column(db.Integer, primary_key=True)
     idCliente = db.Column(db.Integer, db.ForeignKey('clientes.id'), nullable=False)
     fechaPedido = db.Column(db.TIMESTAMP, server_default=db.func.current_timestamp())
     fechaRecogida = db.Column(db.Date, nullable=False)
-    estado = db.Column(db.Enum('pendiente', 'listo', 'entregado', 'cancelado'), nullable=False, default='pendiente')
+    estado = db.Column(db.Enum('pendiente', 'listo', 'entregado', 'cancelado'), nullable=False, default='pendiente') """
 
-class DetallePedido(db.Model):
+""" class DetallePedido(db.Model):
     __tablename__ = 'detallePedido'
     id = db.Column(db.Integer, primary_key=True)
     idPedido = db.Column(db.Integer, db.ForeignKey('pedidos.id'), nullable=False)
     idPresentacion = db.Column(db.Integer, db.ForeignKey('presentacionesGalletas.id'), nullable=False)
     cantidad = db.Column(db.Integer, nullable=False)
-    subtotal = db.Column(db.Numeric(10, 2), nullable=False)
+    subtotal = db.Column(db.Numeric(10, 2), nullable=False) """
 
-class Venta(db.Model):
+""" class Venta(db.Model):
     __tablename__ = 'ventas'
     id = db.Column(db.Integer, primary_key=True)
     idPedido = db.Column(db.Integer, db.ForeignKey('pedidos.id'), nullable=False)
     fechaVenta = db.Column(db.TIMESTAMP, server_default=db.func.current_timestamp())
-    total = db.Column(db.Numeric(10, 2), nullable=False)
+    total = db.Column(db.Numeric(10, 2), nullable=False) """
 
 class Merma(db.Model):
     __tablename__ = 'merma'
@@ -140,13 +142,55 @@ class Merma(db.Model):
     idGalleta = db.Column(db.Integer, db.ForeignKey('galletas.id'))
     cantidad = db.Column(db.Numeric(10, 2))
     motivo = db.Column(db.Text, nullable=False)
-    fechaRegistro = db.Column(db.TIMESTAMP, server_default=db.func.current_timestamp())
+    fechaRegistro = db.Column(db.Date, default=datetime.date.today)
 
-class CorteVentas(db.Model):
+    galleta = db.relationship('Galleta', backref='mermas')
+    insumo = db.relationship('Insumo', backref='mermas')
+
+class VentaLocal(db.Model):
+    __tablename__ = 'ventaslocal'
+    id = db.Column(db.Integer, primary_key=True)
+    id_usuario = db.Column(db.Integer, db.ForeignKey('usuarios.id'), nullable=False)
+    id_presentacion = db.Column(db.Integer, db.ForeignKey('presentacionesGalletas.id'), nullable=False)
+    cantidadcomprado = db.Column(db.Integer, nullable=False)
+    subtotal = db.Column(db.Numeric(10, 2), nullable=False)
+    total = db.Column(db.Numeric(10, 2), nullable=False)
+    fechaCompra = db.Column(db.TIMESTAMP, server_default=db.func.current_timestamp())
+
+    usuario = db.relationship('Usuario', backref='ventas_local')
+    presentacion = db.relationship('PresentacionGalleta', backref='ventas_local')
+
+class PedidosCliente(db.Model):
+    __tablename__ = 'pedidoscliente'
+    id = db.Column(db.Integer, primary_key=True)
+    idCliente = db.Column(db.Integer, db.ForeignKey('clientes.id'), nullable=False)
+    id_presentacion = db.Column(db.Integer, db.ForeignKey('presentacionesGalletas.id'), nullable=False)
+    cantidadcomprado = db.Column(db.Integer, nullable=False)
+    subtotal = db.Column(db.Numeric(10, 2), nullable=False)
+    total = db.Column(db.Numeric(10, 2), nullable=False)
+    fechaPedido = db.Column(db.TIMESTAMP, server_default=db.func.current_timestamp())
+    fechaRecogida = db.Column(db.DateTime)
+    estatus = db.Column(db.Enum('pendiente', 'completado', 'cancelado'), nullable=False, default='pendiente')
+
+    cliente = db.relationship('Cliente', backref='pedidos')
+    presentacion = db.relationship('PresentacionGalleta', backref='pedidos')
+
+class Venta(db.Model):
+    __tablename__ = 'ventas'
+    id = db.Column(db.Integer, primary_key=True)
+    id_usuario = db.Column(db.Integer, db.ForeignKey('usuarios.id'))
+    id_cliente = db.Column(db.Integer, db.ForeignKey('clientes.id'))
+    fechacompra = db.Column(db.TIMESTAMP, server_default=db.func.current_timestamp())
+    total = db.Column(db.Numeric(10, 2), nullable=False)
+
+    usuario = db.relationship('Usuario', backref='ventas')
+    cliente = db.relationship('Cliente', backref='ventas')
+    
+""" class CorteVentas(db.Model):
     __tablename__ = 'corteVentas'
     id = db.Column(db.Integer, primary_key=True)
     fecha = db.Column(db.Date, nullable=False)
-    totalVentas = db.Column(db.Numeric(10, 2), nullable=False)
+    totalVentas = db.Column(db.Numeric(10, 2), nullable=False) """
     
 class EstatusProduccion(db.Model):
     __tablename__ = 'estatusProduccion'
@@ -159,5 +203,4 @@ class EstatusProduccion(db.Model):
     idPresentacion = db.Column(db.Integer, db.ForeignKey('presentacionesGalletas.id'), nullable=False)  
 
     galleta = db.relationship('Galleta', backref='estatusProduccion', lazy=True)
-    presentacion = db.relationship('PresentacionGalleta', backref='estatusProduccion', lazy=True) 
-
+    presentacion = db.relationship('PresentacionGalleta', backref='estatusProduccion', lazy=True)

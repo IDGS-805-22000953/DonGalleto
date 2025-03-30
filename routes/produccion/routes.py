@@ -1,6 +1,24 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
-from models.models import db, Galleta,Produccion, PresentacionGalleta, EstatusProduccion
 from datetime import datetime, date
+from models.models import (
+    db,
+    Usuario,
+    Cliente,
+    Insumo,
+    Proveedor,
+    InsumosProveedor,
+    PagoProveedor,
+    Receta,
+    RecetaInsumos,
+    Galleta,
+    Produccion,
+    Venta,
+    Merma,
+    PresentacionGalleta,
+    VentaLocal
+
+)
+
 
 produccion_bp = Blueprint('produccion', __name__)
 

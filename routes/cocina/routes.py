@@ -11,20 +11,19 @@ from models.models import (
     Cliente,
     Insumo,
     Proveedor,
-    Produccion,
     InsumosProveedor,
     PagoProveedor,
     Receta,
     RecetaInsumos,
     Galleta,
-    Pedido,
-    DetallePedido,
+    Produccion,
     Venta,
     Merma,
-    CorteVentas,
     PresentacionGalleta,
-    EstatusProduccion
+    VentaLocal
+
 )
+
 
 
 cocina_bp = Blueprint('cocina', __name__)

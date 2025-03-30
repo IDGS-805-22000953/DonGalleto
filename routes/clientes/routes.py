@@ -14,12 +14,13 @@ from models.models import (
     RecetaInsumos,
     Galleta,
     Produccion,
-    Pedido,
-    DetallePedido,
     Venta,
     Merma,
-    CorteVentas
+    PresentacionGalleta,
+    VentaLocal
+
 )
+
 
 
 

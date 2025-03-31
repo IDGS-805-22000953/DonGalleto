@@ -74,15 +74,22 @@ def agregar_al_carrito():
 
 @ventas_bp.route('/eliminar_del_carrito/<int:index>', methods=['POST'])
 def eliminar_del_carrito(index):
-    if 'carrito' in session and len(session['carrito']) > index:
-        session['carrito'].pop(index)
-        session['carrito_subtotal'] = sum(item['subtotal'] for item in session['carrito'])
-        session['carrito_iva'] = session['carrito_subtotal'] * 0.16
-        session['carrito_total'] = session['carrito_subtotal'] + session['carrito_iva']
+    if 'carrito' in session and 0 <= index < len(session['carrito']):
+        item_eliminado = session['carrito'].pop(index)
+        
+        # Recalcular los totales
+        subtotal = sum(item['subtotal'] for item in session['carrito'])
+        iva = subtotal * 0.16
+        total = subtotal + iva
+        
+        session['carrito_subtotal'] = subtotal
+        session['carrito_iva'] = iva
+        session['carrito_total'] = total
         session.modified = True
-        flash('Producto eliminado del carrito', 'success')
+        
+        flash(f'Producto {item_eliminado["presentacion_texto"]} eliminado del carrito', 'success')
     else:
-        flash('Error al eliminar el producto', 'error')
+        flash('Error al eliminar el producto: índice no válido', 'error')
 
     return redirect(url_for('ventas.ventas'))
 
@@ -95,6 +102,22 @@ def procesar_pedido():
     
     try:
         for item in session['carrito']:
+            # Obtener la presentación de galleta
+            presentacion = PresentacionGalleta.query.get(item['presentacion_id'])
+            
+            if not presentacion:
+                flash(f'Presentación de galleta no encontrada (ID: {item["presentacion_id"]})', 'error')
+                return redirect(url_for('ventas.ventas'))
+                
+            # Verificar que haya suficiente stock
+            if presentacion.stock < item['cantidad']:
+                flash(f'No hay suficiente stock para {presentacion.tipoPresentacion}', 'error')
+                return redirect(url_for('ventas.ventas'))
+            
+            # Restar el stock
+            presentacion.stock -= item['cantidad']
+            
+            # Crear la venta
             nueva_venta = VentaLocal(
                 id_usuario=1,
                 id_presentacion=item['presentacion_id'],

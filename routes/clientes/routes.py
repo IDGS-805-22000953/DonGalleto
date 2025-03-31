@@ -160,3 +160,4 @@ def procesar_pedido():
         flash(f'Error al procesar el pedido: {str(e)}', 'error')
         return redirect(url_for('clientes.clientes'))
 
+

@@ -16,6 +16,7 @@ from models.models import (
     Produccion,
     Merma
 
+
 )
 
 
@@ -78,9 +79,12 @@ def index():
 @app.route("/central")
 def central():
     return render_template("Central/inicioCentral.html")
+
 @app.route("/cliente")
 def cliente():
     return render_template("Cliente/pedidosOnline.html")
+
+
 
 
 @app.errorhandler(404)

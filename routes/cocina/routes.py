@@ -20,7 +20,8 @@ from models.models import (
     Venta,
     Merma,
     PresentacionGalleta,
-    VentaLocal
+    VentaLocal,
+    EstatusProduccion
 
 )
 

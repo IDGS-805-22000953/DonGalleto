@@ -15,11 +15,10 @@ from models.models import (
     Venta,
     Merma,
     PresentacionGalleta,
-    VentaLocal
+    VentaLocal,
+    EstatusProduccion
 
 )
-
-
 produccion_bp = Blueprint('produccion', __name__)
 
 @produccion_bp.route("/produccion")

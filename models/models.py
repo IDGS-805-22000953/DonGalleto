@@ -109,31 +109,6 @@ class Produccion(db.Model):
     galleta = db.relationship('Galleta', backref='producciones')
     receta = db.relationship('Receta', backref='producciones')
 
-
-
-""" class Pedido(db.Model):
-    __tablename__ = 'pedidos'
-    id = db.Column(db.Integer, primary_key=True)
-    idCliente = db.Column(db.Integer, db.ForeignKey('clientes.id'), nullable=False)
-    fechaPedido = db.Column(db.TIMESTAMP, server_default=db.func.current_timestamp())
-    fechaRecogida = db.Column(db.Date, nullable=False)
-    estado = db.Column(db.Enum('pendiente', 'listo', 'entregado', 'cancelado'), nullable=False, default='pendiente') """
-
-""" class DetallePedido(db.Model):
-    __tablename__ = 'detallePedido'
-    id = db.Column(db.Integer, primary_key=True)
-    idPedido = db.Column(db.Integer, db.ForeignKey('pedidos.id'), nullable=False)
-    idPresentacion = db.Column(db.Integer, db.ForeignKey('presentacionesGalletas.id'), nullable=False)
-    cantidad = db.Column(db.Integer, nullable=False)
-    subtotal = db.Column(db.Numeric(10, 2), nullable=False) """
-
-""" class Venta(db.Model):
-    __tablename__ = 'ventas'
-    id = db.Column(db.Integer, primary_key=True)
-    idPedido = db.Column(db.Integer, db.ForeignKey('pedidos.id'), nullable=False)
-    fechaVenta = db.Column(db.TIMESTAMP, server_default=db.func.current_timestamp())
-    total = db.Column(db.Numeric(10, 2), nullable=False) """
-
 class Merma(db.Model):
     __tablename__ = 'merma'
     id = db.Column(db.Integer, primary_key=True)
@@ -185,12 +160,7 @@ class Venta(db.Model):
 
     usuario = db.relationship('Usuario', backref='ventas')
     cliente = db.relationship('Cliente', backref='ventas')
-    
-""" class CorteVentas(db.Model):
-    __tablename__ = 'corteVentas'
-    id = db.Column(db.Integer, primary_key=True)
-    fecha = db.Column(db.Date, nullable=False)
-    totalVentas = db.Column(db.Numeric(10, 2), nullable=False) """
+
     
 class EstatusProduccion(db.Model):
     __tablename__ = 'estatusProduccion'

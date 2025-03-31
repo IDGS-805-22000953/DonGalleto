@@ -2964,3 +2964,73 @@
 2025-03-30 18:58:21,454 - INFO - 127.0.0.1 - - [30/Mar/2025 18:58:21] "[33mGET /static/img/choco-chip.jpg HTTP/1.1[0m" 404 -
 2025-03-30 18:59:45,589 - INFO -  * Detected change in 'c:\\DonGalleto\\routes\\clientes\\routes.py', reloading
 2025-03-30 18:59:45,868 - INFO -  * Restarting with stat
+2025-03-30 19:26:15,584 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2025-03-30 19:26:15,585 - INFO - [33mPress CTRL+C to quit[0m
+2025-03-30 19:26:15,586 - INFO -  * Restarting with stat
+2025-03-30 19:26:20,957 - WARNING -  * Debugger is active!
+2025-03-30 19:26:20,962 - INFO -  * Debugger PIN: 545-067-783
+2025-03-30 19:26:26,740 - INFO - 127.0.0.1 - - [30/Mar/2025 19:26:26] "GET /cliente/clientes HTTP/1.1" 200 -
+2025-03-30 19:26:26,878 - INFO - 127.0.0.1 - - [30/Mar/2025 19:26:26] "GET /static/css/output.css HTTP/1.1" 200 -
+2025-03-30 19:26:26,974 - INFO - 127.0.0.1 - - [30/Mar/2025 19:26:26] "[32mGET /static//9j/4AAQSkZJRgABAQAAAQABAAD//gA7Q1JFQVRPUjogZ2QtanBlZyB2MS4wICh1c2luZyBJSkcgSlBFRyB2ODApLCBxdWFsaXR5ID0gODIK/9sAQwAGBAQFBAQGBQUFBgYGBwkOCQkICAkSDQ0KDhUSFhYVEhQUFxohHBcYHxkUFB0nHR8iIyUlJRYcKSwoJCshJCUk/9sAQwEGBgYJCAkRCQkRJBgUGCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQ HTTP/1.1[0m" 308 -
+2025-03-30 19:26:26,976 - INFO - 127.0.0.1 - - [30/Mar/2025 19:26:26] "[32mGET /static//img/avena-pasas.jpg HTTP/1.1[0m" 308 -
+2025-03-30 19:26:26,978 - INFO - 127.0.0.1 - - [30/Mar/2025 19:26:26] "[32mGET /static//img/butter-cookies.jpg HTTP/1.1[0m" 308 -
+2025-03-30 19:26:26,980 - INFO - 127.0.0.1 - - [30/Mar/2025 19:26:26] "[32mGET /static//img/lemon-drops.jpg HTTP/1.1[0m" 308 -
+2025-03-30 19:26:26,984 - INFO - 127.0.0.1 - - [30/Mar/2025 19:26:26] "[32mGET /static//img/choco-chip.jpg HTTP/1.1[0m" 308 -
+2025-03-30 19:26:27,017 - INFO - 127.0.0.1 - - [30/Mar/2025 19:26:27] "[33mGET /static/9j/4AAQSkZJRgABAQAAAQABAAD/gA7Q1JFQVRPUjogZ2QtanBlZyB2MS4wICh1c2luZyBJSkcgSlBFRyB2ODApLCBxdWFsaXR5ID0gODIK/9sAQwAGBAQFBAQGBQUFBgYGBwkOCQkICAkSDQ0KDhUSFhYVEhQUFxohHBcYHxkUFB0nHR8iIyUlJRYcKSwoJCshJCUk/9sAQwEGBgYJCAkRCQkRJBgUGCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQ HTTP/1.1[0m" 404 -
+2025-03-30 19:26:27,020 - INFO - 127.0.0.1 - - [30/Mar/2025 19:26:27] "[33mGET /static/img/avena-pasas.jpg HTTP/1.1[0m" 404 -
+2025-03-30 19:26:27,024 - INFO - 127.0.0.1 - - [30/Mar/2025 19:26:27] "[33mGET /static/img/butter-cookies.jpg HTTP/1.1[0m" 404 -
+2025-03-30 19:26:27,024 - INFO - 127.0.0.1 - - [30/Mar/2025 19:26:27] "[33mGET /static/img/lemon-drops.jpg HTTP/1.1[0m" 404 -
+2025-03-30 19:26:27,038 - INFO - 127.0.0.1 - - [30/Mar/2025 19:26:27] "[33mGET /static/img/choco-chip.jpg HTTP/1.1[0m" 404 -
+2025-03-30 19:26:27,062 - INFO - 127.0.0.1 - - [30/Mar/2025 19:26:27] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2025-03-30 19:26:43,841 - INFO - 127.0.0.1 - - [30/Mar/2025 19:26:43] "[32mPOST /cliente/procesar_pedido HTTP/1.1[0m" 302 -
+2025-03-30 19:26:44,054 - INFO - 127.0.0.1 - - [30/Mar/2025 19:26:44] "GET /cliente/clientes HTTP/1.1" 200 -
+2025-03-30 19:26:44,089 - INFO - 127.0.0.1 - - [30/Mar/2025 19:26:44] "[36mGET /static/css/output.css HTTP/1.1[0m" 304 -
+2025-03-30 19:26:44,171 - INFO - 127.0.0.1 - - [30/Mar/2025 19:26:44] "[33mGET /static/9j/4AAQSkZJRgABAQAAAQABAAD/gA7Q1JFQVRPUjogZ2QtanBlZyB2MS4wICh1c2luZyBJSkcgSlBFRyB2ODApLCBxdWFsaXR5ID0gODIK/9sAQwAGBAQFBAQGBQUFBgYGBwkOCQkICAkSDQ0KDhUSFhYVEhQUFxohHBcYHxkUFB0nHR8iIyUlJRYcKSwoJCshJCUk/9sAQwEGBgYJCAkRCQkRJBgUGCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQ HTTP/1.1[0m" 404 -
+2025-03-30 19:26:44,172 - INFO - 127.0.0.1 - - [30/Mar/2025 19:26:44] "[33mGET /static/img/avena-pasas.jpg HTTP/1.1[0m" 404 -
+2025-03-30 19:26:44,173 - INFO - 127.0.0.1 - - [30/Mar/2025 19:26:44] "[33mGET /static/img/butter-cookies.jpg HTTP/1.1[0m" 404 -
+2025-03-30 19:26:44,173 - INFO - 127.0.0.1 - - [30/Mar/2025 19:26:44] "[33mGET /static/img/lemon-drops.jpg HTTP/1.1[0m" 404 -
+2025-03-30 19:26:44,175 - INFO - 127.0.0.1 - - [30/Mar/2025 19:26:44] "[33mGET /static/img/choco-chip.jpg HTTP/1.1[0m" 404 -
+2025-03-30 19:26:57,299 - INFO - 127.0.0.1 - - [30/Mar/2025 19:26:57] "[32mPOST /cliente/eliminar_del_carrito/1 HTTP/1.1[0m" 302 -
+2025-03-30 19:26:57,511 - INFO - 127.0.0.1 - - [30/Mar/2025 19:26:57] "GET /cliente/clientes HTTP/1.1" 200 -
+2025-03-30 19:26:57,535 - INFO - 127.0.0.1 - - [30/Mar/2025 19:26:57] "[36mGET /static/css/output.css HTTP/1.1[0m" 304 -
+2025-03-30 19:26:57,594 - INFO - 127.0.0.1 - - [30/Mar/2025 19:26:57] "[33mGET /static/9j/4AAQSkZJRgABAQAAAQABAAD/gA7Q1JFQVRPUjogZ2QtanBlZyB2MS4wICh1c2luZyBJSkcgSlBFRyB2ODApLCBxdWFsaXR5ID0gODIK/9sAQwAGBAQFBAQGBQUFBgYGBwkOCQkICAkSDQ0KDhUSFhYVEhQUFxohHBcYHxkUFB0nHR8iIyUlJRYcKSwoJCshJCUk/9sAQwEGBgYJCAkRCQkRJBgUGCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQ HTTP/1.1[0m" 404 -
+2025-03-30 19:26:57,596 - INFO - 127.0.0.1 - - [30/Mar/2025 19:26:57] "[33mGET /static/img/avena-pasas.jpg HTTP/1.1[0m" 404 -
+2025-03-30 19:26:57,599 - INFO - 127.0.0.1 - - [30/Mar/2025 19:26:57] "[33mGET /static/img/lemon-drops.jpg HTTP/1.1[0m" 404 -
+2025-03-30 19:26:57,600 - INFO - 127.0.0.1 - - [30/Mar/2025 19:26:57] "[33mGET /static/img/butter-cookies.jpg HTTP/1.1[0m" 404 -
+2025-03-30 19:26:57,601 - INFO - 127.0.0.1 - - [30/Mar/2025 19:26:57] "[33mGET /static/img/choco-chip.jpg HTTP/1.1[0m" 404 -
+2025-03-30 19:26:59,186 - INFO - 127.0.0.1 - - [30/Mar/2025 19:26:59] "[32mPOST /cliente/eliminar_del_carrito/0 HTTP/1.1[0m" 302 -
+2025-03-30 19:26:59,400 - INFO - 127.0.0.1 - - [30/Mar/2025 19:26:59] "GET /cliente/clientes HTTP/1.1" 200 -
+2025-03-30 19:26:59,422 - INFO - 127.0.0.1 - - [30/Mar/2025 19:26:59] "[36mGET /static/css/output.css HTTP/1.1[0m" 304 -
+2025-03-30 19:26:59,483 - INFO - 127.0.0.1 - - [30/Mar/2025 19:26:59] "[33mGET /static/9j/4AAQSkZJRgABAQAAAQABAAD/gA7Q1JFQVRPUjogZ2QtanBlZyB2MS4wICh1c2luZyBJSkcgSlBFRyB2ODApLCBxdWFsaXR5ID0gODIK/9sAQwAGBAQFBAQGBQUFBgYGBwkOCQkICAkSDQ0KDhUSFhYVEhQUFxohHBcYHxkUFB0nHR8iIyUlJRYcKSwoJCshJCUk/9sAQwEGBgYJCAkRCQkRJBgUGCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQ HTTP/1.1[0m" 404 -
+2025-03-30 19:26:59,484 - INFO - 127.0.0.1 - - [30/Mar/2025 19:26:59] "[33mGET /static/img/butter-cookies.jpg HTTP/1.1[0m" 404 -
+2025-03-30 19:26:59,486 - INFO - 127.0.0.1 - - [30/Mar/2025 19:26:59] "[33mGET /static/img/lemon-drops.jpg HTTP/1.1[0m" 404 -
+2025-03-30 19:26:59,488 - INFO - 127.0.0.1 - - [30/Mar/2025 19:26:59] "[33mGET /static/img/avena-pasas.jpg HTTP/1.1[0m" 404 -
+2025-03-30 19:26:59,491 - INFO - 127.0.0.1 - - [30/Mar/2025 19:26:59] "[33mGET /static/img/choco-chip.jpg HTTP/1.1[0m" 404 -
+2025-03-30 19:27:00,601 - INFO - 127.0.0.1 - - [30/Mar/2025 19:27:00] "GET /cliente/clientes HTTP/1.1" 200 -
+2025-03-30 19:27:00,616 - INFO - 127.0.0.1 - - [30/Mar/2025 19:27:00] "[36mGET /static/css/output.css HTTP/1.1[0m" 304 -
+2025-03-30 19:27:00,621 - INFO - 127.0.0.1 - - [30/Mar/2025 19:27:00] "[33mGET /static/9j/4AAQSkZJRgABAQAAAQABAAD/gA7Q1JFQVRPUjogZ2QtanBlZyB2MS4wICh1c2luZyBJSkcgSlBFRyB2ODApLCBxdWFsaXR5ID0gODIK/9sAQwAGBAQFBAQGBQUFBgYGBwkOCQkICAkSDQ0KDhUSFhYVEhQUFxohHBcYHxkUFB0nHR8iIyUlJRYcKSwoJCshJCUk/9sAQwEGBgYJCAkRCQkRJBgUGCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQ HTTP/1.1[0m" 404 -
+2025-03-30 19:27:00,622 - INFO - 127.0.0.1 - - [30/Mar/2025 19:27:00] "[33mGET /static/img/avena-pasas.jpg HTTP/1.1[0m" 404 -
+2025-03-30 19:27:00,625 - INFO - 127.0.0.1 - - [30/Mar/2025 19:27:00] "[33mGET /static/img/butter-cookies.jpg HTTP/1.1[0m" 404 -
+2025-03-30 19:27:00,628 - INFO - 127.0.0.1 - - [30/Mar/2025 19:27:00] "[33mGET /static/img/lemon-drops.jpg HTTP/1.1[0m" 404 -
+2025-03-30 19:27:00,630 - INFO - 127.0.0.1 - - [30/Mar/2025 19:27:00] "[33mGET /static/img/choco-chip.jpg HTTP/1.1[0m" 404 -
+2025-03-30 19:27:19,678 - INFO -  * Detected change in 'C:\\Users\\Caval\\OneDrive\\Documents\\VSCODES\\DonGalleto\\routes\\clientes\\routes.py', reloading
+2025-03-30 19:27:19,765 - INFO -  * Restarting with stat
+2025-03-30 19:27:25,404 - WARNING -  * Debugger is active!
+2025-03-30 19:27:25,409 - INFO -  * Debugger PIN: 545-067-783
+2025-03-30 19:27:25,678 - INFO - 127.0.0.1 - - [30/Mar/2025 19:27:25] "[32mPOST /cliente/agregar_al_carrito HTTP/1.1[0m" 302 -
+2025-03-30 19:27:25,916 - INFO - 127.0.0.1 - - [30/Mar/2025 19:27:25] "GET /cliente/clientes HTTP/1.1" 200 -
+2025-03-30 19:27:25,977 - INFO - 127.0.0.1 - - [30/Mar/2025 19:27:25] "[36mGET /static/css/output.css HTTP/1.1[0m" 304 -
+2025-03-30 19:27:26,026 - INFO - 127.0.0.1 - - [30/Mar/2025 19:27:26] "[33mGET /static/9j/4AAQSkZJRgABAQAAAQABAAD/gA7Q1JFQVRPUjogZ2QtanBlZyB2MS4wICh1c2luZyBJSkcgSlBFRyB2ODApLCBxdWFsaXR5ID0gODIK/9sAQwAGBAQFBAQGBQUFBgYGBwkOCQkICAkSDQ0KDhUSFhYVEhQUFxohHBcYHxkUFB0nHR8iIyUlJRYcKSwoJCshJCUk/9sAQwEGBgYJCAkRCQkRJBgUGCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQ HTTP/1.1[0m" 404 -
+2025-03-30 19:27:26,027 - INFO - 127.0.0.1 - - [30/Mar/2025 19:27:26] "[33mGET /static/img/avena-pasas.jpg HTTP/1.1[0m" 404 -
+2025-03-30 19:27:26,031 - INFO - 127.0.0.1 - - [30/Mar/2025 19:27:26] "[33mGET /static/img/lemon-drops.jpg HTTP/1.1[0m" 404 -
+2025-03-30 19:27:26,033 - INFO - 127.0.0.1 - - [30/Mar/2025 19:27:26] "[33mGET /static/img/butter-cookies.jpg HTTP/1.1[0m" 404 -
+2025-03-30 19:27:26,035 - INFO - 127.0.0.1 - - [30/Mar/2025 19:27:26] "[33mGET /static/img/choco-chip.jpg HTTP/1.1[0m" 404 -
+2025-03-30 19:27:34,315 - INFO - 127.0.0.1 - - [30/Mar/2025 19:27:34] "[32mPOST /cliente/procesar_pedido HTTP/1.1[0m" 302 -
+2025-03-30 19:27:34,530 - INFO - 127.0.0.1 - - [30/Mar/2025 19:27:34] "GET /cliente/clientes HTTP/1.1" 200 -
+2025-03-30 19:27:34,550 - INFO - 127.0.0.1 - - [30/Mar/2025 19:27:34] "[36mGET /static/css/output.css HTTP/1.1[0m" 304 -
+2025-03-30 19:27:34,619 - INFO - 127.0.0.1 - - [30/Mar/2025 19:27:34] "[33mGET /static/9j/4AAQSkZJRgABAQAAAQABAAD/gA7Q1JFQVRPUjogZ2QtanBlZyB2MS4wICh1c2luZyBJSkcgSlBFRyB2ODApLCBxdWFsaXR5ID0gODIK/9sAQwAGBAQFBAQGBQUFBgYGBwkOCQkICAkSDQ0KDhUSFhYVEhQUFxohHBcYHxkUFB0nHR8iIyUlJRYcKSwoJCshJCUk/9sAQwEGBgYJCAkRCQkRJBgUGCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQ HTTP/1.1[0m" 404 -
+2025-03-30 19:27:34,620 - INFO - 127.0.0.1 - - [30/Mar/2025 19:27:34] "[33mGET /static/img/avena-pasas.jpg HTTP/1.1[0m" 404 -
+2025-03-30 19:27:34,622 - INFO - 127.0.0.1 - - [30/Mar/2025 19:27:34] "[33mGET /static/img/butter-cookies.jpg HTTP/1.1[0m" 404 -
+2025-03-30 19:27:34,625 - INFO - 127.0.0.1 - - [30/Mar/2025 19:27:34] "[33mGET /static/img/lemon-drops.jpg HTTP/1.1[0m" 404 -
+2025-03-30 19:27:34,626 - INFO - 127.0.0.1 - - [30/Mar/2025 19:27:34] "[33mGET /static/img/choco-chip.jpg HTTP/1.1[0m" 404 -

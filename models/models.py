@@ -3,6 +3,14 @@ import datetime
 
 db = SQLAlchemy()
 
+
+
+
+
+
+
+
+
 class Usuario(db.Model):
     __tablename__ = 'usuarios'
     id = db.Column(db.Integer, primary_key=True)
@@ -109,44 +117,25 @@ class Produccion(db.Model):
 
 
 
-class Pedido(db.Model):
-    __tablename__ = 'pedidos'
-    id = db.Column(db.Integer, primary_key=True)
-    idCliente = db.Column(db.Integer, db.ForeignKey('clientes.id'), nullable=False)
-    fechaPedido = db.Column(db.TIMESTAMP, server_default=db.func.current_timestamp())
-    fechaRecogida = db.Column(db.Date, nullable=False)
-    estado = db.Column(db.Enum('pendiente', 'listo', 'entregado', 'cancelado'), nullable=False, default='pendiente')
 
-class DetallePedido(db.Model):
-    __tablename__ = 'detallePedido'
-    id = db.Column(db.Integer, primary_key=True)
-    idPedido = db.Column(db.Integer, db.ForeignKey('pedidos.id'), nullable=False)
-    idPresentacion = db.Column(db.Integer, db.ForeignKey('presentacionesGalletas.id'), nullable=False)
-    cantidad = db.Column(db.Integer, nullable=False)
-    subtotal = db.Column(db.Numeric(10, 2), nullable=False)
 
-class Venta(db.Model):
-    __tablename__ = 'ventas'
-    id = db.Column(db.Integer, primary_key=True)
-    idPedido = db.Column(db.Integer, db.ForeignKey('pedidos.id'), nullable=False)
-    fechaVenta = db.Column(db.TIMESTAMP, server_default=db.func.current_timestamp())
-    total = db.Column(db.Numeric(10, 2), nullable=False)
+
+from datetime import datetime
 
 class Merma(db.Model):
-    __tablename__ = 'merma'
+    __tablename__ = 'mermas'
     id = db.Column(db.Integer, primary_key=True)
-    tipo = db.Column(db.Enum('insumo', 'galleta'), nullable=False)
-    idInsumo = db.Column(db.Integer, db.ForeignKey('insumos.id'))
-    idGalleta = db.Column(db.Integer, db.ForeignKey('galletas.id'))
-    cantidad = db.Column(db.Numeric(10, 2))
+    idGalleta = db.Column(db.Integer, db.ForeignKey('galletas.id'), nullable=True)
+    idInsumo = db.Column(db.Integer, db.ForeignKey('insumos.id'), nullable=True)
+    cantidad = db.Column(db.Numeric(10, 2), nullable=False)
     motivo = db.Column(db.Text, nullable=False)
-    fechaRegistro = db.Column(db.TIMESTAMP, server_default=db.func.current_timestamp())
+    fechaRegistro = db.Column(db.DateTime, default=datetime.now)  # Aquí usa datetime.now correctamente
 
-class CorteVentas(db.Model):
-    __tablename__ = 'corteVentas'
-    id = db.Column(db.Integer, primary_key=True)
-    fecha = db.Column(db.Date, nullable=False)
-    totalVentas = db.Column(db.Numeric(10, 2), nullable=False)
+    galleta = db.relationship('Galleta', backref='mermas')
+    insumo = db.relationship('Insumo', backref='mermas')
+
+
+
     
 class EstatusProduccion(db.Model):
     __tablename__ = 'estatusProduccion'
@@ -161,3 +150,30 @@ class EstatusProduccion(db.Model):
     galleta = db.relationship('Galleta', backref='estatusProduccion', lazy=True)
     presentacion = db.relationship('PresentacionGalleta', backref='estatusProduccion', lazy=True) 
 
+class VentaLocal(db.Model):
+    __tablename__ = 'ventaslocal'
+    id = db.Column(db.Integer, primary_key=True)
+    id_usuario = db.Column(db.Integer, db.ForeignKey('usuarios.id'), nullable=False)
+    id_presentacion = db.Column(db.Integer, db.ForeignKey('presentacionesGalletas.id'), nullable=False)
+    cantidadcomprado = db.Column(db.Integer, nullable=False)
+    subtotal = db.Column(db.Numeric(10, 2), nullable=False)
+    total = db.Column(db.Numeric(10, 2), nullable=False)
+    fechaCompra = db.Column(db.TIMESTAMP, server_default=db.func.current_timestamp())
+
+    usuario = db.relationship('Usuario', backref='ventas_local')
+    presentacion = db.relationship('PresentacionGalleta', backref='ventas_local')
+
+class PedidosCliente(db.Model):
+    __tablename__ = 'pedidoscliente'
+    id = db.Column(db.Integer, primary_key=True)
+    idCliente = db.Column(db.Integer, db.ForeignKey('clientes.id'), nullable=False)
+    id_presentacion = db.Column(db.Integer, db.ForeignKey('presentacionesGalletas.id'), nullable=False)
+    cantidadcomprado = db.Column(db.Integer, nullable=False)
+    subtotal = db.Column(db.Numeric(10, 2), nullable=False)
+    total = db.Column(db.Numeric(10, 2), nullable=False)
+    fechaPedido = db.Column(db.TIMESTAMP, server_default=db.func.current_timestamp())
+    fechaRecogida = db.Column(db.DateTime)
+    estatus = db.Column(db.Enum('pendiente', 'completado', 'cancelado'), nullable=False, default='pendiente')
+
+    cliente = db.relationship('Cliente', backref='pedidos')
+    presentacion = db.relationship('PresentacionGalleta', backref='pedidos')

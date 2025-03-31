@@ -7,7 +7,7 @@ produccion_bp = Blueprint('produccion', __name__)
 @produccion_bp.route("/produccion")
 def produccion():
     galletas = Galleta.query.all()
-    presentaciones = PresentacionGalleta.query.all()
+    presentaciones = PresentacionGalleta.query.filter_by(tipoPresentacion="Piezas").all()
     
   
     alertas = db.session.query(
@@ -37,29 +37,67 @@ def produccion():
 
 @produccion_bp.route("/piezas")
 def piezas():
-    presentaciones = PresentacionGalleta.query.filter_by(tipoPresentacion="piezas").all()
-    return render_template("Produccion/inicioProduccion.html", presentaciones=presentaciones, filtro="piezas")
-
-@produccion_bp.route("/gramaje")
-def gramaje():
-    presentaciones = PresentacionGalleta.query.filter_by(tipoPresentacion="gramos").all()
+    presentaciones = PresentacionGalleta.query.filter_by(tipoPresentacion="Piezas").all()
     alertas = db.session.query(
         EstatusProduccion,
         PresentacionGalleta.tipoPresentacion
     ).join(
         PresentacionGalleta, EstatusProduccion.idPresentacion == PresentacionGalleta.id
     ).all()
-    return render_template("Produccion/inicioProduccion.html", presentaciones=presentaciones, alertas=alertas, filtro="gramaje")
+    producciones_hoy = Produccion.query.filter(Produccion.fechaProduccion == date.today()).all()
+    return render_template("Produccion/inicioProduccion.html", 
+                           presentaciones=presentaciones, 
+                           alertas=alertas, 
+                           producciones_hoy=producciones_hoy, 
+                           filtro="Piezas")
+
+@produccion_bp.route("/gramaje")
+def gramaje():
+    presentaciones = PresentacionGalleta.query.filter_by(tipoPresentacion="Gramos").all()
+    alertas = db.session.query(
+        EstatusProduccion,
+        PresentacionGalleta.tipoPresentacion
+    ).join(
+        PresentacionGalleta, EstatusProduccion.idPresentacion == PresentacionGalleta.id
+    ).all()
+    producciones_hoy = Produccion.query.filter(Produccion.fechaProduccion == date.today()).all()
+    return render_template("Produccion/inicioProduccion.html", 
+                           presentaciones=presentaciones, 
+                           alertas=alertas, 
+                           producciones_hoy=producciones_hoy, 
+                           filtro="Gramos")
 
 @produccion_bp.route("/paquete1")
 def paquete1():
-    presentaciones = PresentacionGalleta.query.filter(PresentacionGalleta.tipoPresentacion.in_(["1kg"])).all()
-    return render_template("Produccion/inicioProduccion.html", presentaciones=presentaciones, filtro="paquete1")
+    presentaciones = PresentacionGalleta.query.filter_by(tipoPresentacion="1kg").all()
+    alertas = db.session.query(
+        EstatusProduccion,
+        PresentacionGalleta.tipoPresentacion
+    ).join(
+        PresentacionGalleta, EstatusProduccion.idPresentacion == PresentacionGalleta.id
+    ).all()
+    producciones_hoy = Produccion.query.filter(Produccion.fechaProduccion == date.today()).all()
+    return render_template("Produccion/inicioProduccion.html", 
+                           presentaciones=presentaciones, 
+                           alertas=alertas, 
+                           producciones_hoy=producciones_hoy, 
+                           filtro="Paquete 1kg")
 
 @produccion_bp.route("/paquete2")
 def paquete2():
-    presentaciones = PresentacionGalleta.query.filter(PresentacionGalleta.tipoPresentacion.in_(["700g"])).all()
-    return render_template("Produccion/inicioProduccion.html", presentaciones=presentaciones, filtro="paquete2")
+    presentaciones = PresentacionGalleta.query.filter_by(tipoPresentacion="700g").all()
+    alertas = db.session.query(
+        EstatusProduccion,
+        PresentacionGalleta.tipoPresentacion
+    ).join(
+        PresentacionGalleta, EstatusProduccion.idPresentacion == PresentacionGalleta.id
+    ).all()
+    producciones_hoy = Produccion.query.filter(Produccion.fechaProduccion == date.today()).all()
+    return render_template("Produccion/inicioProduccion.html", 
+                           presentaciones=presentaciones, 
+                           alertas=alertas, 
+                           producciones_hoy=producciones_hoy, 
+                           filtro="Paquete 700g")
 
 @produccion_bp.route("/iniciar_produccion/<int:presentacion_id>", methods=["POST"])
 def iniciar_produccion(presentacion_id):

@@ -17,11 +17,7 @@ from models.models import (
     RecetaInsumos,
     Galleta,
     Produccion,
-    Pedido,
-    DetallePedido,
-    Venta,
-    Merma,
-    CorteVentas
+    Merma
 )
 from routes.clientes.routes import clientes_bp
 from routes.cocina.routes import cocina_bp

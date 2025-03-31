@@ -11,6 +11,7 @@ from routes.clientes.routes import clientes_bp
 from routes.cocina.routes import cocina_bp
 from routes.produccion.routes import produccion_bp
 from routes.ventas.routes import ventas_bp
+from routes.central.routes import dashboard_bp
 
 
 # Configuracion del logging
@@ -40,6 +41,8 @@ app.register_blueprint(clientes_bp, url_prefix='/cliente')
 app.register_blueprint(cocina_bp, url_prefix='/cocina')
 app.register_blueprint(produccion_bp, url_prefix='/produccion')
 app.register_blueprint(ventas_bp, url_prefix='/ventas')
+app.register_blueprint(dashboard_bp, url_prefix='/dashboard')
+
 
 
 
@@ -52,8 +55,6 @@ with app.app_context():
     db.create_all()
     
 
-
-
 # =======================
 # Rutas principales
 # =======================
@@ -62,22 +63,14 @@ def index():
     return render_template("index.html")
 
 
-
 @app.route("/central")
 def central():
     return render_template("Central/inicioCentral.html")
 
 
-
-
 @app.errorhandler(404)
 def page_not_found(e):
     return render_template('404.html'), 404
-
-
-
-
-
 
 
 

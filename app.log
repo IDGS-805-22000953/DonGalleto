@@ -3034,3 +3034,124 @@
 2025-03-30 19:27:34,622 - INFO - 127.0.0.1 - - [30/Mar/2025 19:27:34] "[33mGET /static/img/butter-cookies.jpg HTTP/1.1[0m" 404 -
 2025-03-30 19:27:34,625 - INFO - 127.0.0.1 - - [30/Mar/2025 19:27:34] "[33mGET /static/img/lemon-drops.jpg HTTP/1.1[0m" 404 -
 2025-03-30 19:27:34,626 - INFO - 127.0.0.1 - - [30/Mar/2025 19:27:34] "[33mGET /static/img/choco-chip.jpg HTTP/1.1[0m" 404 -
+2025-03-30 19:52:26,096 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2025-03-30 19:52:26,096 - INFO - [33mPress CTRL+C to quit[0m
+2025-03-30 19:52:26,097 - INFO -  * Restarting with stat
+2025-03-30 19:52:31,213 - WARNING -  * Debugger is active!
+2025-03-30 19:52:31,216 - INFO -  * Debugger PIN: 545-067-783
+2025-03-30 19:52:36,159 - INFO - 127.0.0.1 - - [30/Mar/2025 19:52:36] "[33mGET /dashboard HTTP/1.1[0m" 404 -
+2025-03-30 19:52:42,061 - INFO - 127.0.0.1 - - [30/Mar/2025 19:52:42] "[33mGET /dashboard/dashboard HTTP/1.1[0m" 404 -
+2025-03-30 19:56:28,863 - INFO -  * Detected change in 'C:\\Users\\Caval\\OneDrive\\Documents\\VSCODES\\DonGalleto\\routes\\central\\routes.py', reloading
+2025-03-30 19:56:28,927 - INFO -  * Restarting with stat
+2025-03-30 19:56:34,138 - WARNING -  * Debugger is active!
+2025-03-30 19:56:34,141 - INFO -  * Debugger PIN: 545-067-783
+2025-03-30 19:57:10,817 - INFO - 127.0.0.1 - - [30/Mar/2025 19:57:10] "[33mGET /dashboard HTTP/1.1[0m" 404 -
+2025-03-30 19:57:24,811 - INFO - 127.0.0.1 - - [30/Mar/2025 19:57:24] "[33mGET /dashboard HTTP/1.1[0m" 404 -
+2025-03-30 19:59:03,145 - INFO -  * Detected change in 'C:\\Users\\Caval\\OneDrive\\Documents\\VSCODES\\DonGalleto\\routes\\central\\routes.py', reloading
+2025-03-30 19:59:03,253 - INFO -  * Restarting with stat
+2025-03-30 19:59:08,463 - WARNING -  * Debugger is active!
+2025-03-30 19:59:08,465 - INFO -  * Debugger PIN: 545-067-783
+2025-03-30 20:00:35,403 - INFO - 127.0.0.1 - - [30/Mar/2025 20:00:35] "[35m[1mGET /dashboard/dashboard HTTP/1.1[0m" 500 -
+2025-03-30 20:00:35,468 - INFO - 127.0.0.1 - - [30/Mar/2025 20:00:35] "GET /dashboard/dashboard?__debugger__=yes&cmd=resource&f=style.css HTTP/1.1" 200 -
+2025-03-30 20:00:35,468 - INFO - 127.0.0.1 - - [30/Mar/2025 20:00:35] "GET /dashboard/dashboard?__debugger__=yes&cmd=resource&f=debugger.js HTTP/1.1" 200 -
+2025-03-30 20:00:35,475 - INFO - 127.0.0.1 - - [30/Mar/2025 20:00:35] "GET /dashboard/dashboard?__debugger__=yes&cmd=resource&f=console.png HTTP/1.1" 200 -
+2025-03-30 20:00:35,479 - INFO - 127.0.0.1 - - [30/Mar/2025 20:00:35] "[36mGET /dashboard/dashboard?__debugger__=yes&cmd=resource&f=console.png HTTP/1.1[0m" 304 -
+2025-03-30 20:03:28,627 - INFO -  * Detected change in 'C:\\Users\\Caval\\OneDrive\\Documents\\VSCODES\\DonGalleto\\routes\\central\\routes.py', reloading
+2025-03-30 20:03:28,705 - INFO -  * Restarting with stat
+2025-03-30 20:03:33,862 - WARNING -  * Debugger is active!
+2025-03-30 20:03:33,864 - INFO -  * Debugger PIN: 545-067-783
+2025-03-30 20:03:34,626 - INFO - 127.0.0.1 - - [30/Mar/2025 20:03:34] "[35m[1mGET /dashboard/dashboard HTTP/1.1[0m" 500 -
+2025-03-30 20:03:34,682 - INFO - 127.0.0.1 - - [30/Mar/2025 20:03:34] "[36mGET /dashboard/dashboard?__debugger__=yes&cmd=resource&f=debugger.js HTTP/1.1[0m" 304 -
+2025-03-30 20:03:34,682 - INFO - 127.0.0.1 - - [30/Mar/2025 20:03:34] "[36mGET /dashboard/dashboard?__debugger__=yes&cmd=resource&f=style.css HTTP/1.1[0m" 304 -
+2025-03-30 20:03:34,689 - INFO - 127.0.0.1 - - [30/Mar/2025 20:03:34] "[36mGET /dashboard/dashboard?__debugger__=yes&cmd=resource&f=console.png HTTP/1.1[0m" 304 -
+2025-03-30 20:03:51,249 - INFO -  * Detected change in 'C:\\Users\\Caval\\OneDrive\\Documents\\VSCODES\\DonGalleto\\routes\\central\\routes.py', reloading
+2025-03-30 20:03:51,321 - INFO -  * Restarting with stat
+2025-03-30 20:03:56,343 - WARNING -  * Debugger is active!
+2025-03-30 20:03:56,345 - INFO -  * Debugger PIN: 545-067-783
+2025-03-30 20:03:58,275 - INFO - 127.0.0.1 - - [30/Mar/2025 20:03:58] "GET /dashboard/dashboard HTTP/1.1" 200 -
+2025-03-30 20:05:45,061 - INFO - 127.0.0.1 - - [30/Mar/2025 20:05:45] "GET /dashboard/dashboard HTTP/1.1" 200 -
+2025-03-30 20:07:57,259 - INFO - 127.0.0.1 - - [30/Mar/2025 20:07:57] "GET /dashboard/dashboard HTTP/1.1" 200 -
+2025-03-30 20:09:06,955 - INFO - 127.0.0.1 - - [30/Mar/2025 20:09:06] "GET /dashboard/dashboard HTTP/1.1" 200 -
+2025-03-30 20:09:29,559 - INFO - 127.0.0.1 - - [30/Mar/2025 20:09:29] "GET /dashboard/dashboard HTTP/1.1" 200 -
+2025-03-30 20:09:32,686 - INFO - 127.0.0.1 - - [30/Mar/2025 20:09:32] "GET /dashboard/dashboard HTTP/1.1" 200 -
+2025-03-30 20:09:49,554 - INFO - 127.0.0.1 - - [30/Mar/2025 20:09:49] "GET /dashboard/dashboard HTTP/1.1" 200 -
+2025-03-30 20:11:19,907 - INFO -  * Detected change in 'C:\\Users\\Caval\\OneDrive\\Documents\\VSCODES\\DonGalleto\\routes\\central\\routes.py', reloading
+2025-03-30 20:11:19,995 - INFO -  * Restarting with stat
+2025-03-30 20:11:25,117 - WARNING -  * Debugger is active!
+2025-03-30 20:11:25,119 - INFO -  * Debugger PIN: 545-067-783
+2025-03-30 20:11:41,479 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2025-03-30 20:11:41,479 - INFO - [33mPress CTRL+C to quit[0m
+2025-03-30 20:11:41,480 - INFO -  * Restarting with stat
+2025-03-30 20:11:46,545 - WARNING -  * Debugger is active!
+2025-03-30 20:11:46,547 - INFO -  * Debugger PIN: 545-067-783
+2025-03-30 20:11:47,023 - INFO - 127.0.0.1 - - [30/Mar/2025 20:11:47] "GET /dashboard/dashboard HTTP/1.1" 200 -
+2025-03-30 20:11:51,048 - INFO - 127.0.0.1 - - [30/Mar/2025 20:11:51] "GET /dashboard/dashboard HTTP/1.1" 200 -
+2025-03-30 20:11:59,988 - INFO - 127.0.0.1 - - [30/Mar/2025 20:11:59] "GET /dashboard/dashboard HTTP/1.1" 200 -
+2025-03-30 20:13:43,175 - INFO - 127.0.0.1 - - [30/Mar/2025 20:13:43] "GET /dashboard/dashboard HTTP/1.1" 200 -
+2025-03-30 20:14:15,470 - INFO -  * Detected change in 'C:\\Users\\Caval\\OneDrive\\Documents\\VSCODES\\DonGalleto\\routes\\central\\routes.py', reloading
+2025-03-30 20:14:15,536 - INFO -  * Restarting with stat
+2025-03-30 20:14:20,723 - WARNING -  * Debugger is active!
+2025-03-30 20:14:20,725 - INFO -  * Debugger PIN: 545-067-783
+2025-03-30 20:14:21,183 - INFO - 127.0.0.1 - - [30/Mar/2025 20:14:21] "GET /dashboard/dashboard HTTP/1.1" 200 -
+2025-03-30 20:15:40,430 - INFO - 127.0.0.1 - - [30/Mar/2025 20:15:40] "GET /dashboard/dashboard HTTP/1.1" 200 -
+2025-03-30 20:17:12,104 - INFO -  * Detected change in 'C:\\Users\\Caval\\OneDrive\\Documents\\VSCODES\\DonGalleto\\routes\\central\\routes.py', reloading
+2025-03-30 20:17:12,178 - INFO -  * Restarting with stat
+2025-03-30 20:17:17,349 - WARNING -  * Debugger is active!
+2025-03-30 20:17:17,351 - INFO -  * Debugger PIN: 545-067-783
+2025-03-30 20:17:17,811 - INFO - 127.0.0.1 - - [30/Mar/2025 20:17:17] "GET /dashboard/dashboard HTTP/1.1" 200 -
+2025-03-30 20:18:40,710 - INFO - 127.0.0.1 - - [30/Mar/2025 20:18:40] "GET /dashboard/dashboard HTTP/1.1" 200 -
+2025-03-30 20:18:57,324 - INFO -  * Detected change in 'C:\\Users\\Caval\\OneDrive\\Documents\\VSCODES\\DonGalleto\\routes\\central\\routes.py', reloading
+2025-03-30 20:18:57,388 - INFO -  * Restarting with stat
+2025-03-30 20:19:02,573 - WARNING -  * Debugger is active!
+2025-03-30 20:19:02,575 - INFO -  * Debugger PIN: 545-067-783
+2025-03-30 20:20:56,778 - INFO -  * Detected change in 'C:\\Users\\Caval\\OneDrive\\Documents\\VSCODES\\DonGalleto\\routes\\central\\routes.py', reloading
+2025-03-30 20:20:56,840 - INFO -  * Restarting with stat
+2025-03-30 20:21:02,099 - WARNING -  * Debugger is active!
+2025-03-30 20:21:02,101 - INFO -  * Debugger PIN: 545-067-783
+2025-03-30 20:21:02,360 - INFO - 127.0.0.1 - - [30/Mar/2025 20:21:02] "[35m[1mGET /dashboard/dashboard HTTP/1.1[0m" 500 -
+2025-03-30 20:21:02,419 - INFO - 127.0.0.1 - - [30/Mar/2025 20:21:02] "[36mGET /dashboard/dashboard?__debugger__=yes&cmd=resource&f=style.css HTTP/1.1[0m" 304 -
+2025-03-30 20:21:02,420 - INFO - 127.0.0.1 - - [30/Mar/2025 20:21:02] "[36mGET /dashboard/dashboard?__debugger__=yes&cmd=resource&f=debugger.js HTTP/1.1[0m" 304 -
+2025-03-30 20:21:02,427 - INFO - 127.0.0.1 - - [30/Mar/2025 20:21:02] "[36mGET /dashboard/dashboard?__debugger__=yes&cmd=resource&f=console.png HTTP/1.1[0m" 304 -
+2025-03-30 20:21:12,359 - INFO -  * Detected change in 'C:\\Users\\Caval\\OneDrive\\Documents\\VSCODES\\DonGalleto\\routes\\central\\routes.py', reloading
+2025-03-30 20:21:12,418 - INFO -  * Restarting with stat
+2025-03-30 20:21:17,597 - WARNING -  * Debugger is active!
+2025-03-30 20:21:17,599 - INFO -  * Debugger PIN: 545-067-783
+2025-03-30 20:21:18,073 - INFO - 127.0.0.1 - - [30/Mar/2025 20:21:18] "GET /dashboard/dashboard HTTP/1.1" 200 -
+2025-03-30 20:21:50,302 - INFO -  * Detected change in 'C:\\Users\\Caval\\OneDrive\\Documents\\VSCODES\\DonGalleto\\routes\\central\\routes.py', reloading
+2025-03-30 20:21:50,362 - INFO -  * Restarting with stat
+2025-03-30 20:21:55,470 - WARNING -  * Debugger is active!
+2025-03-30 20:21:55,472 - INFO -  * Debugger PIN: 545-067-783
+2025-03-30 20:21:58,118 - INFO - 127.0.0.1 - - [30/Mar/2025 20:21:58] "GET /dashboard/dashboard HTTP/1.1" 200 -
+2025-03-30 20:22:00,867 - INFO - 127.0.0.1 - - [30/Mar/2025 20:22:00] "GET /dashboard/dashboard HTTP/1.1" 200 -
+2025-03-30 20:22:04,681 - INFO -  * Detected change in 'C:\\Users\\Caval\\OneDrive\\Documents\\VSCODES\\DonGalleto\\routes\\central\\routes.py', reloading
+2025-03-30 20:22:04,738 - INFO -  * Restarting with stat
+2025-03-30 20:22:09,813 - WARNING -  * Debugger is active!
+2025-03-30 20:22:09,815 - INFO -  * Debugger PIN: 545-067-783
+2025-03-30 20:24:13,208 - INFO -  * Detected change in 'C:\\Users\\Caval\\OneDrive\\Documents\\VSCODES\\DonGalleto\\routes\\central\\routes.py', reloading
+2025-03-30 20:24:13,271 - INFO -  * Restarting with stat
+2025-03-30 20:26:56,569 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2025-03-30 20:26:56,569 - INFO - [33mPress CTRL+C to quit[0m
+2025-03-30 20:26:56,570 - INFO -  * Restarting with stat
+2025-03-30 20:27:01,701 - WARNING -  * Debugger is active!
+2025-03-30 20:27:01,703 - INFO -  * Debugger PIN: 545-067-783
+2025-03-30 20:27:02,177 - INFO - 127.0.0.1 - - [30/Mar/2025 20:27:02] "GET /dashboard/dashboard HTTP/1.1" 200 -
+2025-03-30 20:27:44,598 - INFO -  * Detected change in 'C:\\Users\\Caval\\OneDrive\\Documents\\VSCODES\\DonGalleto\\routes\\central\\routes.py', reloading
+2025-03-30 20:27:44,685 - INFO -  * Restarting with stat
+2025-03-30 20:27:49,864 - WARNING -  * Debugger is active!
+2025-03-30 20:27:49,866 - INFO -  * Debugger PIN: 545-067-783
+2025-03-30 20:27:50,335 - INFO - 127.0.0.1 - - [30/Mar/2025 20:27:50] "GET /dashboard/dashboard HTTP/1.1" 200 -
+2025-03-30 22:23:27,622 - INFO -  * Detected change in 'C:\\Users\\Caval\\OneDrive\\Documents\\VSCODES\\DonGalleto\\app.py', reloading
+2025-03-30 22:23:27,693 - INFO -  * Restarting with stat
+2025-03-30 22:23:32,854 - WARNING -  * Debugger is active!
+2025-03-30 22:23:32,857 - INFO -  * Debugger PIN: 545-067-783
+2025-03-30 22:23:34,934 - INFO -  * Detected change in 'C:\\Users\\Caval\\OneDrive\\Documents\\VSCODES\\DonGalleto\\app.py', reloading
+2025-03-30 22:23:35,000 - INFO -  * Restarting with stat
+2025-03-30 22:23:40,152 - WARNING -  * Debugger is active!
+2025-03-30 22:23:40,155 - INFO -  * Debugger PIN: 545-067-783
+2025-03-30 22:25:02,824 - INFO -  * Detected change in 'C:\\Users\\Caval\\OneDrive\\Documents\\VSCODES\\DonGalleto\\routes\\central\\routes.py', reloading
+2025-03-30 22:25:02,878 - INFO -  * Restarting with stat
+2025-03-30 22:25:07,997 - WARNING -  * Debugger is active!
+2025-03-30 22:25:07,999 - INFO -  * Debugger PIN: 545-067-783

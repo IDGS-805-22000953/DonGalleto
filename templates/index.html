@@ -3,63 +3,135 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="{{ url_for('static', filename='css/output.css') }}" rel="stylesheet">
-    <title>Login - DonGalleto</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <title>Iniciar Sesión - DonGalleto</title>
+    <link href="https://cdn.jsdelivr.net/npm/flowbite@1.5.0/dist/flowbite.min.css" rel="stylesheet" />
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+    <style>
+        body {
+            background: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            font-family: 'Arial', sans-serif;
+            color: #fff;
+        }
+        .container {
+            position: relative; /* Para posicionar el logo flotante */
+            width: 90%;
+            max-width: 800px;
+            background: #9C6E66;
+            border-radius: 16px;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            padding: 3rem;
+        }
+        .logo-container {
+            position: absolute; /* Posicionamiento absoluto para flotar */
+            top: -50px; /* Ajusta la distancia desde la parte superior */
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10; /* Asegura que esté encima del contenido */
+            animation: float 3s ease-in-out infinite; /* Animación de flotación */
+        }
+        .logo-container img {
+            max-width: 150px;
+            height: auto;
+            border-radius: 50%; /* Hace la imagen circular */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+        .form-container {
+            padding-top: 5rem; /* Ajusta el espacio para que no se superponga con el logo */
+        }
+        .form-container h2 {
+            text-align: center;
+            margin-bottom: 2rem;
+            font-size: 2rem;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+        .form-container p {
+            text-align: center;
+            margin-bottom: 3rem;
+            font-size: 1.1rem;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+        }
+        .form-container label {
+            display: block;
+            margin-bottom: 1rem;
+            font-size: 1rem;
+            font-weight: 600;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+        }
+        .form-container input {
+            width: 100%;
+            padding: 1rem;
+            margin-bottom: 2rem;
+            border: none;
+            border-radius: 8px;
+            box-sizing: border-box;
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+            font-size: 1rem;
+        }
+        .form-container button {
+            width: 100%;
+            padding: 1rem;
+            background-color: #9C6E66;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+            font-size: 1.1rem;
+            font-weight: bold;
+        }
+        .form-container button:hover {
+            background-color: #741313;
+            box-shadow: 0 6px 10px rgba(0, 0, 0, 0.5);
+        }
+        .form-container a {
+            color: #741313;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+            font-weight: 600;
+        }
+        @keyframes float {
+            0% { transform: translate(-50%, 0); }
+            50% { transform: translate(-50%, -10px); }
+            100% { transform: translate(-50%, 0); }
+        }
+    </style>
 </head>
-<body class="">
-
-    <section class="bg-gray-50 dark:bg-gray-900">
-        <div class="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
-            <a href="#" class="flex items-center mb-6 text-2xl font-semibold text-gray-900 dark:text-white">
-                <!-- <img class="w-8 h-8 mr-2" src="static/css/img/DonGalleto.png" alt="logo"> -->
-                DON GALLETO    
-            </a>
-            <div class="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
-                <div class="p-6 space-y-4 md:space-y-6 sm:p-8">
-                    <h1 class="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
-                        Registrate con tu cuenta
-                    </h1>
-                    <form class="space-y-4 md:space-y-6" action="#">
-                        <div>
-                            <label for="email" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Correo:</label>
-                            <input type="email" name="email" id="email" class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="name@company.com" >
-                        </div>
-                        <div>
-                            <label for="password" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Contraseña:</label>
-                            <input type="password" name="password" id="password" placeholder="••••••••" class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" >
-                        </div>
-                        <div class="flex items-center justify-between">
-                            <div class="flex items-start">
-                                <div class="flex items-center h-5">
-                                  <input id="remember" aria-describedby="remember" type="checkbox" class="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-primary-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-primary-600 dark:ring-offset-gray-800" >
-                                </div>
-                                <div class="ml-3 text-sm">
-                                  <label for="remember" class="text-gray-500 dark:text-gray-300">Recuerdame</label>
-                                </div>
-                            </div>
-                            <a href="#" class="text-sm font-medium text-primary-600 hover:underline dark:text-primary-500">Olvidaste la contraseña?</a>
-                        </div>
-                        <div class="flex justify-center">
-                            <a href="/central" class="focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">
-                                Ingresar Central
-                                </a>
-                        </div>
-                        <div class="flex justify-center">
-                            <a href="/cliente" class="focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">
-                                Ingresar Cliente
-                                </a>
-                        </div>
-
-                       
-                        <p class="text-sm font-light text-gray-500 dark:text-gray-400">
-                            No tienes una ceunta todavia? <a href="#" class="font-medium text-primary-600 hover:underline dark:text-primary-500">Registrate</a>
-                        </p>
-                    </form>
-                </div>
-            </div>
+<body>
+    <div class="container">
+        <div class="logo-container">
+            <img src="{{ url_for('static', filename='img/MellowLogo.jpeg') }}" alt="Mellow Logo">
         </div>
-      </section>
-      
+        <div class="form-container">
+            <h2>Iniciar Sesión</h2>
+            <p>Inicia sesión y disfruta de nuestra gran variedad de galletas.</p>
+            <form method="POST" action="{{ url_for('auth.login') }}">
+                {{ form.hidden_tag() }}
+                <div class="mb-4">
+                    <label for="username">Nombre de usuario:</label>
+                    {{ form.username(class="w-full") }}
+                </div>
+                <div class="mb-4">
+                    <label for="password">Contraseña:</label>
+                    {{ form.password(class="w-full") }}
+                </div>
+                <div class="g-recaptcha mb-4" data-sitekey="6LdEuQUrAAAAAH1F4Em0DB7-7N4zVZI53UytAPBn"></div>
+                <div>
+                    <button type="submit">Iniciar Sesión</button>
+                </div>
+                <p class="mt-4 text-center">¿No tienes cuenta? <a href="{{ url_for('auth.register') }}">Regístrate</a></p>
+            </form>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/flowbite@1.5.0/dist/flowbite.min.js"></script>
 </body>
 </html>

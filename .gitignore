@@ -8,3 +8,7 @@ static/css/output.css
 __pycache__/
 *.pyc
 env/
+app.log
+config.py
+Cliente/layout.html
+Central/layout.html

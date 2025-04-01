@@ -1,26 +1,51 @@
+import datetime
+from werkzeug.security import generate_password_hash, check_password_hash
 from flask_sqlalchemy import SQLAlchemy
 import datetime
 
+from werkzeug.security import generate_password_hash, check_password_hash
+from flask_sqlalchemy import SQLAlchemy
+
 db = SQLAlchemy()
 
+from flask_login import UserMixin  # Importa UserMixin de Flask-Login
 
-
-
-
-
-
-
-
-class Usuario(db.Model):
+class Usuario(db.Model, UserMixin):  # Asegúrate de heredar de UserMixin
     __tablename__ = 'usuarios'
     id = db.Column(db.Integer, primary_key=True)
     nombreUsuario = db.Column(db.String(50), nullable=False)
     apellidoPa = db.Column(db.String(50), nullable=False)
     apellidoMa = db.Column(db.String(50))
     correo = db.Column(db.String(50), unique=True, nullable=False)
-    contrasenia = db.Column(db.String(255), nullable=False)
-    rol = db.Column(db.Enum('admin', 'empleado'), nullable=False)
+    contrasenia = db.Column(db.String(255), nullable=False)  # Contraseña hasheada
+    rol = db.Column(db.Enum('admin', 'cliente'), nullable=False)
     fechaRegistro = db.Column(db.TIMESTAMP, server_default=db.func.current_timestamp())
+
+    def set_password(self, password):
+        """Este método establece la contraseña hasheada"""
+        self.contrasenia = generate_password_hash(password)
+
+    def check_password(self, password):
+        """Este método verifica la contraseña usando el hash"""
+        return check_password_hash(self.contrasenia, password)
+
+    # Métodos que Flask-Login espera para el manejo de la sesión
+    def get_id(self):
+        """Flask-Login requiere este método para obtener el ID del usuario"""
+        return str(self.id)
+
+    def is_active(self):
+        """Flask-Login requiere este método para verificar si el usuario está activo"""
+        return True  # Si quieres un control más complejo, aquí podrías verificar algún campo como "activo"
+
+    def is_authenticated(self):
+        """Flask-Login requiere este método para verificar si el usuario está autenticado"""
+        return True  # Siempre que el usuario haya iniciado sesión exitosamente, será autenticado
+
+    def is_anonymous(self):
+        """Flask-Login requiere este método para verificar si el usuario es anónimo"""
+        return False  # Si un usuario ha iniciado sesión, no es anónimo
+
 
 class Cliente(db.Model):
     __tablename__ = 'clientes'
@@ -35,7 +60,7 @@ class Insumo(db.Model):
     __tablename__ = 'insumos'
     id = db.Column(db.Integer, primary_key=True)
     nombre = db.Column(db.String(50), nullable=False)
-    fechaIngreso = db.Column(db.Date, server_default=db.func.current_date())
+    fechaIngreso = db.Column(db.TIMESTAMP, server_default=db.func.current_timestamp())
     fechaCaducidad = db.Column(db.Date, nullable=False)
     cantidad = db.Column(db.Numeric(10, 2), nullable=False)
     unidadMedida = db.Column(db.String(20))
@@ -109,15 +134,11 @@ class Produccion(db.Model):
     idReceta = db.Column(db.Integer, db.ForeignKey('recetas.id'), nullable=False)
     idGalleta = db.Column(db.Integer, db.ForeignKey('galletas.id'), nullable=False)  
     cantidadProducida = db.Column(db.Integer, nullable=False)
-    fechaProduccion = db.Column(db.Date, server_default=db.func.current_date())  
+    fechaProduccion = db.Column(db.TIMESTAMP, server_default=db.func.current_timestamp())
 
     # Relación con Galleta
     galleta = db.relationship('Galleta', backref='producciones')
     receta = db.relationship('Receta', backref='producciones')
-
-
-
-
 
 
 from datetime import datetime
@@ -144,7 +165,7 @@ class EstatusProduccion(db.Model):
     nombreGalleta = db.Column(db.String(50), nullable=False)
     estatus = db.Column(db.Enum('En preparacion', 'Horneando', 'Enfriando'), default='En preparacion')
     tiempoEstimado = db.Column(db.Integer, nullable=False)  
-    fechaInicio = db.Column(db.TIMESTAMP, server_default=db.func.current_timestamp())
+    fechaInicio = db.Column(db.DateTime, default=datetime.now)
     idPresentacion = db.Column(db.Integer, db.ForeignKey('presentacionesGalletas.id'), nullable=False)  
 
     galleta = db.relationship('Galleta', backref='estatusProduccion', lazy=True)
@@ -158,7 +179,7 @@ class VentaLocal(db.Model):
     cantidadcomprado = db.Column(db.Integer, nullable=False)
     subtotal = db.Column(db.Numeric(10, 2), nullable=False)
     total = db.Column(db.Numeric(10, 2), nullable=False)
-    fechaCompra = db.Column(db.TIMESTAMP, server_default=db.func.current_timestamp())
+    fechaCompra = db.Column(db.DateTime, default=datetime.now)
 
     usuario = db.relationship('Usuario', backref='ventas_local')
     presentacion = db.relationship('PresentacionGalleta', backref='ventas_local')
@@ -166,12 +187,12 @@ class VentaLocal(db.Model):
 class PedidosCliente(db.Model):
     __tablename__ = 'pedidoscliente'
     id = db.Column(db.Integer, primary_key=True)
-    idCliente = db.Column(db.Integer, db.ForeignKey('clientes.id'), nullable=False)
+    idCliente = db.Column(db.Integer, db.ForeignKey('usuarios.id'), nullable=False)
     id_presentacion = db.Column(db.Integer, db.ForeignKey('presentacionesGalletas.id'), nullable=False)
     cantidadcomprado = db.Column(db.Integer, nullable=False)
     subtotal = db.Column(db.Numeric(10, 2), nullable=False)
     total = db.Column(db.Numeric(10, 2), nullable=False)
-    fechaPedido = db.Column(db.TIMESTAMP, server_default=db.func.current_timestamp())
+    fechaPedido = db.Column(db.DateTime, default=datetime.now)
     fechaRecogida = db.Column(db.DateTime)
     estatus = db.Column(db.Enum('pendiente', 'completado', 'cancelado'), nullable=False, default='pendiente')
 

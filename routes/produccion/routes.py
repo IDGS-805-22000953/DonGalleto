@@ -12,7 +12,6 @@ from models.models import (
     RecetaInsumos,
     Galleta,
     Produccion,
-    Venta,
     Merma,
     PresentacionGalleta,
     VentaLocal,

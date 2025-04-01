@@ -116,14 +116,14 @@ def procesar_pedido():
             
             # Restar el stock
             presentacion.stock -= item['cantidad']
-            
+            #id_cliente = session.get('user_id') 
             # Crear la venta
             nueva_venta = VentaLocal(
                 id_usuario=1,
                 id_presentacion=item['presentacion_id'],
                 cantidadcomprado=item['cantidad'],
                 subtotal=item['subtotal'],
-                total=item['subtotal'],
+                total=item['subtotal']*1.16,
                 fechaCompra=datetime.now()
             )
             db.session.add(nueva_venta)

@@ -117,8 +117,8 @@ def procesar_pedido():
             return redirect(url_for('clientes.clientes'))
             
         # Obtener el ID del cliente (asumiendo que está en la sesión)
-        #id_cliente = session.get('user_id')  # Ajusta esto según tu sistema de autenticación
-        id_cliente = 1
+      #  id_cliente = session.get('user_id')  # Ajusta esto según tu sistema de autenticación
+        #id_cliente = 1
         for item in session['carrito']:
             # Obtener la presentación de galleta
             presentacion = PresentacionGalleta.query.get(item['presentacion_id'])
@@ -137,7 +137,7 @@ def procesar_pedido():
             
             # Crear el pedido del cliente
             nuevo_pedido = PedidosCliente(
-                idCliente=id_cliente,
+                idCliente=1,
                 id_presentacion=item['presentacion_id'],
                 cantidadcomprado=item['cantidad'],
                 subtotal=item['subtotal'],

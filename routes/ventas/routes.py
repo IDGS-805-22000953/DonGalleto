@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, request, redirect, url_for, session, flash
 from datetime import datetime
 from models.models import (
-    db, Galleta, PresentacionGalleta, VentaLocal
+    db, Galleta, PresentacionGalleta, VentaLocal,PedidosCliente
 )
 from forms import AgregarAlCarritoForm
 
@@ -12,14 +12,19 @@ def ventas():
     galletas = Galleta.query.options(db.joinedload(Galleta.presentaciones)).all()
     form = AgregarAlCarritoForm()
     
+    # Obtener conteo de pedidos pendientes
+    pedidos_pendientes_count = PedidosCliente.query.filter_by(estatus='pendiente').count()
+    
     if 'carrito' not in session:
         session['carrito'] = []
         session['carrito_subtotal'] = 0
         session['carrito_iva'] = 0
         session['carrito_total'] = 0
     
-    return render_template('Ventas/ventas2.html', galletas=galletas, form=form)
-
+    return render_template('Ventas/ventas2.html', 
+                         galletas=galletas, 
+                         form=form,
+                         pedidos_pendientes_count=pedidos_pendientes_count)
 @ventas_bp.route('/agregar_al_carrito', methods=['POST'])
 def agregar_al_carrito():
     form = AgregarAlCarritoForm()
@@ -116,14 +121,14 @@ def procesar_pedido():
             
             # Restar el stock
             presentacion.stock -= item['cantidad']
-            #id_cliente = session.get('user_id') 
+            
             # Crear la venta
             nueva_venta = VentaLocal(
                 id_usuario=1,
                 id_presentacion=item['presentacion_id'],
                 cantidadcomprado=item['cantidad'],
                 subtotal=item['subtotal'],
-                total=item['subtotal']*1.16,
+                total=item['subtotal']* 1.16,
                 fechaCompra=datetime.now()
             )
             db.session.add(nueva_venta)
@@ -140,3 +145,32 @@ def procesar_pedido():
         db.session.rollback()
         flash(f'Error al procesar el pedido: {str(e)}', 'error')
         return redirect(url_for('ventas.ventas'))
+    
+    
+    
+    
+@ventas_bp.route('/pedidos-pendientes')
+def mostrar_pedidos_pendientes():
+    # Obtener todos los pedidos pendientes con relaciones
+    pedidos_pendientes = PedidosCliente.query.filter_by(estatus='pendiente')\
+        .options(db.joinedload(PedidosCliente.cliente),
+                 db.joinedload(PedidosCliente.presentacion).joinedload(PresentacionGalleta.galleta))\
+        .all()
+    
+    return render_template('Ventas/pedidos_pendientes.html',
+                         pedidos_pendientes=pedidos_pendientes)
+
+@ventas_bp.route('/marcar-como-vendido/<int:pedido_id>', methods=['POST'])
+def marcar_como_vendido(pedido_id):
+    pedido = PedidosCliente.query.get_or_404(pedido_id)
+    
+    try:
+        pedido.estatus = 'completado'
+        pedido.fechaRecogida = datetime.now()
+        db.session.commit()
+        flash('Pedido marcado como completado con éxito', 'success')
+    except Exception as e:
+        db.session.rollback()
+        flash(f'Error al actualizar el pedido: {str(e)}', 'error')
+    
+    return redirect(url_for('ventas.mostrar_pedidos_pendientes'))

@@ -124,7 +124,7 @@ def admin_dashboard():
     if current_user.rol != 'admin':
         flash('No tienes permiso para acceder a esta página', 'danger')
         return redirect(url_for('auth.login'))
-    return render_template('Central/inicioCentral.html')
+    return render_template('Central/dashboard.html')
 
 @auth_bp.route('/cliente_dashboard')
 @login_required

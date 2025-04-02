@@ -5,6 +5,22 @@
 {% block container %}
 
 <body class="bg-gray-50">
+    <!-- Botón de pedidos pendientes (bolsita) - Fijo en esquina inferior derecha -->
+    <div class="fixed bottom-6 right-6 z-50">
+        <a href="{{ url_for('ventas.mostrar_pedidos_pendientes') }}" 
+           class="bg-amber-500 hover:bg-amber-600 text-white p-4 rounded-full shadow-lg transition duration-200 block relative">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+            </svg>
+            {% if pedidos_pendientes_count > 0 %}
+            <span class="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full h-6 w-6 flex items-center justify-center">
+                {{ pedidos_pendientes_count }}
+            </span>
+            {% endif %}
+        </a>
+    </div>
+
+    <!-- Contenido principal -->
     <div class="container mx-auto px-4 py-8 flex flex-col lg:flex-row gap-8">
         <!-- Main Content -->
         <div class="lg:w-3/4">
@@ -18,8 +34,7 @@
             <!-- Cookie Cards Grid -->
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 {% for galleta in galletas %}
-                <div
-                    class="bg-white rounded-xl shadow-md overflow-hidden transition-all duration-300 hover:-translate-y-2 hover:shadow-lg">
+                <div class="bg-white rounded-xl shadow-md overflow-hidden transition-all duration-300 hover:-translate-y-2 hover:shadow-lg">
                     <!-- Cookie Image -->
                     {% if galleta.rutaFoto %}
                     <img src="{{ url_for('static', filename=galleta.rutaFoto) }}" class="w-full h-48 object-cover"

@@ -2,9 +2,9 @@ import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_sqlalchemy import SQLAlchemy
 import datetime
-
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_sqlalchemy import SQLAlchemy
+from datetime import date
 
 db = SQLAlchemy()
 
@@ -134,7 +134,7 @@ class Produccion(db.Model):
     idReceta = db.Column(db.Integer, db.ForeignKey('recetas.id'), nullable=False)
     idGalleta = db.Column(db.Integer, db.ForeignKey('galletas.id'), nullable=False)  
     cantidadProducida = db.Column(db.Integer, nullable=False)
-    fechaProduccion = db.Column(db.TIMESTAMP, server_default=db.func.current_timestamp())
+    fechaProduccion = db.Column(db.Date, default=date.today)
 
     # Relación con Galleta
     galleta = db.relationship('Galleta', backref='producciones')
@@ -185,16 +185,17 @@ class VentaLocal(db.Model):
     presentacion = db.relationship('PresentacionGalleta', backref='ventas_local')
 
 class PedidosCliente(db.Model):
-    __tablename__ = 'pedidoscliente'
+    _tablename_ = 'pedidoscliente'
     id = db.Column(db.Integer, primary_key=True)
     idCliente = db.Column(db.Integer, db.ForeignKey('usuarios.id'), nullable=False)
     id_presentacion = db.Column(db.Integer, db.ForeignKey('presentacionesGalletas.id'), nullable=False)
     cantidadcomprado = db.Column(db.Integer, nullable=False)
     subtotal = db.Column(db.Numeric(10, 2), nullable=False)
     total = db.Column(db.Numeric(10, 2), nullable=False)
-    fechaPedido = db.Column(db.DateTime, default=datetime.now)
+    fechaPedido = db.Column(db.TIMESTAMP, server_default=db.func.current_timestamp())
     fechaRecogida = db.Column(db.DateTime)
     estatus = db.Column(db.Enum('pendiente', 'completado', 'cancelado'), nullable=False, default='pendiente')
-
-    cliente = db.relationship('Cliente', backref='pedidos')
+    
+    # Definir las relaciones
+    cliente = db.relationship('Usuario', backref='pedidos')
     presentacion = db.relationship('PresentacionGalleta', backref='pedidos')

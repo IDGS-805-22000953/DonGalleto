@@ -10,7 +10,7 @@ inventario_bp = Blueprint('inventario', __name__, url_prefix='/inventario')
 
 # Ruta para mostrar el inventario de insumos
 @inventario_bp.route('/', methods=['GET'])
-@login_required  # Protege esta ruta para usuarios autenticados
+ # Protege esta ruta para usuarios autenticados
 def inventario():
     search_term = request.args.get('search', '')  # Obtiene el término de búsqueda desde la URL
     sort_by = request.args.get('sort_by', '')  # Obtener el parámetro de ordenación
@@ -42,7 +42,7 @@ def inventario():
 
 # Ruta para agregar insumos 
 @inventario_bp.route('/agregar', methods=['GET', 'POST'])
-@login_required  # Protege esta ruta para usuarios autenticados
+  # Protege esta ruta para usuarios autenticados
 def agregar_material():
     form = RawMaterialForm()
     if form.validate_on_submit():
@@ -64,7 +64,7 @@ def agregar_material():
 
 # Ruta para editar insumos 
 @inventario_bp.route('/editar/<int:material_id>', methods=['GET', 'POST'])
-@login_required  # Protege esta ruta para usuarios autenticados
+  # Protege esta ruta para usuarios autenticados
 def editar_material(material_id):
     material = Insumo.query.get_or_404(material_id)
     form = RawMaterialForm(obj=material)
@@ -85,7 +85,7 @@ def editar_material(material_id):
 
 # Ruta para eliminar un insumo
 @inventario_bp.route('/eliminar/<int:material_id>', methods=['POST'])
-@login_required  # Protege esta ruta para usuarios autenticados
+  # Protege esta ruta para usuarios autenticados
 def eliminar_material(material_id):
     material = Insumo.query.get_or_404(material_id)
     db.session.delete(material)

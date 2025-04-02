@@ -1,222 +1,279 @@
-
 {% extends "Central/layout.html" %}
-
 
 {% block content %}
 
 {% block container %}
 
 <body class="bg-gray-50">
-    <div class="container mx-auto px-4 py-8 flex flex-col lg:flex-row gap-8">
-        <!-- Main Content -->
-        <div class="lg:w-3/4">
-            <!-- Header -->
-            <div class="text-center mb-12">
-                <h1 class="text-4xl font-bold text-gray-800 mb-2">Nuestras Deliciosas Galletas</h1>
-                <p class="text-xl text-gray-600">Selecciona tu favorita</p>
-                <div class="w-24 h-1.5 bg-yellow-400 mx-auto mt-4 rounded-full"></div>
-            </div>
+    <div class="container mx-auto px-4 py-8">
+        <!-- Header -->
+        <div class="text-center mb-12">
+            <h1 class="text-4xl font-bold text-gray-800 mb-2">Nuestras Deliciosas Galletas</h1>
+            <p class="text-xl text-gray-600">Selecciona tu favorita</p>
+            <div class="w-24 h-1.5 bg-yellow-400 mx-auto mt-4 rounded-full"></div>
+        </div>
 
-            <!-- Cookie Cards Grid -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {% for galleta in galletas %}
-                <div
-                    class="bg-white rounded-xl shadow-md overflow-hidden transition-all duration-300 hover:-translate-y-2 hover:shadow-lg">
-                    <!-- Cookie Image -->
-                    {% if galleta.rutaFoto %}
-                    <img src="{{ url_for('static', filename=galleta.rutaFoto) }}" class="w-full h-48 object-cover"
-                        alt="{{ galleta.nombre }}">
-                    {% else %}
-                    <div class="w-full h-48 bg-gray-100 flex items-center justify-center">
-                        <i class="fas fa-cookie text-6xl text-gray-400"></i>
+        <!-- Botón para mostrar/ocultar carrito (ahora en negro) -->
+        <div class="fixed bottom-6 right-6 z-50">
+            <button id="cart-toggle"
+                class="bg-black hover:bg-gray-800 text-white font-bold py-3 px-6 rounded-full shadow-lg transition duration-200 flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+                </svg>
+                <span id="cart-count" class="font-semibold">
+                    {% if session.get('carrito') %}{{ session['carrito']|length }}{% else %}0{% endif %}
+                </span>
+            </button>
+        </div>
+
+        <!-- Cookie Cards Grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {% for galleta in galletas %}
+            <div
+                class="bg-white rounded-xl shadow-md overflow-hidden transition-all duration-300 hover:-translate-y-2 hover:shadow-lg">
+                <!-- Cookie Image -->
+                {% if galleta.rutaFoto %}
+                <img src="{{ url_for('static', filename=galleta.rutaFoto) }}" class="w-full h-48 object-cover"
+                    alt="{{ galleta.nombre }}">
+                {% else %}
+                <div class="w-full h-48 bg-gray-100 flex items-center justify-center">
+                    <i class="fas fa-cookie text-6xl text-gray-400"></i>
+                </div>
+                {% endif %}
+
+                <!-- Card Body -->
+                <div class="p-5">
+                    <h3 class="text-xl font-semibold text-gray-800 mb-2">{{ galleta.nombre }}</h3>
+                    <p class="text-gray-500 mb-4">{{ galleta.descripcion }}</p>
+
+                    <!-- Presentaciones y Precios -->
+                    <div class="mb-4">
+                        <h4 class="font-medium text-gray-700 mb-2">Presentaciones:</h4>
+                        <ul class="space-y-2">
+                            {% for presentacion in galleta.presentaciones %}
+                            <li class="flex justify-between items-center">
+                                <span class="text-sm text-gray-600">
+                                    {% if presentacion.tipoPresentacion == 'Piezas' %}
+                                    {{ presentacion.tipoPresentacion }}: {{ presentacion.stock }} unidades
+                                    {% elif presentacion.tipoPresentacion == '1kg' %}
+                                    {{ presentacion.tipoPresentacion }}: {{ presentacion.stock }} paquetes
+                                    {% elif presentacion.tipoPresentacion == '700g' %}
+                                    {{ presentacion.tipoPresentacion }}: {{ presentacion.stock }} paquetes
+                                    {% elif presentacion.tipoPresentacion == 'Gramos' %}
+                                    {{ presentacion.tipoPresentacion }}: {{ presentacion.stock }} gramos
+                                    {% else %}
+                                    {{ presentacion.tipoPresentacion }}: {{ presentacion.stock }}
+                                    {% endif %}
+                                </span>
+                                <span class="text-sm font-semibold text-blue-600">
+                                    ${{ "%.2f"|format(presentacion.precio) }}
+                                </span>
+                            </li>
+                            {% endfor %}
+                        </ul>
                     </div>
-                    {% endif %}
 
-                    <!-- Card Body -->
-                    <div class="p-5">
-                        <h3 class="text-xl font-semibold text-gray-800 mb-2">{{ galleta.nombre }}</h3>
-                        <p class="text-gray-500 mb-4">{{ galleta.descripcion }}</p>
+                    <!-- Form for adding to cart -->
+                    <form action="{{ url_for('clientes.agregar_al_carrito') }}" method="POST">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                        <input type="hidden" name="galleta_id" value="{{ galleta.id }}">
+                        <input type="hidden" name="galleta_nombre" value="{{ galleta.nombre }}">
 
-                        <!-- Presentaciones y Precios -->
+                        <!-- Selector de presentación -->
                         <div class="mb-4">
-                            <h4 class="font-medium text-gray-700 mb-2">Presentaciones:</h4>
-                            <ul class="space-y-2">
+                            <label for="presentacion_{{ galleta.id }}"
+                                class="block text-sm font-medium text-gray-700 mb-1">Presentación</label>
+                            <select name="presentacion_id" id="presentacion_{{ galleta.id }}"
+                                class="bg-gray-50 border border-gray-300 text-gray-700 text-sm rounded-lg focus:ring-amber-200 focus:border-amber-300 block w-full p-2.5">
                                 {% for presentacion in galleta.presentaciones %}
-                                <li class="flex justify-between items-center">
-                                    <span class="text-sm text-gray-600">
-                                        {% if presentacion.tipoPresentacion == 'Piezas' %}
-                                        {{ presentacion.tipoPresentacion }}: {{ presentacion.stock }} unidades
-                                        {% elif presentacion.tipoPresentacion == '1kg' %}
-                                        {{ presentacion.tipoPresentacion }}: {{ presentacion.stock }} paquetes
-                                        {% elif presentacion.tipoPresentacion == '700g' %}
-                                        {{ presentacion.tipoPresentacion }}: {{ presentacion.stock }} paquetes
-                                        {% elif presentacion.tipoPresentacion == 'Gramos' %}
-                                        {{ presentacion.tipoPresentacion }}: {{ presentacion.stock }} gramos
-                                        {% else %}
-                                        {{ presentacion.tipoPresentacion }}: {{ presentacion.stock }}
-                                        {% endif %}
-                                    </span>
-                                    <span class="text-sm font-semibold text-blue-600">
-                                        ${{ "%.2f"|format(presentacion.precio) }}
-                                    </span>
-                                </li>
+                                <option value="{{ presentacion.id }}" data-precio="{{ presentacion.precio }}">
+                                    {{ presentacion.tipoPresentacion }} - ${{ "%.2f"|format(presentacion.precio) }}
+                                </option>
                                 {% endfor %}
-                            </ul>
+                            </select>
                         </div>
 
-                        <!-- Form for adding to cart -->
-                        <form action="{{ url_for('clientes.agregar_al_carrito') }}" method="POST">
-                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                            <input type="hidden" name="galleta_id" value="{{ galleta.id }}">
-                            <input type="hidden" name="galleta_nombre" value="{{ galleta.nombre }}">
-                            
-                            <!-- Selector de presentación -->
-                            <div class="mb-4">
-                                <label for="presentacion_{{ galleta.id }}"
-                                    class="block text-sm font-medium text-gray-700 mb-1">Presentación</label>
-                                <select name="presentacion_id" id="presentacion_{{ galleta.id }}"
-                                    class="bg-gray-50 border border-gray-300 text-gray-700 text-sm rounded-lg focus:ring-amber-200 focus:border-amber-300 block w-full p-2.5">
-                                    {% for presentacion in galleta.presentaciones %}
-                                    <option value="{{ presentacion.id }}" data-precio="{{ presentacion.precio }}">
-                                        {{ presentacion.tipoPresentacion }} - ${{ "%.2f"|format(presentacion.precio) }}
-                                    </option>
+                        <!-- Selector de cantidad -->
+                        <div class="mb-4">
+                            <label for="cantidad_{{ galleta.id }}"
+                                class="block text-sm font-medium text-gray-700 mb-1">Cantidad</label>
+                            <input type="number" name="cantidad" id="cantidad_{{ galleta.id }}" min="1" value="1"
+                                class="bg-gray-50 border border-gray-300 text-gray-700 text-sm rounded-lg focus:ring-amber-200 focus:border-amber-300 block w-full p-2.5">
+                        </div>
+
+                        <!-- Botón Añadir -->
+                        <button type="submit"
+                            class="w-full bg-amber-100 hover:bg-amber-200 text-amber-900 font-medium py-2 px-4 rounded-lg transition duration-200 flex items-center justify-center border border-amber-200 shadow-sm">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20"
+                                fill="currentColor">
+                                <path fill-rule="evenodd"
+                                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z"
+                                    clip-rule="evenodd" />
+                            </svg>
+                            Añadir al carrito
+                        </button>
+                    </form>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Sidebar Cart (modal) -->
+        <div id="cart-modal" class="fixed inset-0 z-50 hidden overflow-y-auto">
+            <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+                <!-- Fondo oscuro -->
+                <div class="fixed inset-0 transition-opacity" aria-hidden="true">
+                    <div class="absolute inset-0 bg-gray-500 opacity-75"></div>
+                </div>
+
+                <!-- Contenido del carrito -->
+                <div
+                    class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+                    <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                        <h2 class="text-2xl font-bold text-gray-800 mb-4 border-b pb-2">Tu Pedido</h2>
+
+                        <!-- Items Table -->
+                        <div class="overflow-x-auto max-h-96 overflow-y-auto">
+                            <table class="min-w-full divide-y divide-gray-200">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th scope="col"
+                                            class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Producto</th>
+                                        <th scope="col"
+                                            class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Precio</th>
+                                        <th scope="col"
+                                            class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Cantidad</th>
+                                        <th scope="col"
+                                            class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Subtotal</th>
+                                        <th scope="col"
+                                            class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody id="cart-items" class="bg-white divide-y divide-gray-200">
+                                    {% if session.get('carrito') and session['carrito']|length > 0 %}
+                                    {% for item in session['carrito'] %}
+                                    <tr>
+                                        <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-900">
+                                            {{ item.galleta_nombre }} ({{ item.presentacion_texto }})
+                                        </td>
+                                        <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-500">
+                                            ${{ "%.2f"|format(item.precio) }}
+                                        </td>
+                                        <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-500">
+                                            {{ item.cantidad }}
+                                        </td>
+                                        <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-500">
+                                            ${{ "%.2f"|format(item.subtotal) }}
+                                        </td>
+                                        <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-500">
+                                            <form
+                                                action="{{ url_for('clientes.eliminar_del_carrito', index=loop.index0) }}"
+                                                method="POST" class="inline">
+                                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                                <button type="submit"
+                                                    class="text-red-500 hover:text-red-700 focus:outline-none">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5"
+                                                        viewBox="0 0 20 20" fill="currentColor">
+                                                        <path fill-rule="evenodd"
+                                                            d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
+                                                            clip-rule="evenodd" />
+                                                    </svg>
+                                                </button>
+                                            </form>
+                                        </td>
+                                    </tr>
                                     {% endfor %}
-                                </select>
-                            </div>
+                                    {% else %}
+                                    <tr id="empty-cart-message">
+                                        <td colspan="5" class="px-2 py-4 text-sm text-gray-500 text-center">
+                                            No hay productos en el carrito
+                                        </td>
+                                    </tr>
+                                    {% endif %}
+                                </tbody>
+                            </table>
+                        </div>
 
-                            <!-- Selector de cantidad -->
+                        <!-- Summary -->
+                        <div class="mt-6 border-t border-gray-200 pt-4">
+                            <div class="flex justify-between mb-2">
+                                <span class="text-gray-600">Subtotal:</span>
+                                <span id="subtotal" class="font-medium">${{
+                                    "%.2f"|format(session.get('carrito_subtotal', 0)) }}</span>
+                            </div>
+                            <div class="flex justify-between mb-2">
+                                <span class="text-gray-600">IVA (16%):</span>
+                                <span id="iva" class="font-medium">${{ "%.2f"|format(session.get('carrito_iva', 0))
+                                    }}</span>
+                            </div>
+                            <div class="flex justify-between text-lg font-bold mt-4 pt-2 border-t border-gray-200">
+                                <span>Total:</span>
+                                <span id="total">${{ "%.2f"|format(session.get('carrito_total', 0)) }}</span>
+                            </div>
+                        </div>
+
+                        <!-- Selector de fecha de recogida -->
+                        <form action="{{ url_for('clientes.procesar_pedido') }}" method="POST" class="mt-4">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                             <div class="mb-4">
-                                <label for="cantidad_{{ galleta.id }}"
-                                    class="block text-sm font-medium text-gray-700 mb-1">Cantidad</label>
-                                <input type="number" name="cantidad" id="cantidad_{{ galleta.id }}" min="1" value="1"
-                                    class="bg-gray-50 border border-gray-300 text-gray-700 text-sm rounded-lg focus:ring-amber-200 focus:border-amber-300 block w-full p-2.5">
+                                <label for="fecha_recogida" class="block text-sm font-medium text-gray-700 mb-1">Fecha
+                                    de Recogida</label>
+                                <input type="date" name="fecha_recogida" id="fecha_recogida"
+                                    class="bg-gray-50 border border-gray-300 text-gray-700 text-sm rounded-lg focus:ring-amber-200 focus:border-amber-300 block w-full p-2.5"
+                                    min="{{ now().strftime('%Y-%m-%d') }}" required>
                             </div>
 
-                            <!-- Botón Añadir -->
-                            <button type="submit"
-                                class="w-full bg-amber-100 hover:bg-amber-200 text-amber-900 font-medium py-2 px-4 rounded-lg transition duration-200 flex items-center justify-center border border-amber-200 shadow-sm">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20"
-                                    fill="currentColor">
-                                    <path fill-rule="evenodd"
-                                        d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z"
-                                        clip-rule="evenodd" />
-                                </svg>
-                                Añadir al carrito
-                            </button>
+                            <!-- Botones -->
+                            <div class="flex space-x-4">
+                                <button type="button" id="continue-shopping"
+                                    class="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-3 px-4 rounded-lg transition duration-200">
+                                    Seguir Comprando
+                                </button>
+                                <button type="submit"
+                                    class="w-full mt-6 bg-amber-500 hover:bg-amber-600 text-white font-bold py-3 px-4 rounded-lg transition duration-200"
+                                    style="background-color: #f59e0b; color: white;">
+                                    Proceder al Pago
+                                </button>
+                            </div>
                         </form>
                     </div>
                 </div>
-                {% endfor %}
             </div>
-        </div>
-
-        <!-- Sidebar Cart -->
-        <div class="lg:w-1/4 bg-white p-6 rounded-xl shadow-md h-fit sticky top-8">
-            <h2 class="text-2xl font-bold text-gray-800 mb-4 border-b pb-2">Tu Pedido</h2>
-
-            <!-- Items Table -->
-            <div class="overflow-x-auto">
-                <table class="min-w-full divide-y divide-gray-200">
-                    <thead class="bg-gray-50">
-                        <tr>
-                            <th scope="col"
-                                class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Producto</th>
-                            <th scope="col"
-                                class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Precio</th>
-                            <th scope="col"
-                                class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Cantidad</th>
-                            <th scope="col"
-                                class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Subtotal</th>
-                            <th scope="col"
-                                class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody id="cart-items" class="bg-white divide-y divide-gray-200">
-                        {% if session.get('carrito') and session['carrito']|length > 0 %}
-                            {% for item in session['carrito'] %}
-                            <tr>
-                                <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-900">
-                                    {{ item.galleta_nombre }} ({{ item.presentacion_texto }})
-                                </td>
-                                <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-500">
-                                    ${{ "%.2f"|format(item.precio) }}
-                                </td>
-                                <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-500">
-                                    {{ item.cantidad }}
-                                </td>
-                                <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-500">
-                                    ${{ "%.2f"|format(item.subtotal) }}
-                                </td>
-                                <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-500">
-                                    <form action="{{ url_for('clientes.eliminar_del_carrito', index=loop.index0) }}" method="POST" class="inline">
-                                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                                        <button type="submit" class="text-red-500 hover:text-red-700 focus:outline-none">
-                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                                                <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />
-                                            </svg>
-                                        </button>
-                                    </form>
-                                </td>
-                            </tr>
-                            {% endfor %}
-                        {% else %}
-                            <tr id="empty-cart-message">
-                                <td colspan="5" class="px-2 py-4 text-sm text-gray-500 text-center">
-                                    No hay productos en el carrito
-                                </td>
-                            </tr>
-                        {% endif %}
-                    </tbody>
-                </table>
-            </div>
-
-            <!-- Summary -->
-            <div class="mt-6 border-t border-gray-200 pt-4">
-                <div class="flex justify-between mb-2">
-                    <span class="text-gray-600">Subtotal:</span>
-                    <span id="subtotal" class="font-medium">${{ "%.2f"|format(session.get('carrito_subtotal', 0)) }}</span>
-                </div>
-                <div class="flex justify-between mb-2">
-                    <span class="text-gray-600">IVA (16%):</span>
-                    <span id="iva" class="font-medium">${{ "%.2f"|format(session.get('carrito_iva', 0)) }}</span>
-                </div>
-                <div class="flex justify-between text-lg font-bold mt-4 pt-2 border-t border-gray-200">
-                    <span>Total:</span>
-                    <span id="total">${{ "%.2f"|format(session.get('carrito_total', 0)) }}</span>
-                </div>
-            </div>
-
-            <!-- Checkout Button -->
-            {% if session.get('carrito') and session['carrito']|length > 0 %}
-            <form action="{{ url_for('clientes.procesar_pedido') }}" method="POST">
-                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                
-                <!-- Selector de fecha de recogida -->
-                <div class="mb-4">
-                    <label for="fecha_recogida" class="block text-sm font-medium text-gray-700 mb-1">Fecha de Recogida</label>
-                    <input type="date" name="fecha_recogida" id="fecha_recogida" 
-                    class="bg-gray-50 border border-gray-300 text-gray-700 text-sm rounded-lg focus:ring-amber-200 focus:border-amber-300 block w-full p-2.5"
-                    min="{{ now().strftime('%Y-%m-%d') }}" required>
-                </div>
-                
-                <button type="submit"
-                    class="w-full mt-6 bg-amber-500 hover:bg-amber-600 text-white font-bold py-3 px-4 rounded-lg transition duration-200">
-                    Proceder al Pago
-                </button>
-            </form>
-            {% else %}
-            <button disabled
-                class="w-full mt-6 bg-amber-500 hover:bg-amber-600 text-white font-bold py-3 px-4 rounded-lg transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed">
-                Proceder al Pago
-            </button>
-            {% endif %}
         </div>
     </div>
+
+    <!-- JavaScript para manejar el carrito -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const cartToggle = document.getElementById('cart-toggle');
+            const cartModal = document.getElementById('cart-modal');
+            const continueShopping = document.getElementById('continue-shopping');
+
+            // Mostrar/ocultar carrito
+            cartToggle.addEventListener('click', function () {
+                cartModal.classList.toggle('hidden');
+            });
+
+            // Ocultar carrito al hacer clic en "Seguir Comprando"
+            continueShopping.addEventListener('click', function () {
+                cartModal.classList.add('hidden');
+            });
+
+            // Ocultar carrito al hacer clic fuera del contenido
+            cartModal.addEventListener('click', function (e) {
+                if (e.target === cartModal) {
+                    cartModal.classList.add('hidden');
+                }
+            });
+        });
+    </script>
 </body>
 {% endblock %}
 

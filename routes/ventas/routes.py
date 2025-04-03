@@ -8,6 +8,7 @@ from forms import AgregarAlCarritoForm
 ventas_bp = Blueprint('ventas', __name__)
 
 @ventas_bp.route('/ventas', methods=['GET', 'POST'])
+
 def ventas():
     galletas = Galleta.query.options(db.joinedload(Galleta.presentaciones)).all()
     form = AgregarAlCarritoForm()

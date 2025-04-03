@@ -18,7 +18,7 @@ class Usuario(db.Model, UserMixin):  # Asegúrate de heredar de UserMixin
     apellidoMa = db.Column(db.String(50))
     correo = db.Column(db.String(50), unique=True, nullable=False)
     contrasenia = db.Column(db.String(255), nullable=False)  # Contraseña hasheada
-    rol = db.Column(db.Enum('admin', 'cliente'), nullable=False)
+    rol = db.Column(db.Enum('admin', 'cliente','cajero','cocina'), nullable=False)
     fechaRegistro = db.Column(db.TIMESTAMP, server_default=db.func.current_timestamp())
 
     def set_password(self, password):
@@ -64,9 +64,7 @@ class Insumo(db.Model):
     fechaCaducidad = db.Column(db.Date, nullable=False)
     cantidad = db.Column(db.Numeric(10, 2), nullable=False)
     unidadMedida = db.Column(db.String(20))
-    presentacion = db.Column(db.String(50))
     descripcion = db.Column(db.Text)
-    porcentajeMerma = db.Column(db.Numeric(5, 2), nullable=False)
 
 class Proveedor(db.Model):
     __tablename__ = 'proveedores'

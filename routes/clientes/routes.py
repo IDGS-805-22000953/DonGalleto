@@ -6,6 +6,8 @@ from models.models import (
     db, Galleta, PresentacionGalleta, VentaLocal,PedidosCliente
 )
 from forms import AgregarAlCarritoForm
+
+from flask_login import login_user, logout_user, login_required, current_user
 from datetime import datetime
 
 clientes_bp = Blueprint('clientes', __name__)

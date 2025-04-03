@@ -1,5 +1,6 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from datetime import datetime, date
+from flask_login import login_required  # Importa el decorador login_required
 from models.models import (
     db,
     Usuario,

@@ -1,7 +1,7 @@
 from flask import Blueprint,Flask, render_template, request, redirect, url_for, jsonify, session, flash
 from flask_wtf.csrf import CSRFProtect
 from config import DevelopmentConfig
-from datetime import datetime
+from datetime import datetime, timedelta
 import base64
 from decimal import Decimal
 from flask_login import login_user, logout_user, login_required, current_user
@@ -71,6 +71,7 @@ def cocina():
 
 @cocina_bp.route("/nueva_galleta", methods=["GET", "POST"])
 def nueva_galleta():
+    galletas = Galleta.query.all()
     insumos = Insumo.query.all()
 
     if request.method == "POST":
@@ -78,7 +79,6 @@ def nueva_galleta():
         descripcion = request.form.get("descripcion")
         insumos_seleccionados = request.form.getlist("insumos")  
         imagen = request.files.get("imagen")
-        precio = request.form.get("precio", type=float)  # Obtener precio
 
         if imagen:
             imagen_data = imagen.read()
@@ -91,12 +91,21 @@ def nueva_galleta():
         db.session.flush()  
 
         for id_insumo in insumos_seleccionados:
-            cantidad_insumo = request.form.get(f"cantidad_{id_insumo}", type=int)
-            if cantidad_insumo and cantidad_insumo > 0:
+            cantidad = request.form.get(f"cantidad_{id_insumo}", type=float)
+            unidad = request.form.get(f"unidad_{id_insumo}")
+            
+            if cantidad and cantidad > 0:
+                insumo = Insumo.query.get(id_insumo)
+                
+                # Convertir a la unidad base
+                cantidad_base = convertir_a_unidad_base(cantidad, unidad, insumo.unidadBase)
+                
                 receta_insumo = RecetaInsumos(
                     idReceta=nueva_receta.id,
                     idInsumo=int(id_insumo),
-                    cantidadInsumo=cantidad_insumo
+                    cantidadInsumo=cantidad_base,
+                    cantidadSeleccionada=cantidad,
+                    unidadSeleccionada=unidad
                 )
                 db.session.add(receta_insumo)
 
@@ -104,69 +113,130 @@ def nueva_galleta():
         db.session.add(nueva_galleta)
         db.session.flush()  
 
+        # Calcular el precio basado en los insumos utilizados
+        costo_total = calcular_costo_total(nueva_receta.id)
+        precio_sugerido = float(costo_total) * 1.5  # Margen de 50%
+        
         presentaciones = {
-    "Piezas": precio,  # La pieza es de 100g y su precio es el ingresado
-    "Gramos": precio / 100,  # Precio por gramo
-    "1kg": precio * 10,  # 1000g → 10 piezas
-    "700g": precio * 7,  # 700g → 7 piezas
-}
-
+        "Piezas": Decimal(str(precio_sugerido)),  # Convertir de vuelta a Decimal
+        "Gramos": Decimal(str(precio_sugerido)) / Decimal('100'),
+        "1kg": Decimal(str(precio_sugerido)) * Decimal('10'),
+        "700g": Decimal(str(precio_sugerido)) * Decimal('7'),
+    }
 
         for tipo, precio_presentacion in presentaciones.items():
             nueva_presentacion = PresentacionGalleta(
                 idGalleta=nueva_galleta.id,
                 tipoPresentacion=tipo,
-                cantidad=0,  # Stock inicial en 0
-                stock=0,  # Se asignará después de la producción
-                precio=precio_presentacion,  
-                fechaCaducidad=datetime.now().date()  
+                cantidad=0,
+                stock=0,
+                precio=precio_presentacion,
+                fechaCaducidad=datetime.now().date() + timedelta(days=30)
             )
             db.session.add(nueva_presentacion)
+            db.session.flush()  # Esto asigna un ID a nueva_presentacion
 
-
-        nueva_produccion = EstatusProduccion(
-            idGalleta=nueva_galleta.id,
-            nombreGalleta=nombre,
-            estatus="En preparación",
-            tiempoEstimado=30,
-            idPresentacion=1  
-        )
-        db.session.add(nueva_produccion)
+            # Ahora puedes usar nueva_presentacion.id con seguridad
+            nueva_produccion = EstatusProduccion(
+                idGalleta=nueva_galleta.id,
+                nombreGalleta=nombre,
+                estatus="En preparación",
+                tiempoEstimado=30,
+                idPresentacion=nueva_presentacion.id  # Ahora tiene un valor válido
+            )
+            db.session.add(nueva_produccion)
 
         db.session.commit()
         flash("Galleta creada correctamente", "success")
         return redirect(url_for("cocina.cocina"))
 
-    return render_template("Cocina/nuevaGalleta.html", insumos=insumos)
+    return render_template("Cocina/nuevaGalleta.html", insumos=insumos, galletas=galletas)
 
+def convertir_a_unidad_base(cantidad, unidad_origen, unidad_destino):
+    try:
+        cantidad = Decimal(str(cantidad))
+        
+        # Tabla de conversiones mejorada
+        conversiones = {
+            'g': {'kg': Decimal('0.001'), 'g': Decimal('1'), 'mg': Decimal('1000')},
+            'kg': {'g': Decimal('1000'), 'kg': Decimal('1'), 'mg': Decimal('1000000')},
+            'mg': {'g': Decimal('0.001'), 'kg': Decimal('0.000001'), 'mg': Decimal('1')},
+            'l': {'ml': Decimal('1000'), 'l': Decimal('1')},
+            'ml': {'l': Decimal('0.001'), 'ml': Decimal('1')},
+            'docena': {'unidad': Decimal('12'), 'docena': Decimal('1')},
+            'unidad': {'docena': Decimal('1')/Decimal('12'), 'unidad': Decimal('1')}
+        }
+        
+        if unidad_origen == unidad_destino:
+            return cantidad
+        
+        if unidad_origen in conversiones and unidad_destino in conversiones[unidad_origen]:
+            return cantidad * conversiones[unidad_origen][unidad_destino]
+        
+        # Si no hay conversión directa, intentar encontrar una ruta
+        # Por ejemplo: convertir de mg a kg pasando por g
+        if unidad_origen == 'mg' and unidad_destino == 'kg':
+            return cantidad * Decimal('0.000001')
+        if unidad_origen == 'kg' and unidad_destino == 'mg':
+            return cantidad * Decimal('1000000')
+        
+        flash(f"No se puede convertir de {unidad_origen} a {unidad_destino}", "error")
+        return cantidad
+    
+    except Exception as e:
+        flash(f"Error en conversión de unidades: {str(e)}", "error")
+        return Decimal('0')
+
+def calcular_costo_total(id_receta):
+    receta_insumos = RecetaInsumos.query.filter_by(idReceta=id_receta).all()
+    costo_total = Decimal('0.0')  # Inicializar como Decimal
+    
+    for ri in receta_insumos:
+        insumo = Insumo.query.get(ri.idInsumo)
+        # Convertir ambos valores a Decimal antes de operar
+        cantidad = Decimal(str(ri.cantidadInsumo))
+        costo_por_unidad = insumo.costoPorUnidad  # Ya debería ser Decimal
+        costo_total += cantidad * costo_por_unidad
+    
+    return costo_total
 
 
 @cocina_bp.route("/cambiar_estatus", methods=["POST"])
 def cambiar_estatus():
-    id_produccion = request.form.get("id_produccion")
-    produccion = EstatusProduccion.query.get(id_produccion)
+    try:
+        id_produccion = request.form.get("id_produccion")
+        produccion = EstatusProduccion.query.get(id_produccion)
 
-    if not produccion:
-        flash("Producción no encontrada", "error")
-        return redirect(url_for("cocina.cocina"))
+        if not produccion:
+            flash("Producción no encontrada", "error")
+            return redirect(url_for("cocina.cocina"))
 
-    estatus_orden = ["En preparacion", "Horneando", "Enfriando"]
+        estatus_orden = ["En preparacion", "Horneando", "Enfriando"]
 
-    if produccion.estatus in estatus_orden:
-        indice_actual = estatus_orden.index(produccion.estatus)
-        
-        if indice_actual < len(estatus_orden) - 1:
+        if produccion.estatus in estatus_orden:
+            indice_actual = estatus_orden.index(produccion.estatus)
             
-            produccion.estatus = estatus_orden[indice_actual + 1]
-            db.session.commit()
-        else:
+            if indice_actual < len(estatus_orden) - 1:
+                # Avanzar al siguiente estado normal
+                produccion.estatus = estatus_orden[indice_actual + 1]
+                db.session.commit()
+                flash(f"Estado cambiado a {produccion.estatus}", "success")
+            else:
+                # Estado final - completar producción
+                if not registrar_produccion(produccion.idGalleta, produccion.idPresentacion):
+                    raise Exception("Error al registrar producción")
+                
+                if not actualizar_stock(produccion.idGalleta, produccion.idPresentacion):
+                    raise Exception("Error al actualizar stock")
+                
+                db.session.delete(produccion)
+                db.session.commit()
+                flash("Producción completada correctamente", "success")
 
-            registrar_produccion(produccion.idGalleta, produccion.idPresentacion)
-
-            
-            actualizar_stock(produccion.idGalleta, produccion.idPresentacion)
-            db.session.delete(produccion)
-            db.session.commit()
+    except Exception as e:
+        db.session.rollback()
+        flash(f"Error al cambiar estatus: {str(e)}", "error")
+        print(f"Error en cambiar_estatus: {str(e)}")
 
     return redirect(url_for("cocina.cocina"))
 
@@ -176,70 +246,117 @@ def registrar_produccion(id_galleta, id_presentacion):
 
     if not galleta or not presentacion:
         print("Galleta o presentación no encontrada.")
-        return
+        return False
 
-    # Definir la cantidad producida según la presentación
-    cantidad_producida = 0
-    if presentacion.tipoPresentacion == "1kg":
-        cantidad_producida = 10  # 10 paquetes de 1kg
-    elif presentacion.tipoPresentacion == "700g":
-        cantidad_producida = 14  # 14 paquetes de 700g
-    elif presentacion.tipoPresentacion == "Gramos":
-        cantidad_producida = 10000  # 10000g (100 galletas)
-    elif presentacion.tipoPresentacion == "Piezas":
-        cantidad_producida = 100  # 100 piezas
+    # Calcular cantidad producida basada en presentación
+    cantidad_producida = {
+        "1kg": 10,
+        "700g": 14,
+        "Gramos": 10000,
+        "Piezas": 100
+    }.get(presentacion.tipoPresentacion, 0)
 
-    nueva_produccion = Produccion(
-        idReceta=galleta.idReceta,
-        idGalleta=galleta.id, 
-        cantidadProducida=cantidad_producida,
-        fechaProduccion=datetime.now()
-    )
-    db.session.add(nueva_produccion)
-    db.session.commit()
-    print(f"Producción registrada: {cantidad_producida} {presentacion.tipoPresentacion}")
+    if cantidad_producida <= 0:
+        print("Tipo de presentación no válido")
+        return False
 
-
+    try:
+        nueva_produccion = Produccion(
+            idReceta=galleta.idReceta,
+            idGalleta=galleta.id, 
+            cantidadProducida=cantidad_producida,
+            fechaProduccion=datetime.now()
+        )
+        db.session.add(nueva_produccion)
+        return True
+    except Exception as e:
+        print(f"Error al registrar producción: {str(e)}")
+        return False
+    
+    
 def actualizar_stock(id_galleta, id_presentacion):
-    presentacion = PresentacionGalleta.query.get(id_presentacion)
-    if not presentacion:
-        print("No se encontró la presentación con ID:", id_presentacion)
-        return
+    try:
+        # Obtener todos los objetos necesarios
+        presentacion = PresentacionGalleta.query.get(id_presentacion)
+        if not presentacion:
+            flash("Presentación no encontrada", "error")
+            return False
 
-    galleta = Galleta.query.get(id_galleta)
-    if not galleta:
-        print("No se encontró la galleta con ID:", id_galleta)
-        return
+        galleta = Galleta.query.get(id_galleta)
+        if not galleta:
+            flash("Galleta no encontrada", "error")
+            return False
 
-    receta = Receta.query.get(galleta.idReceta)
-    if not receta:
-        print("No se encontró la receta con ID:", galleta.idReceta)
-        return
+        receta = Receta.query.get(galleta.idReceta)
+        if not receta:
+            flash("Receta no encontrada", "error")
+            return False
 
-    # Ajuste de stock al completar la producción para todas las presentaciones
-    if presentacion.tipoPresentacion == "1kg":
-        presentacion.stock += 10  # 10 paquetes de 1kg
-    elif presentacion.tipoPresentacion == "700g":
-        presentacion.stock += 14  # 14 paquetes de 700g
-        # Agregar los gramos restantes
-        gramaje = PresentacionGalleta.query.filter_by(tipoPresentacion="Gramos", idGalleta=id_galleta).first()
-        if gramaje:
-            gramaje.stock += 200
-    elif presentacion.tipoPresentacion == "Gramos":
-        presentacion.stock += 10000  # 10000g (100 galletas)
-    elif presentacion.tipoPresentacion == "Piezas":
-        presentacion.stock += 100  # 100 piezas
+        # Determinar cuántas unidades producimos (basado en la presentación)
+        if presentacion.tipoPresentacion == "1kg":
+            unidades_producidas = 10  # 10 paquetes de 1kg
+        elif presentacion.tipoPresentacion == "700g":
+            unidades_producidas = 14  # 14 paquetes de 700g
+        elif presentacion.tipoPresentacion == "Gramos":
+            unidades_producidas = 100  # 10000g = 100x100g
+        elif presentacion.tipoPresentacion == "Piezas":
+            unidades_producidas = 1  # 1 pieza = 100g
+        else:
+            flash("Tipo de presentación no válido", "error")
+            return False
 
-    # Descontar insumos usados en la receta
-    insumos_receta = RecetaInsumos.query.filter_by(idReceta=receta.id).all()
-    for receta_insumo in insumos_receta:
-        insumo = Insumo.query.get(receta_insumo.idInsumo)
-        if insumo:
-            insumo.cantidad -= receta_insumo.cantidadInsumo  # Descontar la cantidad usada
-            if insumo.cantidad < 0:
-                insumo.cantidad = 0  # Evitar negativos
+        # Obtener todos los insumos de la receta
+        receta_insumos = RecetaInsumos.query.filter_by(idReceta=receta.id).all()
+        
+        # Primero validar que tenemos suficiente stock para todos los insumos
+        for receta_insumo in receta_insumos:
+            insumo = Insumo.query.get(receta_insumo.idInsumo)
+            if insumo:
+                # Convertir a unidad base del insumo
+                cantidad_base = convertir_a_unidad_base(
+                    receta_insumo.cantidadSeleccionada,
+                    receta_insumo.unidadSeleccionada,
+                    insumo.unidadBase
+                )
+                
+                # Calcular cantidad total necesaria
+                cantidad_necesaria = cantidad_base * Decimal(str(unidades_producidas))
+                
+                if insumo.cantidad < cantidad_necesaria:
+                    flash(f"No hay suficiente {insumo.nombre}. Necesitas {cantidad_necesaria} {insumo.unidadBase} pero solo tienes {insumo.cantidad}", "error")
+                    return False
 
-    db.session.commit()
+        # Si tenemos suficiente stock para todos, procedemos a descontar
+        for receta_insumo in receta_insumos:
+            insumo = Insumo.query.get(receta_insumo.idInsumo)
+            if insumo:
+                cantidad_base = convertir_a_unidad_base(
+                    receta_insumo.cantidadSeleccionada,
+                    receta_insumo.unidadSeleccionada,
+                    insumo.unidadBase
+                )
+                cantidad_total = cantidad_base * Decimal(str(unidades_producidas))
+                insumo.cantidad -= cantidad_total
+                print(f"Descontados {cantidad_total} {insumo.unidadBase} de {insumo.nombre}")
+
+        # Actualizar stock de la presentación
+        if presentacion.tipoPresentacion == "1kg":
+            presentacion.stock += 10
+        elif presentacion.tipoPresentacion == "700g":
+            presentacion.stock += 14
+        elif presentacion.tipoPresentacion == "Gramos":
+            presentacion.stock += 10000
+        elif presentacion.tipoPresentacion == "Piezas":
+            presentacion.stock += 100
+
+        db.session.commit()
+        return True
+
+    except Exception as e:
+        db.session.rollback()
+        flash(f"Error al actualizar stock: {str(e)}", "error")
+        print(f"Error en actualizar_stock: {str(e)}")
+        return False
 
 @cocina_bp.route("/ingresar_merma", methods=["GET", "POST"])
 def ingresar_merma():
@@ -359,4 +476,156 @@ def historial_merma():
         "Cocina/cocina.html",
         historial_merma=historial_merma,
         tipo_merma=tipo_merma
+    )
+
+
+@cocina_bp.route("/eliminar_galleta/<int:id>", methods=["POST"])
+def eliminar_galleta(id):
+    try:
+        # Desactivar autoflush para mayor control
+        with db.session.no_autoflush:
+            galleta = Galleta.query.get_or_404(id)
+            
+            # 1. Calcular el stock total en todas las presentaciones
+            total_galletas = 0
+            presentaciones = PresentacionGalleta.query.filter_by(idGalleta=id).all()
+            for presentacion in presentaciones:
+                if presentacion.tipoPresentacion == "1kg":
+                    total_galletas += presentacion.stock * 10  # 1kg = 10 unidades
+                elif presentacion.tipoPresentacion == "700g":
+                    total_galletas += presentacion.stock * 7   # 700g = 7 unidades
+                elif presentacion.tipoPresentacion == "Gramos":
+                    total_galletas += presentacion.stock / 100  # 100g por unidad
+                elif presentacion.tipoPresentacion == "Piezas":
+                    total_galletas += presentacion.stock        # 1 pieza = 1 unidad
+
+            # 2. Registrar merma si hay stock
+            if total_galletas > 0:
+                merma = Merma(
+                    idGalleta=galleta.id,
+                    cantidad=total_galletas,
+                    motivo="Eliminación de galleta y su stock",
+                    fechaRegistro=datetime.now()
+                )
+                db.session.add(merma)
+
+            # 3. Eliminar todas las relaciones en el orden correcto
+            
+            # Primero eliminar estatus de producción
+            EstatusProduccion.query.filter_by(idGalleta=id).delete()
+            
+            # Luego eliminar producciones
+            Produccion.query.filter_by(idGalleta=id).delete()
+            
+            # Eliminar presentaciones
+            PresentacionGalleta.query.filter_by(idGalleta=id).delete()
+            
+            # Eliminar mermas asociadas (si las hay)
+            Merma.query.filter_by(idGalleta=id).delete()
+            
+            # Eliminar relaciones de receta-insumo (si no se usa en otras galletas)
+            receta = Receta.query.get(galleta.idReceta)
+            if receta:
+                # Verificar si la receta es usada por otras galletas
+                otras_galletas = Galleta.query.filter(
+                    Galleta.idReceta == receta.id,
+                    Galleta.id != id
+                ).count()
+                
+                if otras_galletas == 0:
+                    RecetaInsumos.query.filter_by(idReceta=receta.id).delete()
+                    db.session.delete(receta)
+            
+            # Finalmente eliminar la galleta
+            db.session.delete(galleta)
+            
+            db.session.commit()
+            flash("Galleta eliminada correctamente y registrada en merma", "success")
+            
+    except Exception as e:
+        db.session.rollback()
+        flash(f"Error al eliminar la galleta: {str(e)}", "error")
+        print(f"Error en eliminar_galleta: {str(e)}")
+        import traceback
+        traceback.print_exc()
+    
+    return redirect(url_for("cocina.cocina"))
+
+@cocina_bp.route("/editar_galleta/<int:id>", methods=["GET", "POST"])
+def editar_galleta(id):
+    galleta = Galleta.query.get_or_404(id)
+    receta = Receta.query.get_or_404(galleta.idReceta)
+    insumos = Insumo.query.all()
+    receta_insumos = RecetaInsumos.query.filter_by(idReceta=receta.id).all()
+    
+    if request.method == "POST":
+        try:
+            # Actualizar datos básicos
+            galleta.nombre = request.form.get("nombre")
+            galleta.descripcion = request.form.get("descripcion")
+            receta.nombreReceta = galleta.nombre
+            receta.descripcion = galleta.descripcion
+            
+            # Manejar imagen
+            imagen = request.files.get("imagen")
+            if imagen:
+                imagen_data = imagen.read()
+                galleta.rutaFoto = base64.b64encode(imagen_data).decode("utf-8")
+                receta.rutaFoto = galleta.rutaFoto
+            
+            # Procesar insumos
+            insumos_seleccionados = request.form.getlist("insumos")
+            
+            # Eliminar insumos no seleccionados
+            for ri in receta_insumos:
+                if str(ri.idInsumo) not in insumos_seleccionados:
+                    db.session.delete(ri)
+            
+            # Actualizar o agregar insumos seleccionados
+            for id_insumo in insumos_seleccionados:
+                cantidad = request.form.get(f"cantidad_{id_insumo}", type=float)
+                unidad = request.form.get(f"unidad_{id_insumo}")
+                
+                if cantidad and cantidad > 0:
+                    insumo = Insumo.query.get(id_insumo)
+                    if insumo:
+                        # Convertir a unidad base
+                        cantidad_base = convertir_a_unidad_base(cantidad, unidad, insumo.unidadBase)
+                        
+                        # Buscar si ya existe la relación
+                        receta_insumo = RecetaInsumos.query.filter_by(
+                            idReceta=receta.id,
+                            idInsumo=id_insumo
+                        ).first()
+                        
+                        if receta_insumo:
+                            # Actualizar existente
+                            receta_insumo.cantidadInsumo = cantidad_base
+                            receta_insumo.cantidadSeleccionada = cantidad
+                            receta_insumo.unidadSeleccionada = unidad
+                        else:
+                            # Crear nueva relación
+                            receta_insumo = RecetaInsumos(
+                                idReceta=receta.id,
+                                idInsumo=id_insumo,
+                                cantidadInsumo=cantidad_base,
+                                cantidadSeleccionada=cantidad,
+                                unidadSeleccionada=unidad
+                            )
+                            db.session.add(receta_insumo)
+            
+            db.session.commit()
+            flash("Galleta actualizada correctamente", "success")
+            return redirect(url_for("cocina.cocina"))
+            
+        except Exception as e:
+            db.session.rollback()
+            flash(f"Error al actualizar galleta: {str(e)}", "error")
+            print(f"Error en editar_galleta: {str(e)}")
+    
+    return render_template(
+        "Cocina/editar_galleta.html",
+        galleta=galleta,
+        insumos=insumos,
+        receta_insumos=receta_insumos
     )

@@ -1,50 +1,114 @@
 {% extends "Central/layout.html" %}
 
 {% block content %}
-<div class="container mx-auto p-6 flex justify-center">
-    <div class="w-full max-w-2xl bg-white shadow-lg rounded-lg p-6">
+<div class="container mx-auto p-6">
+    <!-- Sección para crear una nueva galleta -->
+    <div class="w-full max-w-2xl mx-auto bg-white shadow-lg rounded-lg p-6 mb-10">
         <h1 class="text-3xl font-bold text-gray-800 mb-6 text-center">Crear Nueva Galleta</h1>
 
-        <form action="{{ url_for('cocina.nueva_galleta') }}" method="POST" enctype="multipart/form-data" class="space-y-4">
+        <form action="{{ url_for('cocina.nueva_galleta') }}" method="POST" enctype="multipart/form-data"
+            class="space-y-4">
             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 
             <div>
                 <label class="block font-semibold text-gray-700">Nombre de la Receta</label>
-                <input type="text" name="nombre" class="w-full border border-gray-300 rounded-lg p-2 focus:ring focus:ring-blue-300" required>
+                <input type="text" name="nombre"
+                    class="w-full border border-gray-300 rounded-lg p-2 focus:ring focus:ring-blue-300" required>
             </div>
 
             <div>
                 <label class="block font-semibold text-gray-700">Descripción</label>
-                <textarea name="descripcion" class="w-full border border-gray-300 rounded-lg p-2 focus:ring focus:ring-blue-300"></textarea>
+                <textarea name="descripcion"
+                    class="w-full border border-gray-300 rounded-lg p-2 focus:ring focus:ring-blue-300"></textarea>
             </div>
 
-            <div>
-                <label class="block font-semibold text-gray-700">Selecciona los Insumos y su Cantidad</label>
-                <div class="border border-gray-300 rounded-lg p-4 space-y-2">
-                    {% for insumo in insumos %}
-                    <div class="flex items-center gap-3">
-                        <input type="checkbox" name="insumos" value="{{ insumo.id }}" class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
-                        <label class="text-gray-700">{{ insumo.nombre }} (Disponible: {{ insumo.cantidad }} {{ insumo.unidadMedida }})</label>
-                        <input type="number" name="cantidad_{{ insumo.id }}" class="border border-gray-300 rounded-lg p-1 w-20 focus:ring focus:ring-blue-300" min="1" max="{{ insumo.cantidad }}" placeholder="Cantidad">
-                    </div>
-                    {% endfor %}
+            <div class="border border-gray-300 rounded-lg p-4 space-y-2">
+                {% for insumo in insumos %}
+                <div class="flex items-center gap-3">
+                    <input type="checkbox" name="insumos" value="{{ insumo.id }}"
+                        class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+                    <label class="text-gray-700">{{ insumo.nombre }} (Disponible: {{ insumo.cantidad }} {{
+                        insumo.unidadBase }})</label>
+                    <input type="number" name="cantidad_{{ insumo.id }}"
+                        class="border border-gray-300 rounded-lg p-1 w-20 focus:ring focus:ring-blue-300" min="0.01"
+                        step="0.01" placeholder="Cantidad">
+                    <select name="unidad_{{ insumo.id }}" class="border border-gray-300 rounded-lg p-1 focus:ring focus:ring-blue-300">
+                        {% if insumo.unidadBase == 'kg' %}
+                            <option value="kg">kg</option>
+                            <option value="g">g</option>
+                            <option value="mg">mg</option>
+                        {% elif insumo.unidadBase == 'litros' %}
+                            <option value="litros">litros</option>
+                            <option value="ml">ml</option>
+                        {% elif insumo.unidadBase == 'docena' %}
+                            <option value="docena">docena</option>
+                            <option value="unidad">unidad</option>
+                        {% else %}
+                            <option value="{{ insumo.unidadBase }}">{{ insumo.unidadBase }}</option>
+                        {% endif %}
+                    </select>
                 </div>
+                {% endfor %}
             </div>
 
-            <div>
-                <label class="block font-semibold text-gray-700">Precio por 100g de galleta</label>
-                <input type="number" name="precio" class="w-full border border-gray-300 rounded-lg p-2 focus:ring focus:ring-blue-300" min="0" step="0.01" required>
-            </div>
 
             <div>
                 <label class="block font-semibold text-gray-700">Subir Imagen</label>
-                <input type="file" name="imagen" accept="image/*" class="w-full border border-gray-300 rounded-lg p-2 focus:ring focus:ring-blue-300">
+                <input type="file" name="imagen" accept="image/*"
+                    class="w-full border border-gray-300 rounded-lg p-2 focus:ring focus:ring-blue-300">
             </div>
 
-            <button type="submit"  style="background-color: #9C6E66;" class="w-full text-white font-semibold py-2 rounded-lg hover:bg-[#7A5A52] transition">Crear Galleta</button>
+            <button type="submit" style="background-color: #9C6E66;"
+                class="w-full text-white font-semibold py-2 rounded-lg hover:bg-[#7A5A52] transition">Crear
+                Galleta</button>
         </form>
 
         <a href="{{ url_for('cocina.cocina') }}" class="block mt-4 text-center text-blue-600 hover:underline">Volver</a>
+    </div>
+
+    <!-- Sección para mostrar las galletas en un grid -->
+    <h2 class="text-2xl font-bold text-gray-800 mb-4 text-center">Galletas Disponibles</h2>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {% for galleta in galletas %}
+        <div
+            class="bg-white rounded-xl shadow-md overflow-hidden transition-all duration-300 hover:-translate-y-2 hover:shadow-lg">
+            <!-- Imagen de la Galleta -->
+            <!-- Imagen de la Galleta -->
+            {% if galleta.rutaFoto %}
+            <img src="data:image/png;base64,{{ galleta.rutaFoto }}" class="w-full h-48 object-cover"
+                alt="{{ galleta.nombre }}">
+            {% else %}
+            <div class="w-full h-48 bg-gray-100 flex items-center justify-center">
+                <i class="fas fa-cookie text-6xl text-gray-400"></i>
+            </div>
+            {% endif %}
+
+
+            <!-- Información de la galleta -->
+            <div class="p-5">
+                <h3 class="text-xl font-semibold text-gray-800 mb-2">{{ galleta.nombre }}</h3>
+                <p class="text-gray-500 mb-4">{{ galleta.descripcion }}</p>
+
+
+
+                <!-- Botones de Acción -->
+                <div class="flex justify-between">
+                    <a href="{{ url_for('cocina.editar_galleta', id=galleta.id) }}"
+                        class="bg-yellow-500 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-yellow-600 transition">
+                        Editar
+                    </a>
+                    <!-- <form action="{{ url_for('cocina.eliminar_galleta', id=galleta.id) }}" method="POST"
+                        onsubmit="return confirm('¿Estás seguro de eliminar esta galleta?');">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                        <button type="submit"
+                            class="bg-red-600 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-red-700 transition">
+                            Eliminar
+                        </button>
+                    </form> -->
+                </div>
+            </div>
+        </div>
+        {% endfor %}
     </div>
 </div>
 {% endblock %}

@@ -62,8 +62,9 @@ class Insumo(db.Model):
     nombre = db.Column(db.String(50), nullable=False)
     fechaIngreso = db.Column(db.TIMESTAMP, server_default=db.func.current_timestamp())
     fechaCaducidad = db.Column(db.Date, nullable=False)
-    cantidad = db.Column(db.Numeric(10, 2), nullable=False)
-    unidadMedida = db.Column(db.String(20))
+    cantidad = db.Column(db.Numeric(10, 2, asdecimal=True), nullable=False)
+    unidadBase = db.Column(db.String(20), nullable=False)  # Unidad base (litros, kg, piezas)
+    costoPorUnidad = db.Column(db.Numeric(10, 2, asdecimal=True), nullable=False)  # Costo por unidad base
     descripcion = db.Column(db.Text)
 
 class Proveedor(db.Model):
@@ -93,14 +94,18 @@ class Receta(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     nombreReceta = db.Column(db.String(50), nullable=False)
     descripcion = db.Column(db.Text)
-    rutaFoto = db.Column(db.String(255))
+    rutaFoto = db.Column(db.Text)
+   # cantidadGalletasProducidasPorInsumo = db.Column(db.Integer, nullable=False)
+
 
 class RecetaInsumos(db.Model):
     __tablename__ = 'recetaInsumos'
     id = db.Column(db.Integer, primary_key=True)
     idReceta = db.Column(db.Integer, db.ForeignKey('recetas.id'), nullable=False)
     idInsumo = db.Column(db.Integer, db.ForeignKey('insumos.id'), nullable=False)
-    cantidadInsumo = db.Column(db.Numeric(10, 2), nullable=False)
+    cantidadInsumo = db.Column(db.Numeric(10, 2, asdecimal=True), nullable=False)  # Cantidad en la unidad base
+    cantidadSeleccionada = db.Column(db.Numeric(10, 2), nullable=False)  # Cantidad en la unidad que eligió el usuario
+    unidadSeleccionada = db.Column(db.String(20), nullable=False)  # Unidad que eligió el usuario
 
 class Galleta(db.Model):
     __tablename__ = 'galletas'
@@ -108,7 +113,7 @@ class Galleta(db.Model):
     nombre = db.Column(db.String(50), nullable=False)
     descripcion = db.Column(db.Text)
     idReceta = db.Column(db.Integer, db.ForeignKey('recetas.id'), nullable=False)
-    rutaFoto = db.Column(db.String(255))
+    rutaFoto = db.Column(db.Text)  # Cambiado de LargeBinary a Text
 
     presentaciones = db.relationship('PresentacionGalleta', backref='galleta', lazy=True)
 

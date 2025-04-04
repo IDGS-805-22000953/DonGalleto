@@ -1,0 +1,82 @@
+{% extends "Central/layout.html" %}
+
+{% block content %}
+<div class="container mx-auto p-6">
+    <div class="w-full max-w-2xl mx-auto bg-white shadow-lg rounded-lg p-6 mb-10">
+        <h1 class="text-3xl font-bold text-gray-800 mb-6 text-center">Editar Galleta: {{ galleta.nombre }}</h1>
+
+        <form action="{{ url_for('cocina.editar_galleta', id=galleta.id) }}" method="POST" enctype="multipart/form-data" class="space-y-4">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+            <div>
+                <label class="block font-semibold text-gray-700">Nombre de la Receta</label>
+                <input type="text" name="nombre" value="{{ galleta.nombre }}"
+                    class="w-full border border-gray-300 rounded-lg p-2 focus:ring focus:ring-blue-300" required>
+            </div>
+
+            <div>
+                <label class="block font-semibold text-gray-700">Descripción</label>
+                <textarea name="descripcion"
+                    class="w-full border border-gray-300 rounded-lg p-2 focus:ring focus:ring-blue-300">{{ galleta.descripcion }}</textarea>
+            </div>
+
+            <div class="border border-gray-300 rounded-lg p-4 space-y-2">
+                {% for insumo in insumos %}
+                {% set receta_insumo = receta_insumos|selectattr('idInsumo', 'equalto', insumo.id)|first %}
+                <div class="flex items-center gap-3">
+                    <input type="checkbox" name="insumos" value="{{ insumo.id }}"
+                        class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                        {% if receta_insumo %}checked{% endif %}>
+                    <label class="text-gray-700">{{ insumo.nombre }} (Disponible: {{ insumo.cantidad }} {{
+                        insumo.unidadBase }})</label>
+                    <input type="number" name="cantidad_{{ insumo.id }}"
+                        class="border border-gray-300 rounded-lg p-1 w-20 focus:ring focus:ring-blue-300" min="0.01"
+                        step="0.01" placeholder="Cantidad"
+                        value="{{ receta_insumo.cantidadSeleccionada if receta_insumo else '' }}">
+                    <select name="unidad_{{ insumo.id }}" class="border border-gray-300 rounded-lg p-1 focus:ring focus:ring-blue-300">
+                        {% if insumo.unidadBase == 'kg' %}
+                            <option value="kg" {% if receta_insumo and receta_insumo.unidadSeleccionada == 'kg' %}selected{% endif %}>kg</option>
+                            <option value="g" {% if receta_insumo and receta_insumo.unidadSeleccionada == 'g' %}selected{% endif %}>g</option>
+                            <option value="mg" {% if receta_insumo and receta_insumo.unidadSeleccionada == 'mg' %}selected{% endif %}>mg</option>
+                        {% elif insumo.unidadBase == 'litros' %}
+                            <option value="litros" {% if receta_insumo and receta_insumo.unidadSeleccionada == 'litros' %}selected{% endif %}>litros</option>
+                            <option value="ml" {% if receta_insumo and receta_insumo.unidadSeleccionada == 'ml' %}selected{% endif %}>ml</option>
+                        {% elif insumo.unidadBase == 'docena' %}
+                            <option value="docena" {% if receta_insumo and receta_insumo.unidadSeleccionada == 'docena' %}selected{% endif %}>docena</option>
+                            <option value="unidad" {% if receta_insumo and receta_insumo.unidadSeleccionada == 'unidad' %}selected{% endif %}>unidad</option>
+                        {% else %}
+                            <option value="{{ insumo.unidadBase }}" selected>{{ insumo.unidadBase }}</option>
+                        {% endif %}
+                    </select>
+                </div>
+                {% endfor %}
+            </div>
+
+            <div>
+                <label class="block font-semibold text-gray-700">Imagen Actual</label>
+                {% if galleta.rutaFoto %}
+                <img src="data:image/png;base64,{{ galleta.rutaFoto }}" class="w-32 h-32 object-cover mb-2" alt="{{ galleta.nombre }}">
+                {% else %}
+                <div class="w-32 h-32 bg-gray-100 flex items-center justify-center mb-2">
+                    <i class="fas fa-cookie text-4xl text-gray-400"></i>
+                </div>
+                {% endif %}
+                <label class="block font-semibold text-gray-700">Cambiar Imagen</label>
+                <input type="file" name="imagen" accept="image/*"
+                    class="w-full border border-gray-300 rounded-lg p-2 focus:ring focus:ring-blue-300">
+            </div>
+
+            <div class="flex justify-between">
+                <button type="submit" style="background-color: #9C6E66;"
+                    class="w-full text-white font-semibold py-2 rounded-lg hover:bg-[#7A5A52] transition mr-2">
+                    Guardar Cambios
+                </button>
+                <a href="{{ url_for('cocina.cocina') }}" style="background-color: #6E9C66;"
+                    class="w-full text-white font-semibold py-2 rounded-lg hover:bg-[#5A7A52] transition text-center">
+                    Cancelar
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

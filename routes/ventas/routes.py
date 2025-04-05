@@ -7,13 +7,26 @@ from forms import AgregarAlCarritoForm
 
 ventas_bp = Blueprint('ventas', __name__)
 
-@ventas_bp.route('/ventas', methods=['GET', 'POST'])
+import base64
+import os
+from flask import current_app
 
+@ventas_bp.route('/ventas', methods=['GET', 'POST'])
 def ventas():
     galletas = Galleta.query.options(db.joinedload(Galleta.presentaciones)).all()
-    form = AgregarAlCarritoForm()
     
-    # Obtener conteo de pedidos pendientes
+    # Convertir imágenes a base64
+    for galleta in galletas:
+        if galleta.rutaFoto:  # Asegúrate que haya una ruta de imagen
+            try:
+                image_path = os.path.join(current_app.static_folder, galleta.rutaFoto)
+                with open(image_path, 'rb') as img_file:
+                    galleta.rutaFoto_base64 = base64.b64encode(img_file.read()).decode('utf-8')
+            except Exception as e:
+                current_app.logger.error(f"Error al cargar imagen: {str(e)}")
+                galleta.rutaFoto_base64 = None
+    
+    form = AgregarAlCarritoForm()
     pedidos_pendientes_count = PedidosCliente.query.filter_by(estatus='pendiente').count()
     
     if 'carrito' not in session:
@@ -25,7 +38,8 @@ def ventas():
     return render_template('Ventas/ventas2.html', 
                          galletas=galletas, 
                          form=form,
-                         pedidos_pendientes_count=pedidos_pendientes_count)
+                         pedidos_pendientes_count=pedidos_pendientes_count) 
+       
 @ventas_bp.route('/agregar_al_carrito', methods=['POST'])
 def agregar_al_carrito():
     form = AgregarAlCarritoForm()
@@ -100,11 +114,18 @@ def eliminar_del_carrito(index):
     return redirect(url_for('ventas.ventas'))
 
 
+from flask_login import current_user  # Asegúrate de importar current_user
+
 @ventas_bp.route('/procesar_pedido', methods=['POST'])
 def procesar_pedido():
     if 'carrito' not in session or not session['carrito']:
         flash('El carrito está vacío', 'error')
         return redirect(url_for('ventas.ventas'))
+    
+    # Verificar si el usuario está autenticado
+    if not current_user.is_authenticated:
+        flash('Debes iniciar sesión para procesar un pedido', 'error')
+        return redirect(url_for('auth.login'))
     
     try:
         for item in session['carrito']:
@@ -123,13 +144,13 @@ def procesar_pedido():
             # Restar el stock
             presentacion.stock -= item['cantidad']
             
-            # Crear la venta
+            # Crear la venta usando el ID del usuario autenticado
             nueva_venta = VentaLocal(
-                id_usuario=1,
+                id_usuario=current_user.id,  # Aquí usamos el ID del usuario logueado
                 id_presentacion=item['presentacion_id'],
                 cantidadcomprado=item['cantidad'],
                 subtotal=item['subtotal'],
-                total=item['subtotal']* 1.16,
+                total=item['subtotal'] * 1.16,
                 fechaCompra=datetime.now()
             )
             db.session.add(nueva_venta)
@@ -146,9 +167,7 @@ def procesar_pedido():
         db.session.rollback()
         flash(f'Error al procesar el pedido: {str(e)}', 'error')
         return redirect(url_for('ventas.ventas'))
-    
-    
-    
+        
     
 @ventas_bp.route('/pedidos-pendientes')
 def mostrar_pedidos_pendientes():

@@ -52,7 +52,7 @@ app.register_blueprint(auth_bp, url_prefix='/auth')
 # Rutas principales
 # =======================
 from flask import Flask, render_template
-from forms import LoginForm  # Asegúrate de que LoginForm está bien importado
+from forms import LoginForm  
 
 @app.route("/")
 def index():
@@ -78,6 +78,7 @@ if __name__ == '__main__':
     try:
         with app.app_context():
             db.create_all()
+            
         app.run(debug=True)
     except Exception as e:
         logging.error(f"Error al iniciar la aplicación: {e}")

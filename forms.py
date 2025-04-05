@@ -21,13 +21,13 @@ class AgregarAlCarritoForm(FlaskForm):
     submit = SubmitField('Agregar al carrito')
 
 class RegistrationForm(FlaskForm):
-    email = StringField('Correo electrónico', validators=[DataRequired(), Email()])
-    username = StringField('Nombre de usuario', validators=[DataRequired(), Length(max=50)])
-    apellidoPa = StringField('Apellido Paterno', validators=[DataRequired(), Length(max=50)])
-    apellidoMa = StringField('Apellido Materno', validators=[Length(max=50)])  # Opcional
-    password = PasswordField('Contraseña', validators=[DataRequired()])
-    rol = SelectField('Rol', choices=[('admin', 'Administrador'), ('cliente', 'Cliente')], validators=[DataRequired()])
-    submit = SubmitField('Registrarme')
+   username = StringField('Nombre Completo', validators=[DataRequired()])
+    apellidoPa = StringField('Apellido Paterno', validators=[DataRequired()])
+    email = StringField('Email', validators=[DataRequired(), Email()])
+    password = PasswordField('Contraseña', validators=[
+        DataRequired(),
+        Length(min=8, message='La contraseña debe tener al menos 8 caracteres')
+    ])
 
 class LoginForm(FlaskForm):
     username = StringField('Nombre de usuario', validators=[DataRequired()])

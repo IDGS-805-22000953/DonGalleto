@@ -61,51 +61,41 @@ def login():
 def register():
     form = RegistrationForm()
     if form.validate_on_submit():
-        username = form.username.data
-        password = form.password.data
-        email = form.email.data
-        apellidoPa = form.apellidoPa.data
-        apellidoMa = form.apellidoMa.data
-        rol = form.rol.data
-        recaptcha_response = request.form['g-recaptcha-response']
+        try:
+            # Verificar si el cliente ya existe
+            existing_client = Cliente.query.filter_by(correo=form.email.data).first()
+            if existing_client:
+                flash('Este correo electrónico ya está registrado', 'danger')
+                return redirect(url_for('auth.register'))
 
-        if not verify_recaptcha(recaptcha_response):
-            flash('Por favor completa el CAPTCHA', 'danger')
+            # Validación de contraseña
+            if len(form.password.data) < 8:
+                flash('La contraseña debe tener al menos 8 caracteres', 'danger')
+                return redirect(url_for('auth.register'))
+
+            # Crear nuevo cliente
+            new_client = Cliente(
+                nombre=form.username.data,
+                apellidoPa=form.apellidoPa.data,
+                correo=form.email.data,
+                contrasenia=generate_password_hash(form.password.data)
+            )
+
+            db.session.add(new_client)
+            db.session.commit()  # Asegurar el commit
+            
+            flash('Registro exitoso. Ahora puedes iniciar sesión', 'success')
+            return redirect(url_for('auth.login'))
+
+        except Exception as e:
+            db.session.rollback()
+            flash('Error al registrar. Por favor intenta nuevamente.', 'danger')
+            print(f"Error en registro: {str(e)}")  # Para depuración
             return redirect(url_for('auth.register'))
 
-        # Validar que el nombre de usuario tenga al menos dos nombres
-        if not validate_username(username):
-            flash('El nombre de usuario debe tener al menos dos nombres', 'danger')
-            return redirect(url_for('auth.register'))
-
-        # Validar la longitud de la contraseña
-        if len(password) < 8:
-            flash('La contraseña debe tener al menos 8 caracteres', 'danger')
-            return redirect(url_for('auth.register'))
-
-        # Validar formato de email
-        if not re.match(r"[^@]+@[^@]+\.[^@]+", email):
-            flash('El correo electrónico no es válido', 'danger')
-            return redirect(url_for('auth.register'))
-
-        # Verificar si el usuario ya existe
-        if Usuario.query.filter_by(nombreUsuario=username).first():
-            flash('El usuario ya existe', 'warning')
-            return redirect(url_for('auth.register'))
-
-        # Si pasa todas las validaciones
-        new_user = Usuario(
-            nombreUsuario=username,
-            apellidoPa=apellidoPa,
-            apellidoMa=apellidoMa,
-            correo=email,
-            rol=rol
-        )
-        new_user.set_password(password)  # Almacena la contraseña hasheada
-        db.session.add(new_user)
-        db.session.commit()
-        flash('Registro exitoso, ahora puedes iniciar sesión', 'success')
-        return redirect(url_for('auth.login'))
+    # Si hay errores en el formulario
+    elif request.method == 'POST':
+        flash('Por favor corrige los errores en el formulario', 'danger')
 
     return render_template('registro.html', form=form)
 
@@ -124,7 +114,7 @@ def admin_dashboard():
     if current_user.rol != 'admin':
         flash('No tienes permiso para acceder a esta página', 'danger')
         return redirect(url_for('auth.login'))
-    return render_template('Central/dashboard.html')
+    return redirect(url_for('dashboard.mostrar_dashboard'))
 
 @auth_bp.route('/cliente_dashboard')
 @login_required

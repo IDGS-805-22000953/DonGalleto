@@ -6,6 +6,31 @@
     <link href="{{ url_for('static', filename='css/output.css') }}" rel="stylesheet">
     <title>{% block title %}DonGalleto{% endblock %}</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+      .flash-success {
+        background-color: #10B981;
+        /* Verde */
+        border-left: 4px solid #059669;
+      }
+  
+      .flash-error {
+        background-color: #EF4444;
+        /* Rojo */
+        border-left: 4px solid #DC2626;
+      }
+  
+      .flash-info {
+        background-color: #3B82F6;
+        /* Azul */
+        border-left: 4px solid #2563EB;
+      }
+  
+      .flash-warning {
+        background-color: #F59E0B;
+        /* Amarillo */
+        border-left: 4px solid #D97706;
+      }
+    </style>
 </head>
 <body class="font-adlam flex flex-col min-h-screen">
 
@@ -27,7 +52,10 @@
                 <a href="{{ url_for('produccion.produccion') }}"  class="block py-2 px-3 md:p-0 text-white bg-opacity-20 rounded-sm md:bg-transparent md:text-white" aria-current="page">Produccion</a>
               </li>
               <li>
-                <a href="#" class="block py-2 px-3 md:p-0 text-white rounded-sm hover:bg-opacity-20 md:hover:bg-transparent md:border-0 md:hover:text-white">Ventas</a>
+                <a href="{{ url_for('ventas.ventas') }}" class="block py-2 px-3 md:p-0 text-white rounded-sm hover:bg-opacity-20 md:hover:bg-transparent md:border-0 md:hover:text-white">Ventas</a>
+              </li>
+              <li>
+                <a href="{{ url_for('clientes.clientes') }}" class="block py-2 px-3 md:p-0 text-white rounded-sm hover:bg-opacity-20 md:hover:bg-transparent md:border-0 md:hover:text-white">clientes</a>
               </li>
               <li>
                 <a href="#" class="block py-2 px-3 md:p-0 text-white rounded-sm hover:bg-opacity-20 md:hover:bg-transparent md:border-0 md:hover:text-white">Inventario</a>

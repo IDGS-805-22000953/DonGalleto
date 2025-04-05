@@ -140,7 +140,7 @@ def procesar_pedido():
             
             # Crear el pedido del cliente
             nuevo_pedido = PedidosCliente(
-                idCliente=1,
+                id_usuario=current_user.id,
                 id_presentacion=item['presentacion_id'],
                 cantidadcomprado=item['cantidad'],
                 subtotal=item['subtotal'],

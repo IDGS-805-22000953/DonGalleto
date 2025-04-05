@@ -128,3 +128,9 @@ class MermaForm(FlaskForm):
                                validators=[DataRequired()])
     
     submit = SubmitField('Registrar Merma')
+    
+
+class CorteMensualForm(FlaskForm):
+    fecha = DateField('Fecha del Corte', validators=[DataRequired()])
+    mes = DateField('Mes del Corte', format='%Y-%m', validators=[DataRequired()])
+    submit = SubmitField('Generar Corte')

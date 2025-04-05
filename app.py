@@ -17,6 +17,8 @@ from routes.produccion.routes import produccion_bp
 from routes.ventas.routes import ventas_bp
 from routes.central.routes import dashboard_bp
 from routes.inventario.routes import inventario_bp
+from routes.corte_caja.routes import corte_bp
+
 from auth.routes import auth_bp
 
 # Configuración del logging
@@ -47,6 +49,7 @@ app.register_blueprint(ventas_bp, url_prefix='/ventas')
 app.register_blueprint(dashboard_bp, url_prefix='/dashboard')
 app.register_blueprint(inventario_bp, url_prefix='/inventario')
 app.register_blueprint(auth_bp, url_prefix='/auth')
+app.register_blueprint(corte_bp, url_prefix='/corte')
 
 # =======================
 # Rutas principales

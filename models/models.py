@@ -202,3 +202,14 @@ class PedidosCliente(db.Model):
     # Definir las relaciones
     cliente = db.relationship('Usuario', backref='pedidos')
     presentacion = db.relationship('PresentacionGalleta', backref='pedidos')
+    
+class CorteCaja(db.Model):
+    __tablename__ = 'cortes_caja'
+    id = db.Column(db.Integer, primary_key=True)
+    mes = db.Column(db.String(7), nullable=False)  # formato YYYY-MM
+    ingreso_total = db.Column(db.Numeric(10, 2), nullable=False)
+    egresos_total = db.Column(db.Numeric(10, 2), nullable=False)
+    monto_mermas = db.Column(db.Numeric(10, 2), nullable=False)
+    caja_reportada = db.Column(db.Numeric(10, 2), nullable=False)  # lo que el usuario ingresó manualmente
+    utilidad = db.Column(db.Numeric(10, 2), nullable=False)
+    fecha_creacion = db.Column(db.DateTime, default=datetime.now)

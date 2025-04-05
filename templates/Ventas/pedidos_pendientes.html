@@ -31,7 +31,12 @@
                     <tbody class="bg-white divide-y divide-gray-200">
                         {% for pedido in pedidos_pendientes %}
                         <tr>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ pedido.cliente.nombre }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm font-medium text-gray-900">
+                                    {{ pedido.usuario.nombre }} {{ pedido.usuario.apellido_paterno }}
+                                </div>
+                                <div class="text-sm text-gray-500">{{ pedido.usuario.correo }}</div>
+                            </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                                 {{ pedido.presentacion.galleta.nombre }} ({{ pedido.presentacion.tipoPresentacion }})
                             </td>
@@ -39,7 +44,7 @@
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${{ "%.2f"|format(pedido.total) }}</td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ pedido.fechaPedido.strftime('%d/%m/%Y %H:%M') }}</td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                <form action="{{ url_for('ventas.marcar_como_vendido', pedido_id=pedido.id) }}" method="POST" class="inline">
+                                <form action="{{ url_for('ventas.marcar_como_completado', pedido_id=pedido.id) }}" method="POST" class="inline">
                                     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                                     <button type="submit" class="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded text-sm">
                                         Cobrar

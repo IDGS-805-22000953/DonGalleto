@@ -15,37 +15,37 @@
                     <div class="row g-4">
                         <div class="col-md-6">
                             <label class="form-label fw-bold text-brown">{{ form.name.label.text }}</label>
-                            {{ form.name(class="form-control shadow-lg", value=material.nombre) }}
+                            {{ form.name(class="form-control shadow-lg", value=form.name.data if form.name.data else material.nombre) }}
                         </div>
 
                         <div class="col-md-6">
                             <label class="form-label fw-bold text-brown">{{ form.expiration_date.label.text }}</label>
-                            {{ form.expiration_date(class="form-control shadow-lg", value=material.fechaCaducidad) }}
+                            {{ form.expiration_date(class="form-control shadow-lg", value=form.expiration_date.data.strftime('%Y-%m-%d') if form.expiration_date.data else material.fechaCaducidad.strftime('%Y-%m-%d')) }}
                         </div>
 
                         <div class="col-md-6">
                             <label class="form-label fw-bold text-brown">{{ form.quantity.label.text }}</label>
-                            {{ form.quantity(class="form-control shadow-lg", value=material.cantidad) }}
+                            {{ form.quantity(class="form-control shadow-lg", value=form.quantity.data if form.quantity.data else material.cantidad) }}
                         </div>
 
                         <div class="col-md-6">
                             <label class="form-label fw-bold text-brown">{{ form.unit.label.text }}</label>
-                            {{ form.unit(class="form-control shadow-lg", value=material.unidadMedida) }}
+                            {{ form.unit(class="form-control shadow-lg", value=form.unit.data if form.unit.data else material.unidadBase) }}
                         </div>
 
                         <div class="col-md-6">
-                            <label class="form-label fw-bold text-brown">{{ form.presentation.label.text }}</label>
-                            {{ form.presentation(class="form-control shadow-lg", value=material.presentacion) }}
-                        </div>
-
-                        <div class="col-md-6">
-                            <label class="form-label fw-bold text-brown">{{ form.percentage_waste.label.text }}</label>
-                            {{ form.percentage_waste(class="form-control shadow-lg", value=material.porcentajeMerma) }}
+                            <label class="form-label fw-bold text-brown">{{ form.cost_per_unit.label.text }}</label>
+                            {{ form.cost_per_unit(class="form-control shadow-lg", value=form.cost_per_unit.data if form.cost_per_unit.data else material.costoPorUnidad) }}
                         </div>
 
                         <div class="col-md-12">
                             <label class="form-label fw-bold text-brown">{{ form.description.label.text }}</label>
-                            {{ form.description(class="form-control shadow-lg", value=material.descripcion, rows=4) }}
+                            {{ form.description(class="form-control shadow-lg", rows=4, value=form.description.data if form.description.data else material.descripcion) }}
+                        </div>
+
+                        <div class="col-md-12">
+                            <label class="form-label fw-bold text-brown">{{ form.proveedor_id.label.text }}</label>
+                            {{ form.proveedor_id(class="form-control shadow-lg") }}
                         </div>
 
                         <div class="col-12 text-center mt-4">
@@ -140,5 +140,5 @@
             padding-right: 15px;
         }
     </style>
-
 {% endblock %}
+

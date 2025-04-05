@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
+<meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registrarse - DonGalleto</title>
     <link href="https://cdn.jsdelivr.net/npm/flowbite@1.5.0/dist/flowbite.min.css" rel="stylesheet" />
@@ -79,7 +79,8 @@
             font-weight: 500;
             color: #555;
         }
-        .form-container input {
+        .form-container input,
+        .form-container select {
             width: 100%;
             padding: 0.8rem 1rem;
             border: 1px solid #e0e0e0;
@@ -90,7 +91,8 @@
             font-size: 0.95rem;
             transition: all 0.3s ease;
         }
-        .form-container input:focus {
+        .form-container input:focus,
+        .form-container select:focus {
             border-color: #9C6E66;
             background: white;
             box-shadow: 0 0 0 3px rgba(156, 110, 102, 0.1);
@@ -161,12 +163,12 @@
 <body>
     <div class="container">
         <div class="logo-container">
-            <img src="{{ url_for('static', filename='img/MellowLogo.jpeg') }}" alt="DonGalleto Logo">
+            <img src="{{ url_for('static', filename='img/MellowLogo.jpeg') }}" alt="Mellow Logo">
         </div>
         
         <div class="form-container">
-            <h2>Regístrate en DonGalleto</h2>
-            <p>Crea tu cuenta para acceder a nuestros productos exclusivos.</p>
+            <h2>Regístrate en Mellow</h2>
+            <p>Crea tu cuenta para acceder a nuestro exclusivo contenido.</p>
 
             <!-- Flash messages -->
             {% with messages = get_flashed_messages(with_categories=true) %}
@@ -182,26 +184,32 @@
             <form method="POST" action="{{ url_for('auth.register') }}">
                 {{ form.hidden_tag() }}
                 
+              
+
+                <div class="form-row">
                     <div class="form-group">
-        {{ form.username.label }}
-        {{ form.username(class="form-control") }}
-        {% for error in form.username.errors %}
-            <div class="alert alert-danger">{{ error }}</div>
-        {% endfor %}
-    </div>
-
-                <div class="form-group">
-                    <label for="apellidoPa">Apellido Paterno</label>
-                    {{ form.apellidoPa(placeholder="Tu apellido paterno") }}
-                    {% if form.apellidoPa.errors %}
-                        <div class="alert alert-danger">
-                            {% for error in form.apellidoPa.errors %}
-                                <p>{{ error }}</p>
-                            {% endfor %}
-                        </div>
-                    {% endif %}
+                        <label for="username">Nombres</label>
+                        {{ form.username(placeholder="Tu nombre") }}
+                        {% if form.username.errors %}
+                            <div class="alert alert-danger">
+                                {% for error in form.username.errors %}
+                                    <p>{{ error }}</p>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="form-group">
+                        <label for="apellidoPa">Apellidos</label>
+                        {{ form.apellidoPa(placeholder="Apellido paterno") }}
+                        {% if form.apellidoPa.errors %}
+                            <div class="alert alert-danger">
+                                {% for error in form.apellidoPa.errors %}
+                                    <p>{{ error }}</p>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
                 </div>
-
                 <div class="form-group">
                     <label for="email">Correo electrónico</label>
                     {{ form.email(placeholder="ejemplo@correo.com") }}
@@ -216,7 +224,7 @@
 
                 <div class="form-group">
                     <label for="password">Contraseña</label>
-                    {{ form.password(placeholder="Crea una contraseña segura (mínimo 8 caracteres)") }}
+                    {{ form.password(placeholder="Crea una contraseña segura") }}
                     {% if form.password.errors %}
                         <div class="alert alert-danger">
                             {% for error in form.password.errors %}
@@ -233,7 +241,7 @@
                 <p class="text-center mt-4">¿Ya tienes cuenta? <a href="{{ url_for('auth.login') }}">Inicia sesión</a></p>
             </form>
             
-            <p class="footer-text">© 2023 DonGalleto - Todos los derechos reservados</p>
+            <p class="footer-text">© 2023 Mellow - Todos los derechos reservados</p>
         </div>
     </div>
 

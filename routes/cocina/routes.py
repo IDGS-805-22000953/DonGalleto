@@ -10,7 +10,6 @@ from werkzeug.utils import secure_filename
 from models.models import (
     db,
     Usuario,
-    Cliente,
     Insumo,
     Proveedor,
     InsumosProveedor,

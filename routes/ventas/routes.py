@@ -123,9 +123,8 @@ def procesar_pedido():
         return redirect(url_for('ventas.ventas'))
     
     # Verificar si el usuario está autenticado
-    if not current_user.is_authenticated:
-        flash('Debes iniciar sesión para procesar un pedido', 'error')
-        return redirect(url_for('auth.login'))
+   
+   
     
     try:
         for item in session['carrito']:
@@ -171,18 +170,30 @@ def procesar_pedido():
     
 @ventas_bp.route('/pedidos-pendientes')
 def mostrar_pedidos_pendientes():
-    # Obtener todos los pedidos pendientes con relaciones
-    pedidos_pendientes = PedidosCliente.query.filter_by(estatus='pendiente')\
-        .options(db.joinedload(PedidosCliente.cliente),
-                 db.joinedload(PedidosCliente.presentacion).joinedload(PresentacionGalleta.galleta))\
-        .all()
-    
-    return render_template('Ventas/pedidos_pendientes.html',
-                         pedidos_pendientes=pedidos_pendientes)
+    try:
+        pedidos_pendientes = PedidosCliente.query.filter_by(estatus='pendiente')\
+            .options(
+                db.joinedload(PedidosCliente.usuario),  # Cambiado de 'cliente' a 'usuario'
+                db.joinedload(PedidosCliente.presentacion).joinedload(PresentacionGalleta.galleta)
+            )\
+            .all()
+        
+        return render_template('Ventas/pedidos_pendientes.html',
+                            pedidos_pendientes=pedidos_pendientes)
+    except Exception as e:
+        flash(f'Error al cargar pedidos pendientes: {str(e)}', 'error')
+        return redirect(url_for('ventas.ventas'))
+   
+   
+   
 
-@ventas_bp.route('/marcar-como-vendido/<int:pedido_id>', methods=['POST'])
-def marcar_como_vendido(pedido_id):
+@ventas_bp.route('/marcar-como-completado/<int:pedido_id>', methods=['POST'])
+def marcar_como_completado(pedido_id):
     pedido = PedidosCliente.query.get_or_404(pedido_id)
+    
+    if pedido.estatus != 'pendiente':
+        flash('Solo se pueden completar pedidos pendientes', 'error')
+        return redirect(url_for('ventas.mostrar_pedidos_pendientes'))
     
     try:
         pedido.estatus = 'completado'

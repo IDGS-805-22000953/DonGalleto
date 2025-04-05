@@ -159,9 +159,16 @@ def nueva_galleta():
 
 def convertir_a_unidad_base(cantidad, unidad_origen, unidad_destino):
     try:
+        print(f"Conversión solicitada: {cantidad} {unidad_origen} → {unidad_destino}")
+        
+        # Validación básica
+        if not cantidad or not unidad_origen or not unidad_destino:
+            flash("Datos de conversión incompletos", "error")
+            return Decimal('0')
+            
         cantidad = Decimal(str(cantidad))
         
-        # Tabla de conversiones mejorada
+        # Definición completa de conversiones
         conversiones = {
             'g': {'kg': Decimal('0.001'), 'g': Decimal('1'), 'mg': Decimal('1000')},
             'kg': {'g': Decimal('1000'), 'kg': Decimal('1'), 'mg': Decimal('1000000')},
@@ -172,23 +179,25 @@ def convertir_a_unidad_base(cantidad, unidad_origen, unidad_destino):
             'unidad': {'docena': Decimal('1')/Decimal('12'), 'unidad': Decimal('1')}
         }
         
+        # Validar unidades
         if unidad_origen == unidad_destino:
+            print("Mismas unidades, no se requiere conversión")
             return cantidad
+            
+        if unidad_origen not in conversiones:
+            flash(f"Unidad de origen '{unidad_origen}' no soportada", "error")
+            return Decimal('0')
+            
+        if unidad_destino not in conversiones[unidad_origen]:
+            flash(f"No se puede convertir de {unidad_origen} a {unidad_destino}", "error")
+            return Decimal('0')
         
-        if unidad_origen in conversiones and unidad_destino in conversiones[unidad_origen]:
-            return cantidad * conversiones[unidad_origen][unidad_destino]
+        resultado = cantidad * conversiones[unidad_origen][unidad_destino]
+        print(f"Resultado de conversión: {resultado} {unidad_destino}")
+        return resultado
         
-        # Si no hay conversión directa, intentar encontrar una ruta
-        # Por ejemplo: convertir de mg a kg pasando por g
-        if unidad_origen == 'mg' and unidad_destino == 'kg':
-            return cantidad * Decimal('0.000001')
-        if unidad_origen == 'kg' and unidad_destino == 'mg':
-            return cantidad * Decimal('1000000')
-        
-        flash(f"No se puede convertir de {unidad_origen} a {unidad_destino}", "error")
-        return cantidad
-    
     except Exception as e:
+        print(f"Error en conversión: {str(e)}")
         flash(f"Error en conversión de unidades: {str(e)}", "error")
         return Decimal('0')
 

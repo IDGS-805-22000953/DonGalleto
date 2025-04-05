@@ -1,158 +1,194 @@
 {% extends "Central/layout.html" %}
 
 {% block content %}
-<div class="container mx-auto p-4 flex gap-6">
-
-    <div class="w-full md:w-1/2">
-        <h1 class="text-3xl font-bold text-gray-800 mb-6">Cocina</h1>
-
-        <!-- Estado de las Galletas en Cocina -->
-        <div class="bg-white p-6 rounded-lg shadow-md mb-6">
-            <h2 class="text-xl font-semibold text-gray-700 mb-4">Estado de las Galletas en Cocina</h2>
-            <table class="min-w-full bg-white border border-gray-200">
-                <thead>
-                    <tr>
-                        <th class="px-4 py-2 border-b">Galleta</th>
-                        <th class="px-4 py-2 border-b">Presentación</th>
-                        <th class="px-4 py-2 border-b">Fecha Producción</th>
-                        <th class="px-4 py-2 border-b">Estatus</th>
-                        <th class="px-4 py-2 border-b">Cambiar Estatus</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for alerta, presentacion in alertas %}
-                    <tr>
-                        <td class="px-4 py-2 border-b">{{ alerta.nombreGalleta }}</td>
-                        <td class="px-4 py-2 border-b">{{ presentacion }}</td>
-                        <td class="px-4 py-2 border-b">{{ alerta.fechaInicio.strftime('%Y-%m-%d') }}</td>
-                        <td class="px-4 py-2 border-b">{{ alerta.estatus }}</td>
-                        <td class="px-4 py-2 border-b">
-                            <form action="{{ url_for('cocina.cambiar_estatus') }}" method="POST">
-                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                                <input type="hidden" name="id_produccion" value="{{ alerta.id }}">
-                                <button type="submit" style="background-color: #9C6E66;" class="w-full text-white font-semibold py-2 rounded-lg hover:bg-[#7A5A52] transition">
-                                    Estatus
-                                </button>
-                            </form>
-                        </td>
-                    </tr>
-                    {% else %}
-                    <tr>
-                        <td colspan="5" class="text-center py-4 text-gray-600">No hay galletas en producción.</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+<div class="container mx-auto px-4 py-8">
+    <!-- Header Section -->
+    <div class="flex justify-between items-center mb-8">
+        <div>
+            <h1 class="text-2xl font-bold text-gray-800">Panel de Control de Cocina</h1>
+            <p class="text-gray-600">Gestión de producción y mermas</p>
         </div>
-
-    
-        <!-- Botón para Crear Galletas -->
-        <div class="bg-white p-6 rounded-2xl shadow-lg">
-            <h2 class="text-xl font-semibold text-gray-700 mb-4">Crear Nuevas Galletas</h2>
-            <a href="{{ url_for('cocina.nueva_galleta') }}" class="block text-center text-white bg-[#9C6E66] hover:bg-[#7A5A52] font-medium rounded-lg text-sm px-5 py-2.5">
-                Crear Galleta
+        <div class="flex items-center space-x-4">
+            <a style="background-color: #f7df92;" href="{{ url_for('cocina.nueva_galleta') }}"
+                class="flex items-center px-4 py-2 bg-[#9C6E66] text-gray-700 rounded-lg hover:bg-[#7A5A52] transition">
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                </svg>
+                Nueva Galleta
             </a>
         </div>
     </div>
 
-    <!-- SECCIÓN DE MERMAS -->
-    <div class="w-full md:w-1/2">
-        <h1 class="text-3xl font-bold text-gray-800 mb-6">Gestión de Merma</h1>
+    <!-- Two Column Layout -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
 
-        <!-- Botones para alternar entre Galletas e Insumos -->
-        <div class="mb-4">
-            <form method="GET" action="{{ url_for('cocina.historial_merma') }}">
-                <button type="submit" style="background-color: #9C6E66;" name="tipo_merma" value="galleta" class="focus:outline-none text-white bg-[#9C6E66] hover:bg-[#7A5A52] font-medium rounded-lg text-sm px-5 py-2.5 mr-2">Merma Galleta</button>
-                <button type="submit" style="background-color: #9C6E66;" name="tipo_merma" value="insumo" class="focus:outline-none text-white bg-[#9C6E66] hover:bg-[#7A5A52] font-medium rounded-lg text-sm px-5 py-2.5">Merma Insumo</button>
-            </form>
+        <!-- Left Column - Production -->
+        <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
+            <div  style="background-color: #742c2c;" class="p-5 border-b border-gray-200 bg-gray-50">
+                <h2 class="text-lg font-semibold text-white">Producción Actual</h2>
+            </div>
+
+            <div class="divide-y divide-gray-200">
+                {% for alerta, presentacion in alertas %}
+                <div class="p-5 hover:bg-gray-50 transition p-6 bg-yellow-50">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <h3 class="font-medium text-gray-900">{{ alerta.nombreGalleta }}</h3>
+                            <p class="text-sm text-gray-500 mt-1">{{ presentacion }} • {{
+                                alerta.fechaInicio.strftime('%d/%m/%Y') }}</p>
+                        </div>
+                        <div class="flex items-center">
+                            <span class="px-3 py-1 text-xs rounded-full bg-yellow-100 text-yellow-800" class="px-3 py-1 text-xs rounded-full 
+                                {% if alerta.estatus == 'En proceso' %}bg-blue-100 text-blue-800
+                                {% elif alerta.estatus == 'Terminado' %}bg-green-100 text-green-800
+                                {% else %}bg-gray-100 text-gray-800{% endif %}">
+                                {{ alerta.estatus }}
+
+                            </span>
+                        </div>
+                        <div class="mt-4">
+
+                            <form action="{{ url_for('cocina.cambiar_estatus') }}" method="POST">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                <input type="hidden" name="id_produccion" value="{{ alerta.id }}">
+                                <button type="submit"
+                                    class="w-full py-2 px-4 border border-[#9C6E66] text-[#9C6E66] rounded-lg hover:bg-[#9C6E66] hover:text-white transition">
+                                    Cambiar Estado
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="mt-4">
+
+                    </div>
+                </div>
+                {% else %}
+                <div class="p-5 text-center text-gray-500">
+                    No hay galletas en producción actualmente
+                </div>
+                {% endfor %}
+            </div>
         </div>
-        
-        <!-- Tabla de Mermas -->
-        <div class="bg-white p-6 rounded-lg shadow-md mb-6">
-            <h2 class="text-xl font-semibold text-gray-700 mb-4">Historial de Merma</h2>
-            <table class="min-w-full bg-white border border-gray-200">
-                <thead>
-                    <tr>
-                        <th class="px-4 py-2 border-b">Elemento</th>
-                        <th class="px-4 py-2 border-b">Cantidad</th>
-                        <th class="px-4 py-2 border-b">Motivo</th>
-                        <th class="px-4 py-2 border-b">Fecha</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for merma in historial_merma %}
-                    <tr>
-                        <td class="px-4 py-2 border-b">{{ merma.nombre }}</td>
-                        <td class="px-4 py-2 border-b">{{ merma.cantidad }}</td>
-                        <td class="px-4 py-2 border-b">{{ merma.motivo }}</td>
-                        <td class="px-4 py-2 border-b">{{ merma.fechaRegistro.strftime('%Y-%m-%d %H:%M') }}</td>
-                    </tr>
-                    {% else %}
-                    <tr>
-                        <td colspan="4" class="text-center py-4 text-gray-600">No hay registros de merma.</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+
+        <!-- Right Column - Waste Management -->
+        <div class="space-y-6">
+            
+            <!-- Waste Tabs -->
+            <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
+                <div style="background-color: #742c2c;" class="bg-[#F8F5F3] px-6 py-4 border-b border-gray-200">
+                    <h2 class="text-xl font-semibold text-white">Historial de merma</h2>
+                </div>
+                <div class="border-b border-gray-200">
+                    <form method="GET" action="{{ url_for('cocina.historial_merma') }}" class="flex">
+                        <button type="submit" name="tipo_merma" value="galleta"
+                            class="flex-1 py-3 px-4 text-center font-medium {% if request.args.get('tipo_merma', 'galleta') == 'galleta' %}text-[#9C6E66] border-b-2 border-[#9C6E66]{% else %}text-gray-500 hover:text-gray-700{% endif %}">
+                            Merma Galleta
+                        </button>
+                        <button type="submit" name="tipo_merma" value="insumo"
+                            class="flex-1 py-3 px-4 text-center font-medium {% if request.args.get('tipo_merma') == 'insumo' %}text-[#9C6E66] border-b-2 border-[#9C6E66]{% else %}text-gray-500 hover:text-gray-700{% endif %}">
+                            Merma Insumo
+                        </button>
+                    </form>
+                </div>
+
+                <div class="p-5">
+                    <h3 class="font-medium text-gray-900 mb-4">Historial Reciente</h3>
+                    <div class="space-y-4">
+                        {% for merma in historial_merma %}
+                        <div class="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+                            <div>
+                                <p class="font-medium">{{ merma.nombre }}</p>
+                                <p class="text-sm text-gray-500">{{ merma.motivo }}</p>
+                            </div>
+                            <div class="text-right">
+                                <p class="font-medium">{{ merma.cantidad }}</p>
+                                <p class="text-xs text-gray-500">{{ merma.fechaRegistro.strftime('%d/%m %H:%M') }}</p>
+                            </div>
+                        </div>
+                        {% else %}
+                        <p class="text-center text-gray-500 py-4">No hay registros de merma</p>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Waste Form -->
+            <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
+                <div style="background-color: #742c2c;" class="p-5 border-b border-gray-200 bg-gray-50">
+                    <h2 class="text-lg font-semibold text-white">Registrar Nueva Merma</h2>
+                </div>
+
+                <div class="p-5">
+                    <form method="POST" action="{{ url_for('cocina.ingresar_merma') }}" class="space-y-4">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Tipo de Merma</label>
+                            <select name="tipo_merma" id="tipo_merma"
+                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-[#9C6E66] focus:border-[#9C6E66]">
+                                <option value="galleta">Galleta</option>
+                                <option value="insumo">Insumo</option>
+                            </select>
+                        </div>
+
+                        <!-- Insumo Section -->
+                        <div id="merma_insumo" class="hidden">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Insumo</label>
+                                    <select name="id_insumo" id="id_insumo"
+                                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-[#9C6E66] focus:border-[#9C6E66]">
+                                        {% for insumo in insumos %}
+                                        <option value="{{ insumo.id }}">{{ insumo.nombre }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Cantidad</label>
+                                    <input type="number" name="cantidad_merma" id="cantidad_merma"
+                                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-[#9C6E66] focus:border-[#9C6E66]"
+                                        step="any">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Galleta Section -->
+                        <div id="merma_galleta" class="hidden">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Tipo de Galleta</label>
+                                    <select name="tipo_galleta_merma" id="tipo_galleta_merma"
+                                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-[#9C6E66] focus:border-[#9C6E66]">
+                                        {% for galleta in tipos_galletas %}
+                                        <option value="{{ galleta }}">{{ galleta }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Cantidad</label>
+                                    <input type="number" name="cantidad_merma_galleta" id="cantidad_merma_galleta"
+                                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-[#9C6E66] focus:border-[#9C6E66]"
+                                        step="any">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Motivo</label>
+                            <textarea name="motivo_merma" id="motivo_merma" rows="3"
+                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-[#9C6E66] focus:border-[#9C6E66]"></textarea>
+                        </div>
+
+                        <button style="background-color: #f7df92;" type="submit"
+                            class="w-full py-2 px-4 bg-[#9C6E66] text-gray-700 rounded-lg hover:bg-[#7A5A52] transition">
+                            Registrar Merma
+                        </button>
+                    </form>
+                </div>
+            </div>
         </div>
-
-        <!-- Formulario para Ingresar Merma -->
-        <div class="bg-white p-6 rounded-lg shadow-md">
-            <h2 class="text-xl font-semibold text-gray-700 mb-4">Ingresar Merma</h2>
-            <form method="POST" action="{{ url_for('cocina.ingresar_merma') }}">
-                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-
-                <div class="mb-4">
-                    <label for="tipo_merma" class="block text-sm font-medium text-gray-700">Tipo de Merma:</label>
-                    <select name="tipo_merma" id="tipo_merma" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md">
-                        <option value="galleta">Galleta</option>
-                        <option value="insumo">Insumo</option>
-                    </select>
-                </div>
-
-                <!-- Sección de Merma Insumo -->
-                <div id="merma_insumo" class="hidden">
-                    <div class="mb-4">
-                        <label for="id_insumo" class="block text-sm font-medium text-gray-700">Selecciona Insumo:</label>
-                        <select name="id_insumo" id="id_insumo" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md">
-                            {% for insumo in insumos %}
-                            <option value="{{ insumo.id }}">{{ insumo.nombre }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-
-                    <div class="mb-4">
-                        <label for="cantidad_merma" class="block text-sm font-medium text-gray-700">Cantidad:</label>
-                        <input type="number" name="cantidad_merma" id="cantidad_merma" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md" step="any">
-                    </div>
-                </div>
-
-                <!-- Sección de Merma Galleta -->
-                <div id="merma_galleta" class="hidden">
-                    <div class="mb-4">
-                        <label for="tipo_galleta_merma" class="block text-sm font-medium text-gray-700">Tipo de Galleta:</label>
-                        <select name="tipo_galleta_merma" id="tipo_galleta_merma" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md">
-                            {% for galleta in tipos_galletas %}
-                            <option value="{{ galleta }}">{{ galleta }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-
-                    <div class="mb-4">
-                        <label for="cantidad_merma_galleta" class="block text-sm font-medium text-gray-700">Cantidad de Galletas:</label>
-                        <input type="number" name="cantidad_merma_galleta" id="cantidad_merma_galleta" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md" step="any">
-                    </div>
-                </div>
-
-                <div class="mb-4">
-                    <label for="motivo_merma" class="block text-sm font-medium text-gray-700">Motivo:</label>
-                    <textarea name="motivo_merma" id="motivo_merma" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md"></textarea>
-                </div>
-
-                <button type="submit"  style="background-color: #9C6E66;" class="w-full text-white font-semibold py-2 rounded-lg hover:bg-[#7A5A52] transition">Registrar Merma</button>
-            </form>
-        </div>
-    
+    </div>
 </div>
 
 <script>
@@ -178,7 +214,5 @@
         tipoMermaSelect.addEventListener("change", actualizarVisibilidad);
     });
 </script>
-
-
 
 {% endblock %}

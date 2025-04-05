@@ -3155,3 +3155,34 @@
 2025-03-30 22:25:02,878 - INFO -  * Restarting with stat
 2025-03-30 22:25:07,997 - WARNING -  * Debugger is active!
 2025-03-30 22:25:07,999 - INFO -  * Debugger PIN: 545-067-783
+2025-04-05 15:23:54,159 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2025-04-05 15:23:54,160 - INFO - [33mPress CTRL+C to quit[0m
+2025-04-05 15:23:54,161 - INFO -  * Restarting with stat
+2025-04-05 15:24:01,108 - WARNING -  * Debugger is active!
+2025-04-05 15:24:01,112 - INFO -  * Debugger PIN: 929-157-050
+2025-04-05 15:24:09,249 - INFO - 127.0.0.1 - - [05/Apr/2025 15:24:09] "GET /corte/cortes HTTP/1.1" 200 -
+2025-04-05 15:24:09,322 - INFO - 127.0.0.1 - - [05/Apr/2025 15:24:09] "[36mGET /static/css/output.css HTTP/1.1[0m" 304 -
+2025-04-05 15:24:09,353 - INFO - 127.0.0.1 - - [05/Apr/2025 15:24:09] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2025-04-05 15:24:11,759 - INFO - 127.0.0.1 - - [05/Apr/2025 15:24:11] "GET /corte/cortes HTTP/1.1" 200 -
+2025-04-05 15:24:11,770 - INFO - 127.0.0.1 - - [05/Apr/2025 15:24:11] "[36mGET /static/css/output.css HTTP/1.1[0m" 304 -
+2025-04-05 15:24:21,188 - INFO - 127.0.0.1 - - [05/Apr/2025 15:24:21] "POST /corte/cortes/calcular HTTP/1.1" 200 -
+2025-04-05 15:24:26,294 - INFO - 127.0.0.1 - - [05/Apr/2025 15:24:26] "[32mPOST /corte/cortes/nuevo HTTP/1.1[0m" 302 -
+2025-04-05 15:24:26,850 - INFO - 127.0.0.1 - - [05/Apr/2025 15:24:26] "GET /corte/cortes HTTP/1.1" 200 -
+2025-04-05 15:24:26,865 - INFO - 127.0.0.1 - - [05/Apr/2025 15:24:26] "[36mGET /static/css/output.css HTTP/1.1[0m" 304 -
+2025-04-05 15:24:54,534 - INFO - 127.0.0.1 - - [05/Apr/2025 15:24:54] "GET /corte/cortes HTTP/1.1" 200 -
+2025-04-05 15:24:54,546 - INFO - 127.0.0.1 - - [05/Apr/2025 15:24:54] "[36mGET /static/css/output.css HTTP/1.1[0m" 304 -
+2025-04-05 15:25:06,939 - INFO - 127.0.0.1 - - [05/Apr/2025 15:25:06] "POST /corte/cortes/calcular HTTP/1.1" 200 -
+2025-04-05 15:25:14,605 - INFO - 127.0.0.1 - - [05/Apr/2025 15:25:14] "[32mPOST /corte/cortes/nuevo HTTP/1.1[0m" 302 -
+2025-04-05 15:25:15,266 - INFO - 127.0.0.1 - - [05/Apr/2025 15:25:15] "GET /corte/cortes HTTP/1.1" 200 -
+2025-04-05 15:25:15,280 - INFO - 127.0.0.1 - - [05/Apr/2025 15:25:15] "[36mGET /static/css/output.css HTTP/1.1[0m" 304 -
+2025-04-05 15:26:38,474 - INFO - 127.0.0.1 - - [05/Apr/2025 15:26:38] "GET /corte/cortes HTTP/1.1" 200 -
+2025-04-05 15:26:38,485 - INFO - 127.0.0.1 - - [05/Apr/2025 15:26:38] "[36mGET /static/css/output.css HTTP/1.1[0m" 304 -
+2025-04-05 15:27:04,693 - INFO - 127.0.0.1 - - [05/Apr/2025 15:27:04] "POST /corte/cortes/calcular HTTP/1.1" 200 -
+2025-04-05 15:27:06,511 - INFO - 127.0.0.1 - - [05/Apr/2025 15:27:06] "[32mPOST /corte/cortes/nuevo HTTP/1.1[0m" 302 -
+2025-04-05 15:27:06,822 - INFO - 127.0.0.1 - - [05/Apr/2025 15:27:06] "GET /corte/cortes HTTP/1.1" 200 -
+2025-04-05 15:27:06,835 - INFO - 127.0.0.1 - - [05/Apr/2025 15:27:06] "[36mGET /static/css/output.css HTTP/1.1[0m" 304 -
+2025-04-05 15:27:23,798 - INFO - 127.0.0.1 - - [05/Apr/2025 15:27:23] "POST /corte/cortes/calcular HTTP/1.1" 200 -
+2025-04-05 15:27:32,258 - INFO - 127.0.0.1 - - [05/Apr/2025 15:27:32] "[32mPOST /corte/cortes/nuevo HTTP/1.1[0m" 302 -
+2025-04-05 15:27:32,503 - INFO - 127.0.0.1 - - [05/Apr/2025 15:27:32] "GET /corte/cortes HTTP/1.1" 200 -
+2025-04-05 15:27:32,516 - INFO - 127.0.0.1 - - [05/Apr/2025 15:27:32] "[36mGET /static/css/output.css HTTP/1.1[0m" 304 -

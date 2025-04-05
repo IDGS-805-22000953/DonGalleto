@@ -12,6 +12,7 @@ from routes.cocina.routes import cocina_bp
 from routes.produccion.routes import produccion_bp
 from routes.ventas.routes import ventas_bp
 from routes.central.routes import dashboard_bp
+from routes.corte_caja.routes import corte_bp
 
 
 # Configuracion del logging
@@ -42,6 +43,7 @@ app.register_blueprint(cocina_bp, url_prefix='/cocina')
 app.register_blueprint(produccion_bp, url_prefix='/produccion')
 app.register_blueprint(ventas_bp, url_prefix='/ventas')
 app.register_blueprint(dashboard_bp, url_prefix='/dashboard')
+app.register_blueprint(corte_bp, url_prefix='/corte')
 
 
 

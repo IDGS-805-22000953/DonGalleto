@@ -1,7 +1,5 @@
 from flask_sqlalchemy import SQLAlchemy
-import datetime
-from datetime import date
-
+from datetime import date, datetime
 
 db = SQLAlchemy()
 
@@ -14,7 +12,7 @@ class Usuario(db.Model):
     correo = db.Column(db.String(50), unique=True, nullable=False)
     contrasenia = db.Column(db.String(255), nullable=False)
     rol = db.Column(db.Enum('admin', 'empleado'), nullable=False)
-    fechaRegistro = db.Column(db.Date, default=datetime.date.today)
+    fechaRegistro = db.Column(db.Date, default=date.today)
 
 class Cliente(db.Model):
     __tablename__ = 'clientes'
@@ -23,7 +21,7 @@ class Cliente(db.Model):
     apellidoPa = db.Column(db.String(50), nullable=False)
     correo = db.Column(db.String(50), unique=True, nullable=False)
     contrasenia = db.Column(db.String(255), nullable=False)
-    fechaRegistro = db.Column(db.Date, default=datetime.date.today)
+    fechaRegistro = db.Column(db.Date, default=date.today)
 
 class Insumo(db.Model):
     __tablename__ = 'insumos'
@@ -57,7 +55,7 @@ class PagoProveedor(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     idProveedor = db.Column(db.Integer, db.ForeignKey('proveedores.id'), nullable=False)
     monto = db.Column(db.Numeric(10, 2), nullable=False)
-    fechaPago = db.Column(db.DateTime, default=datetime.datetime.now)
+    fechaPago = db.Column(db.DateTime, default=datetime.now)
 
 class Receta(db.Model):
     __tablename__ = 'recetas'
@@ -88,12 +86,8 @@ class PresentacionGalleta(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     idGalleta = db.Column(db.Integer, db.ForeignKey('galletas.id'), nullable=False)
     tipoPresentacion = db.Column(db.Enum('Piezas', 'Gramos', '1kg', '700g'), nullable=False)
-    cantidad = db.Column(db.Integer, nullable=False)  # Cantidad de unidades/gramos según la presentación
-    precio = db.Column(db.Numeric(10, 2), nullable=False)  # Precios sugeridos:
-        # 'piezas': 5.00 c/u (paquete individual)
-        # 'gramos': 0.15 por gramo (para paquetes personalizados)
-        # '700g': 105.00 (700g × 0.15)
-        # '1kg': 150.00 (1000g × 0.15)
+    cantidad = db.Column(db.Integer, nullable=False)
+    precio = db.Column(db.Numeric(10, 2), nullable=False)
     stock = db.Column(db.Integer, nullable=False)
     fechaCaducidad = db.Column(db.Date, nullable=False)
 
@@ -101,11 +95,10 @@ class Produccion(db.Model):
     __tablename__ = 'produccion'
     id = db.Column(db.Integer, primary_key=True)
     idReceta = db.Column(db.Integer, db.ForeignKey('recetas.id'), nullable=False)
-    idGalleta = db.Column(db.Integer, db.ForeignKey('galletas.id'), nullable=False)  
+    idGalleta = db.Column(db.Integer, db.ForeignKey('galletas.id'), nullable=False)
     cantidadProducida = db.Column(db.Integer, nullable=False)
-    fechaProduccion = db.Column(db.Date, default=date.today) 
+    fechaProduccion = db.Column(db.Date, default=date.today)
 
-    # Relación con Galleta
     galleta = db.relationship('Galleta', backref='producciones')
     receta = db.relationship('Receta', backref='producciones')
 
@@ -117,7 +110,7 @@ class Merma(db.Model):
     idGalleta = db.Column(db.Integer, db.ForeignKey('galletas.id'))
     cantidad = db.Column(db.Numeric(10, 2))
     motivo = db.Column(db.Text, nullable=False)
-    fechaRegistro = db.Column(db.Date, default=datetime.date.today)
+    fechaRegistro = db.Column(db.Date, default=date.today)
 
     galleta = db.relationship('Galleta', backref='mermas')
     insumo = db.relationship('Insumo', backref='mermas')
@@ -161,16 +154,26 @@ class Venta(db.Model):
     usuario = db.relationship('Usuario', backref='ventas')
     cliente = db.relationship('Cliente', backref='ventas')
 
-    
 class EstatusProduccion(db.Model):
     __tablename__ = 'estatusProduccion'
     id = db.Column(db.Integer, primary_key=True)
     idGalleta = db.Column(db.Integer, db.ForeignKey('galletas.id'), nullable=False)
     nombreGalleta = db.Column(db.String(50), nullable=False)
     estatus = db.Column(db.Enum('En preparacion', 'Horneando', 'Enfriando'), default='En preparacion')
-    tiempoEstimado = db.Column(db.Integer, nullable=False)  
+    tiempoEstimado = db.Column(db.Integer, nullable=False)
     fechaInicio = db.Column(db.TIMESTAMP, server_default=db.func.current_timestamp())
-    idPresentacion = db.Column(db.Integer, db.ForeignKey('presentacionesGalletas.id'), nullable=False)  
+    idPresentacion = db.Column(db.Integer, db.ForeignKey('presentacionesGalletas.id'), nullable=False)
 
     galleta = db.relationship('Galleta', backref='estatusProduccion', lazy=True)
     presentacion = db.relationship('PresentacionGalleta', backref='estatusProduccion', lazy=True)
+
+class CorteCaja(db.Model):
+    __tablename__ = 'cortes_caja'
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    mes = db.Column(db.String(7), nullable=False)
+    ingreso_total = db.Column(db.Numeric(10, 2), nullable=False)
+    egresos_total = db.Column(db.Numeric(10, 2), nullable=False)
+    monto_mermas = db.Column(db.Numeric(10, 2), nullable=False)
+    caja_reportada = db.Column(db.Numeric(10, 2), nullable=False)
+    utilidad = db.Column(db.Numeric(10, 2), nullable=False)
+    fecha_creacion = db.Column(db.DateTime, default=datetime.now)

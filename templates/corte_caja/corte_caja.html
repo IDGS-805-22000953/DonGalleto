@@ -1,0 +1,296 @@
+{% extends "Central/layout.html" %}
+
+{% block content %}
+<div class="bg-gray-50 min-h-screen py-8">
+    <!-- Mensajes flash -->
+    <div class="fixed top-4 right-4 z-50 space-y-2">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        {% for category, message in messages %}
+        <div
+            class="flash-message flash-{{ category }} p-4 rounded-lg shadow-lg text-white flex items-center justify-between min-w-64 max-w-xs transform transition-all duration-300 translate-x-0 opacity-100">
+            <span>{{ message }}</span>
+            <button class="flash-close ml-2 text-white hover:text-gray-200" onclick="this.parentElement.remove()">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd"
+                        d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                        clip-rule="evenodd" />
+                </svg>
+            </button>
+        </div>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+    </div>
+
+    <div class="container mx-auto px-4">
+        <!-- Header -->
+        <div class="text-center mb-12">
+            <h1 class="text-4xl font-bold text-gray-800 mb-2">Reporte de Corte</h1>
+            <p class="text-xl text-gray-600">Registra los datos financieros mensuales</p>
+            <div class="w-24 h-1.5 bg-blue-500 mx-auto mt-4 rounded-full"></div>
+        </div>
+
+        <div class="flex flex-col lg:flex-row gap-8">
+            <!-- Formulario (izquierda) -->
+            <div class="lg:w-1/2">
+                <div class="bg-white rounded-xl shadow-md overflow-hidden p-6">
+                    <form id="corteForm" method="POST" action="{{ url_for('corte.nuevo_corte') }}" class="space-y-6">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+                        <!-- Fecha de Creación -->
+                        <div>
+                            <label for="fecha_creacion" class="block text-sm font-medium text-gray-700 mb-1">Fecha del
+                                Corte</label>
+                            <div class="relative">
+                                <input type="datetime-local" id="fecha_creacion" name="fecha_creacion"
+                                    class="bg-gray-50 border border-gray-300 text-gray-700 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-3.5"
+                                    value="{{ datetime.now().strftime('%Y-%m-%dT%H:%M') }}" readonly>
+                            </div>
+                        </div>
+
+                        <!-- Reemplazar el input type="month" por type="date" -->
+                        <div>
+                            <label for="mes" class="block text-sm font-medium text-gray-700 mb-1">Selecciona el Mes a
+                                Cortar</label>
+                            <input type="date" id="mes" name="mes"
+                                class="bg-gray-50 border border-gray-300 text-gray-700 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-3.5"
+                                required>
+                        </div>
+
+                        <!-- Ingresos (calculado automáticamente) -->
+                        <div>
+                            <label for="ingresos" class="block text-sm font-medium text-gray-700 mb-1">Ingresos Totales
+                                ($)</label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                                    <span class="text-gray-500">$</span>
+                                </div>
+                                <input type="number" id="ingresos" name="ingresos" step="0.01" readonly
+                                    class="bg-gray-100 border border-gray-300 text-gray-700 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-3.5 cursor-not-allowed"
+                                    placeholder="Selecciona un mes para calcular">
+                            </div>
+                        </div>
+
+                        <!-- Egresos (calculado automáticamente) -->
+                        <div>
+                            <label for="egresos" class="block text-sm font-medium text-gray-700 mb-1">Egresos Totales
+                                ($)</label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                                    <span class="text-gray-500">$</span>
+                                </div>
+                                <input type="number" id="egresos" name="egresos" step="0.01" readonly
+                                    class="bg-gray-100 border border-gray-300 text-gray-700 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-3.5 cursor-not-allowed"
+                                    placeholder="Selecciona un mes para calcular">
+                            </div>
+                        </div>
+
+                        <!-- Mermas (calculado automáticamente) -->
+                        <div>
+                            <label for="mermas" class="block text-sm font-medium text-gray-700 mb-1">Mermas Totales
+                                ($)</label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                                    <span class="text-gray-500">$</span>
+                                </div>
+                                <input type="number" id="mermas" name="mermas" step="0.01" readonly
+                                    class="bg-gray-100 border border-gray-300 text-gray-700 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-3.5 cursor-not-allowed"
+                                    placeholder="Selecciona un mes para calcular">
+                            </div>
+                        </div>
+
+                        <!-- Utilidad (calculado automáticamente) -->
+                        <div>
+                            <label for="utilidad" class="block text-sm font-medium text-gray-700 mb-1">Utilidad Neta
+                                ($)</label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                                    <span class="text-gray-500">$</span>
+                                </div>
+                                <input type="number" id="utilidad" name="utilidad" step="0.01" readonly
+                                    class="bg-gray-100 border border-gray-300 text-gray-700 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-3.5 cursor-not-allowed"
+                                    placeholder="Selecciona un mes para calcular">
+                            </div>
+                        </div>
+
+                        <!-- Caja Reportada -->
+                        <div>
+                            <label for="caja_reportada" class="block text-sm font-medium text-gray-700 mb-1">Total en
+                                Caja
+                                ($)</label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                                    <span class="text-gray-500">$</span>
+                                </div>
+                                <input type="number" id="caja_reportada" name="caja_reportada" step="0.01"
+                                    class="bg-gray-50 border border-gray-300 text-gray-700 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-3.5"
+                                    placeholder="0.00" required>
+                            </div>
+                        </div>
+
+                        <!-- Botón -->
+                        <div class="pt-2">
+                            <button type="submit"
+                                class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg transition duration-200 flex items-center justify-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20"
+                                    fill="currentColor">
+                                    <path fill-rule="evenodd"
+                                        d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z"
+                                        clip-rule="evenodd" />
+                                </svg>
+                                Generar Corte
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Tabla de Historial (derecha) -->
+            <div class="lg:w-1/2">
+                <div class="bg-white rounded-xl shadow-md overflow-hidden h-full">
+                    <div class="p-6">
+                        <h2 class="text-2xl font-bold text-gray-800 mb-6">Historial de Cortes</h2>
+
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full divide-y divide-gray-200">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th scope="col"
+                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Fecha</th>
+                                        <th scope="col"
+                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Mes</th>
+                                        <th scope="col"
+                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Ingresos</th>
+                                        <th scope="col"
+                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Egresos</th>
+                                        <th scope="col"
+                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Mermas</th>
+                                        <th scope="col"
+                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Caja</th>
+                                        <th scope="col"
+                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Utilidad</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="bg-white divide-y divide-gray-200">
+                                    {% for corte in cortes %}
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{
+                                            corte.fecha_creacion.strftime('%Y-%m-%d %H:%M') if corte.fecha_creacion else
+                                            '' }}
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ corte.mes if
+                                            corte.mes
+                                            else '' }}</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-green-600 font-medium">${{
+                                            "{:,.2f}".format(corte.ingreso_total) }}</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-red-600 font-medium">${{
+                                            "{:,.2f}".format(corte.egresos_total) }}</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-yellow-600 font-medium">${{
+                                            "{:,.2f}".format(corte.monto_mermas) }}</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-blue-600 font-medium">${{
+                                            "{:,.2f}".format(corte.caja_reportada) }}</td>
+                                        <td
+                                            class="px-6 py-4 whitespace-nowrap text-sm font-medium {{ 'text-green-600' if corte.utilidad >= 0 else 'text-red-600' }}">
+                                            ${{ "{:,.2f}".format(corte.utilidad) }}
+                                        </td>
+                                    </tr>
+                                    {% else %}
+                                    <tr>
+                                        <td colspan="7" class="px-6 py-4 text-center text-sm text-gray-500">No hay
+                                            cortes
+                                            registrados</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const mesInput = document.getElementById('mes');
+
+        mesInput.addEventListener('change', function () {
+            const fecha = this.value;  // Ahora es una fecha completa (YYYY-MM-DD)
+
+            if (!fecha) return;
+
+            // Mostrar carga
+            document.getElementById('ingresos').placeholder = 'Calculando...';
+            document.getElementById('egresos').placeholder = 'Calculando...';
+            document.getElementById('mermas').placeholder = 'Calculando...';
+            document.getElementById('utilidad').placeholder = 'Calculando...';
+
+            // Hacer la petición AJAX
+            fetch('{{ url_for("corte.calcular_corte") }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'X-CSRFToken': document.querySelector('input[name="csrf_token"]').value
+                },
+                body: `mes=${encodeURIComponent(fecha)}`  // Enviamos la fecha completa
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        alert('Error: ' + data.error);
+                        return;
+                    }
+
+                    // Actualizar los campos con los valores calculados
+                    document.getElementById('ingresos').value = data.ingresos.toFixed(2);
+                    document.getElementById('egresos').value = data.egresos.toFixed(2);
+                    document.getElementById('mermas').value = data.mermas.toFixed(2);
+                    document.getElementById('utilidad').value = data.utilidad.toFixed(2);
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Ocurrió un error al calcular el corte');
+                });
+        });
+    });
+</script>
+
+<style>
+    /* Estilos para el input de fecha */
+    input[type="datetime-local"]::-webkit-calendar-picker-indicator {
+        background: transparent;
+        bottom: 0;
+        color: transparent;
+        cursor: pointer;
+        height: auto;
+        left: 0;
+        position: absolute;
+        right: 0;
+        top: 0;
+        width: auto;
+    }
+
+    /* Efecto hover en filas de la tabla */
+    tr:hover {
+        transition: background-color 0.2s ease;
+    }
+
+    /* Sombras y transiciones para las tarjetas */
+    .shadow-md {
+        transition: box-shadow 0.3s ease;
+    }
+
+    .shadow-md:hover {
+        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    }
+</style>
+{% endblock %}

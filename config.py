@@ -9,4 +9,5 @@ class Config(object):
 class DevelopmentConfig(Config):
     DEBUG = True  
     SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://admin:Dna77669@database-1.cqbgcuwuw6wt.us-east-1.rds.amazonaws.com/DonGalletoFlask'  # Corregido: AQLALCHEMY_DATABASE_URL -> SQLALCHEMY_DATABASE_URI
+    # SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://root:admin@127.0.0.1/DonGalletoFlask'
     SQLALCHEMY_TRACK_MODIFICATIONS = False

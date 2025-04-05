@@ -25,6 +25,7 @@ from models.models import (
     Produccion
 
 )
+from forms import GalletaForm
 
 
 
@@ -74,11 +75,17 @@ def nueva_galleta():
     galletas = Galleta.query.all()
     insumos = Insumo.query.all()
 
-    if request.method == "POST":
-        nombre = request.form.get("nombre")
-        descripcion = request.form.get("descripcion")
-        insumos_seleccionados = request.form.getlist("insumos")  
-        imagen = request.files.get("imagen")
+    form = GalletaForm()
+
+    if form.validate_on_submit():
+        nombre = form.nombre.data
+        descripcion = form.descripcion.data
+        imagen = form.imagen.data
+        insumos_seleccionados = request.form.getlist("insumos")
+
+        if len(insumos_seleccionados) < 6:
+            flash("Debes seleccionar al menos 6 insumos", "error")
+            return render_template("Cocina/nuevaGalleta.html", form=form, insumos=insumos, galletas=galletas)
 
         if imagen:
             imagen_data = imagen.read()
@@ -88,18 +95,17 @@ def nueva_galleta():
 
         nueva_receta = Receta(nombreReceta=nombre, descripcion=descripcion, rutaFoto=imagen_base64)
         db.session.add(nueva_receta)
-        db.session.flush()  
+        db.session.flush()
 
         for id_insumo in insumos_seleccionados:
             cantidad = request.form.get(f"cantidad_{id_insumo}", type=float)
             unidad = request.form.get(f"unidad_{id_insumo}")
-            
+
             if cantidad and cantidad > 0:
                 insumo = Insumo.query.get(id_insumo)
-                
-                # Convertir a la unidad base
+
                 cantidad_base = convertir_a_unidad_base(cantidad, unidad, insumo.unidadBase)
-                
+
                 receta_insumo = RecetaInsumos(
                     idReceta=nueva_receta.id,
                     idInsumo=int(id_insumo),
@@ -111,18 +117,17 @@ def nueva_galleta():
 
         nueva_galleta = Galleta(nombre=nombre, descripcion=descripcion, idReceta=nueva_receta.id, rutaFoto=imagen_base64)
         db.session.add(nueva_galleta)
-        db.session.flush()  
+        db.session.flush()
 
-        # Calcular el precio basado en los insumos utilizados
         costo_total = calcular_costo_total(nueva_receta.id)
-        precio_sugerido = float(costo_total) * 1.5  # Margen de 50%
-        
+        precio_sugerido = float(costo_total) * 1.5
+
         presentaciones = {
-        "Piezas": Decimal(str(precio_sugerido)),  # Convertir de vuelta a Decimal
-        "Gramos": Decimal(str(precio_sugerido)) / Decimal('100'),
-        "1kg": Decimal(str(precio_sugerido)) * Decimal('10'),
-        "700g": Decimal(str(precio_sugerido)) * Decimal('7'),
-    }
+            "Piezas": Decimal(str(precio_sugerido)),
+            "Gramos": Decimal(str(precio_sugerido)) / Decimal('100'),
+            "1kg": Decimal(str(precio_sugerido)) * Decimal('10'),
+            "700g": Decimal(str(precio_sugerido)) * Decimal('7'),
+        }
 
         for tipo, precio_presentacion in presentaciones.items():
             nueva_presentacion = PresentacionGalleta(
@@ -134,15 +139,14 @@ def nueva_galleta():
                 fechaCaducidad=datetime.now().date() + timedelta(days=30)
             )
             db.session.add(nueva_presentacion)
-            db.session.flush()  # Esto asigna un ID a nueva_presentacion
+            db.session.flush()
 
-            # Ahora puedes usar nueva_presentacion.id con seguridad
             nueva_produccion = EstatusProduccion(
                 idGalleta=nueva_galleta.id,
                 nombreGalleta=nombre,
                 estatus="En preparación",
                 tiempoEstimado=30,
-                idPresentacion=nueva_presentacion.id  # Ahora tiene un valor válido
+                idPresentacion=nueva_presentacion.id
             )
             db.session.add(nueva_produccion)
 
@@ -150,7 +154,8 @@ def nueva_galleta():
         flash("Galleta creada correctamente", "success")
         return redirect(url_for("cocina.cocina"))
 
-    return render_template("Cocina/nuevaGalleta.html", insumos=insumos, galletas=galletas)
+    return render_template("Cocina/nuevaGalleta.html", form=form, insumos=insumos, galletas=galletas)
+
 
 def convertir_a_unidad_base(cantidad, unidad_origen, unidad_destino):
     try:
@@ -362,6 +367,14 @@ def actualizar_stock(id_galleta, id_presentacion):
 def ingresar_merma():
     galletas = Galleta.query.all()  # Obtener todas las galletas de la base de datos
     insumos = Insumo.query.all()  # Obtener todos los insumos
+    
+    alertas = db.session.query(
+        EstatusProduccion,
+        PresentacionGalleta.tipoPresentacion
+    ).join(
+        PresentacionGalleta, EstatusProduccion.idPresentacion == PresentacionGalleta.id
+    ).all()
+    
     if request.method == "POST":
         tipo_merma = request.form.get("tipo_merma")
         motivo_merma = request.form.get("motivo_merma")
@@ -390,7 +403,7 @@ def ingresar_merma():
             for receta_insumo in insumos_receta:
                 insumo = Insumo.query.get(receta_insumo.idInsumo)
                 if insumo:
-                    cantidad_a_descartar = receta_insumo.cantidadInsumo * (cantidad_merma / 100)
+                    cantidad_a_descartar = receta_insumo.cantidadInsumo * (Decimal(cantidad_merma) / Decimal(100))
                     insumo.cantidad -= cantidad_a_descartar
                     if insumo.cantidad < 0:
                         insumo.cantidad = 0
@@ -439,12 +452,18 @@ def ingresar_merma():
         flash("Merma registrada correctamente", "success")
         return redirect(url_for("cocina.cocina"))
 
-    return render_template("Cocina/cocina.html", galletas=galletas, insumos=insumos)
+    return render_template("Cocina/cocina.html", galletas=galletas, insumos=insumos, alertas=alertas)
 
 @cocina_bp.route("/historial_merma", methods=["GET"])
 def historial_merma():
     tipo_merma = request.args.get("tipo_merma", "galleta")  # Por defecto es 'galleta'
-
+    alertas = db.session.query(
+        EstatusProduccion,
+        PresentacionGalleta.tipoPresentacion
+    ).join(
+        PresentacionGalleta, EstatusProduccion.idPresentacion == PresentacionGalleta.id
+    ).all()
+    
     if tipo_merma == "galleta":
         historial_merma = (
             db.session.query(
@@ -475,7 +494,8 @@ def historial_merma():
     return render_template(
         "Cocina/cocina.html",
         historial_merma=historial_merma,
-        tipo_merma=tipo_merma
+        tipo_merma=tipo_merma,
+        alertas= alertas
     )
 
 
@@ -551,6 +571,7 @@ def eliminar_galleta(id):
     
     return redirect(url_for("cocina.cocina"))
 
+
 @cocina_bp.route("/editar_galleta/<int:id>", methods=["GET", "POST"])
 def editar_galleta(id):
     galleta = Galleta.query.get_or_404(id)
@@ -560,6 +581,12 @@ def editar_galleta(id):
     
     if request.method == "POST":
         try:
+            # Validar que se seleccionen al menos 6 insumos
+            insumos_seleccionados = request.form.getlist("insumos")
+            if len(insumos_seleccionados) < 6:
+                flash("Debes seleccionar al menos 6 insumos.", "error")
+                return redirect(url_for("cocina.editar_galleta", id=galleta.id))
+            
             # Actualizar datos básicos
             galleta.nombre = request.form.get("nombre")
             galleta.descripcion = request.form.get("descripcion")
@@ -572,9 +599,6 @@ def editar_galleta(id):
                 imagen_data = imagen.read()
                 galleta.rutaFoto = base64.b64encode(imagen_data).decode("utf-8")
                 receta.rutaFoto = galleta.rutaFoto
-            
-            # Procesar insumos
-            insumos_seleccionados = request.form.getlist("insumos")
             
             # Eliminar insumos no seleccionados
             for ri in receta_insumos:

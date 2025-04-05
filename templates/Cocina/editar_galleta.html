@@ -2,81 +2,152 @@
 
 {% block content %}
 <div class="container mx-auto p-6">
-    <div class="w-full max-w-2xl mx-auto bg-white shadow-lg rounded-lg p-6 mb-10">
-        <h1 class="text-3xl font-bold text-gray-800 mb-6 text-center">Editar Galleta: {{ galleta.nombre }}</h1>
+    <div class="w-full max-w-2xl mx-auto bg-white shadow-xl rounded-xl overflow-hidden mb-10">
+        <div class="bg-[#9C6E66] py-4 px-6">
+            <h1 class="text-2xl font-bold text-white">Editar Galleta: {{ galleta.nombre }}</h1>
+        </div>
 
-        <form action="{{ url_for('cocina.editar_galleta', id=galleta.id) }}" method="POST" enctype="multipart/form-data" class="space-y-4">
+        <!-- Mensaje de error si no se seleccionan 6 insumos -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="bg-red-100 text-red-700 p-4 rounded mb-6">
+                    {% for category, message in messages %}
+                        {% if category == 'error' %}
+                            <p>{{ message }}</p>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        <form action="{{ url_for('cocina.editar_galleta', id=galleta.id) }}" method="POST" enctype="multipart/form-data" class="p-6 space-y-6">
             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 
-            <div>
-                <label class="block font-semibold text-gray-700">Nombre de la Receta</label>
-                <input type="text" name="nombre" value="{{ galleta.nombre }}"
-                    class="w-full border border-gray-300 rounded-lg p-2 focus:ring focus:ring-blue-300" required>
-            </div>
+            <div class="space-y-6">
+                <!-- Campo Nombre -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Nombre de la Receta</label>
+                    <input type="text" name="nombre" value="{{ galleta.nombre }}" required
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#9C6E66] focus:border-[#9C6E66] transition">
+                </div>
 
-            <div>
-                <label class="block font-semibold text-gray-700">Descripción</label>
-                <textarea name="descripcion"
-                    class="w-full border border-gray-300 rounded-lg p-2 focus:ring focus:ring-blue-300">{{ galleta.descripcion }}</textarea>
-            </div>
+                <!-- Campo Descripción -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Descripción</label>
+                    <textarea name="descripcion" rows="3"
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#9C6E66] focus:border-[#9C6E66] transition">{{ galleta.descripcion }}</textarea>
+                </div>
 
-            <div class="border border-gray-300 rounded-lg p-4 space-y-2">
-                {% for insumo in insumos %}
-                {% set receta_insumo = receta_insumos|selectattr('idInsumo', 'equalto', insumo.id)|first %}
-                <div class="flex items-center gap-3">
-                    <input type="checkbox" name="insumos" value="{{ insumo.id }}"
-                        class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-                        {% if receta_insumo %}checked{% endif %}>
-                    <label class="text-gray-700">{{ insumo.nombre }} (Disponible: {{ insumo.cantidad }} {{
-                        insumo.unidadBase }})</label>
-                    <input type="number" name="cantidad_{{ insumo.id }}"
-                        class="border border-gray-300 rounded-lg p-1 w-20 focus:ring focus:ring-blue-300" min="0.01"
-                        step="0.01" placeholder="Cantidad"
-                        value="{{ receta_insumo.cantidadSeleccionada if receta_insumo else '' }}">
-                    <select name="unidad_{{ insumo.id }}" class="border border-gray-300 rounded-lg p-1 focus:ring focus:ring-blue-300">
-                        {% if insumo.unidadBase == 'kg' %}
-                            <option value="kg" {% if receta_insumo and receta_insumo.unidadSeleccionada == 'kg' %}selected{% endif %}>kg</option>
-                            <option value="g" {% if receta_insumo and receta_insumo.unidadSeleccionada == 'g' %}selected{% endif %}>g</option>
-                            <option value="mg" {% if receta_insumo and receta_insumo.unidadSeleccionada == 'mg' %}selected{% endif %}>mg</option>
-                        {% elif insumo.unidadBase == 'litros' %}
-                            <option value="litros" {% if receta_insumo and receta_insumo.unidadSeleccionada == 'litros' %}selected{% endif %}>litros</option>
-                            <option value="ml" {% if receta_insumo and receta_insumo.unidadSeleccionada == 'ml' %}selected{% endif %}>ml</option>
-                        {% elif insumo.unidadBase == 'docena' %}
-                            <option value="docena" {% if receta_insumo and receta_insumo.unidadSeleccionada == 'docena' %}selected{% endif %}>docena</option>
-                            <option value="unidad" {% if receta_insumo and receta_insumo.unidadSeleccionada == 'unidad' %}selected{% endif %}>unidad</option>
+                <!-- Sección de Insumos -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Insumos Requeridos</label>
+                    <div class="border border-gray-200 rounded-lg divide-y divide-gray-200 overflow-hidden">
+                        {% for insumo in insumos %}
+                        {% set receta_insumo = receta_insumos|selectattr('idInsumo', 'equalto', insumo.id)|first %}
+                        <div class="p-4 hover:bg-gray-50 transition">
+                            <div class="flex flex-wrap items-center gap-4">
+                                <div class="flex items-center min-w-[200px] flex-1">
+                                    <input type="checkbox" name="insumos" value="{{ insumo.id }}" id="insumo_{{ insumo.id }}"
+                                        class="w-4 h-4 text-[#9C6E66] border-gray-300 rounded focus:ring-[#9C6E66]"
+                                        {% if receta_insumo %}checked{% endif %}>
+                                    <label for="insumo_{{ insumo.id }}" class="ml-2 text-gray-700">
+                                        {{ insumo.nombre }} <span class="text-gray-500 text-sm">(Disponible: {{ insumo.cantidad }} {{ insumo.unidadBase }})</span>
+                                    </label>
+                                </div>
+                                
+                                <div class="flex items-center gap-2">
+                                    <input type="number" name="cantidad_{{ insumo.id }}"
+                                        class="border border-gray-300 rounded-lg p-2 w-24 focus:ring-2 focus:ring-[#9C6E66] focus:border-[#9C6E66]"
+                                        min="0.01" step="0.01" placeholder="Cantidad"
+                                        value="{{ receta_insumo.cantidadSeleccionada if receta_insumo else '' }}">
+                                    
+                                    <select name="unidad_{{ insumo.id }}" 
+                                        class="border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-[#9C6E66] focus:border-[#9C6E66]">
+                                        {% if insumo.unidadBase == 'kg' %}
+                                            <option value="kg" {% if receta_insumo and receta_insumo.unidadSeleccionada == 'kg' %}selected{% endif %}>kg</option>
+                                            <option value="g" {% if receta_insumo and receta_insumo.unidadSeleccionada == 'g' %}selected{% endif %}>g</option>
+                                            <option value="mg" {% if receta_insumo and receta_insumo.unidadSeleccionada == 'mg' %}selected{% endif %}>mg</option>
+                                        {% elif insumo.unidadBase == 'litros' %}
+                                            <option value="litros" {% if receta_insumo and receta_insumo.unidadSeleccionada == 'litros' %}selected{% endif %}>litros</option>
+                                            <option value="ml" {% if receta_insumo and receta_insumo.unidadSeleccionada == 'ml' %}selected{% endif %}>ml</option>
+                                        {% elif insumo.unidadBase == 'docena' %}
+                                            <option value="docena" {% if receta_insumo and receta_insumo.unidadSeleccionada == 'docena' %}selected{% endif %}>docena</option>
+                                            <option value="unidad" {% if receta_insumo and receta_insumo.unidadSeleccionada == 'unidad' %}selected{% endif %}>unidad</option>
+                                        {% else %}
+                                            <option value="{{ insumo.unidadBase }}" selected>{{ insumo.unidadBase }}</option>
+                                        {% endif %}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- Sección de Imagen -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Imagen Actual</label>
+                    <div class="flex flex-col items-center">
+                        {% if galleta.rutaFoto %}
+                        <img src="data:image/png;base64,{{ galleta.rutaFoto }}" class="w-48 h-48 object-contain rounded-lg border border-gray-300 mb-4" alt="{{ galleta.nombre }}">
                         {% else %}
-                            <option value="{{ insumo.unidadBase }}" selected>{{ insumo.unidadBase }}</option>
+                        <div class="w-48 h-48 bg-gray-100 flex items-center justify-center rounded-lg border border-gray-300 mb-4">
+                            <i class="fas fa-cookie text-5xl text-gray-400"></i>
+                        </div>
                         {% endif %}
-                    </select>
+                        
+                        <!-- Campo para nueva imagen con vista previa -->
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Cambiar Imagen</label>
+                        <div class="mt-1 flex flex-col items-center w-full">
+                            <!-- Vista previa de la nueva imagen -->
+                            <div id="image-preview" class="mb-4 w-full max-w-xs hidden">
+                                <img id="preview" src="#" alt="Vista previa de la nueva imagen" class="w-full h-48 object-contain rounded-lg border border-gray-300">
+                            </div>
+                            
+                            <!-- Área de subida -->
+                            <label for="imagen" class="cursor-pointer w-full">
+                                <div class="bg-gray-50 hover:bg-gray-100 text-[#9C6E66] font-medium py-2 px-4 rounded-lg transition text-center">
+                                    <span>Seleccionar nueva imagen</span>
+                                    <input id="imagen" name="imagen" type="file" accept="image/*" class="sr-only" onchange="previewImage(event)">
+                                </div>
+                                <p class="mt-1 text-xs text-gray-500 text-center">PNG, JPG, GIF (Max. 5MB)</p>
+                            </label>
+                        </div>
+                    </div>
                 </div>
-                {% endfor %}
             </div>
 
-            <div>
-                <label class="block font-semibold text-gray-700">Imagen Actual</label>
-                {% if galleta.rutaFoto %}
-                <img src="data:image/png;base64,{{ galleta.rutaFoto }}" class="w-32 h-32 object-cover mb-2" alt="{{ galleta.nombre }}">
-                {% else %}
-                <div class="w-32 h-32 bg-gray-100 flex items-center justify-center mb-2">
-                    <i class="fas fa-cookie text-4xl text-gray-400"></i>
-                </div>
-                {% endif %}
-                <label class="block font-semibold text-gray-700">Cambiar Imagen</label>
-                <input type="file" name="imagen" accept="image/*"
-                    class="w-full border border-gray-300 rounded-lg p-2 focus:ring focus:ring-blue-300">
-            </div>
-
-            <div class="flex justify-between">
-                <button type="submit" style="background-color: #9C6E66;"
-                    class="w-full text-white font-semibold py-2 rounded-lg hover:bg-[#7A5A52] transition mr-2">
-                    Guardar Cambios
-                </button>
-                <a href="{{ url_for('cocina.cocina') }}" style="background-color: #6E9C66;"
-                    class="w-full text-white font-semibold py-2 rounded-lg hover:bg-[#5A7A52] transition text-center">
+            <div class="flex items-center justify-between pt-4">
+                <a href="{{ url_for('cocina.cocina') }}" style="background-color: #9C6E66;" class="px-6 py-3 bg-[#6E9C66] text-white font-medium rounded-lg hover:bg-[#5A7A52] transition focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#6E9C66]">
                     Cancelar
                 </a>
+                <button type="submit" style="background-color: #9C6E66;" class="px-6 py-3 bg-[#9C6E66] text-white font-medium rounded-lg hover:bg-[#7A5A52] transition focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#9C6E66]">
+                    Guardar Cambios
+                </button>
             </div>
         </form>
     </div>
 </div>
+
+<script>
+    function previewImage(event) {
+        const input = event.target;
+        const preview = document.getElementById('preview');
+        const previewContainer = document.getElementById('image-preview');
+        
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            
+            reader.onload = function(e) {
+                preview.src = e.target.result;
+                previewContainer.classList.remove('hidden');
+            }
+            
+            reader.readAsDataURL(input.files[0]);
+        } else {
+            preview.src = '#';
+            previewContainer.classList.add('hidden');
+        }
+    }
+</script>
 {% endblock %}

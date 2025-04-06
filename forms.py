@@ -18,12 +18,7 @@ class GalletaForm(FlaskForm):
 
     submit = SubmitField('Guardar')
 
-class ProveedorForm(FlaskForm):
-    nombreProveedor = StringField('Nombre del Proveedor', validators=[DataRequired(), Length(max=50)])
-    direccion = StringField('Dirección', validators=[Length(max=100)])
-    correo = StringField('Correo Electrónico', validators=[DataRequired(), Length(max=50), Email()])
-    telefono = StringField('Teléfono', validators=[DataRequired(), Length(max=15)])
-    submit = SubmitField('Guardar')
+
     
 class PresentacionForm(FlaskForm):
     tipoPresentacion = SelectField('Tipo de Presentación', choices=[('Piezas', 'Piezas'), (
@@ -57,20 +52,7 @@ class LoginForm(FlaskForm):
     submit = SubmitField('Iniciar sesión')
 
 
-class RawMaterialForm(FlaskForm):
-    name = StringField('Nombre', validators=[DataRequired(), Length(max=50)])
-    expiration_date = DateField(
-        'Fecha de Caducidad', format='%Y-%m-%d', validators=[DataRequired()])
-    quantity = DecimalField('Cantidad', validators=[
-                            DataRequired(), NumberRange(min=0)])
-    unit = StringField('Unidad', validators=[DataRequired(), Length(max=20)])
-    description = TextAreaField('Descripción', validators=[Length(max=200)])
-    provider = StringField('Proveedor', validators=[Length(max=50)])
-    percentage_waste = DecimalField('Porcentaje de Merma', validators=[
-                                    DataRequired(), NumberRange(min=0, max=100)])
-    # Agrega este campo
-    presentation = StringField('Presentación', validators=[Length(max=50)])
-    submit = SubmitField('Guardar')
+
 
 
 class GalletaForm(FlaskForm):
@@ -191,3 +173,46 @@ class RegistroEmpleadoForm(FlaskForm):
             
         if Usuario.query.filter_by(correo=field.data).first():
             raise ValidationError('Este correo electrónico ya está registrado. Por favor use otro.')
+        
+        
+        
+class RawMaterialForm(FlaskForm):
+    name = StringField('Nombre', validators=[DataRequired(), Length(max=50)])
+    expiration_date = DateField('Fecha de Caducidad', format='%Y-%m-%d', validators=[DataRequired()])
+    quantity = DecimalField('Cantidad', validators=[DataRequired(), NumberRange(min=0)])
+    
+    # Diccionario para mapear los valores en la base de datos con los nombres legibles
+    unit_choices = {
+        'kg': 'Kilogramo',
+        'docena': 'Docena',
+        'l': 'Litro',
+        'g': 'Gramo',
+        'unidad': 'Unidad',
+        'mg': 'Miligramo',
+        'ml': 'Mililitro'
+    }
+
+    unit = SelectField('Unidad', choices=[(key, value) for key, value in unit_choices.items()],
+                      validators=[DataRequired()])
+    
+    description = TextAreaField('Descripción', validators=[Length(max=200)])
+    cost_per_unit = DecimalField('Costo por Unidad', validators=[DataRequired(), NumberRange(min=0)])
+    proveedor_id = SelectField('Proveedor', coerce=int, validators=[DataRequired()])
+    submit = SubmitField('Guardar')
+
+
+
+
+class ProveedorForm(FlaskForm):
+    nombreProveedor = StringField('Nombre del Proveedor', validators=[DataRequired(), Length(max=50)])
+    direccion = StringField('Dirección', validators=[Length(max=100)])
+    correo = StringField('Correo Electrónico', validators=[DataRequired(), Length(max=50), Email()])
+    telefono = StringField('Teléfono', validators=[DataRequired(), Length(max=15)])
+    submit = SubmitField('Guardar')
+
+class PagoProveedorForm(FlaskForm):
+    monto = DecimalField('Monto', validators=[DataRequired()])
+    proveedor_id = SelectField('Proveedor', coerce=int, validators=[DataRequired()])
+    submit = SubmitField('Marcar como Pagado')
+
+

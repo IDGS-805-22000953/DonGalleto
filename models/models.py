@@ -43,44 +43,6 @@ class Usuario(db.Model, UserMixin):
     pedidos_cliente = db.relationship('PedidosCliente', back_populates='usuario', lazy=True)
 
 
-class Insumo(db.Model):
-    __tablename__ = 'insumos'
-    id = db.Column(db.Integer, primary_key=True)
-    nombre = db.Column(db.String(50), nullable=False)
-    fechaIngreso = db.Column(db.TIMESTAMP, server_default=db.func.current_timestamp())
-    fechaCaducidad = db.Column(db.Date, nullable=False)
-    cantidad = db.Column(db.Numeric(10, 2, asdecimal=True), nullable=False)
-    unidadBase = db.Column(db.String(20), nullable=False)  # Unidad base (litros, kg, piezas)
-    costoPorUnidad = db.Column(db.Numeric(10, 2, asdecimal=True), nullable=False)  # Costo por unidad base
-    descripcion = db.Column(db.Text)
-    
-    # Relación con Proveedor
-    proveedor_id = db.Column(db.Integer, db.ForeignKey('proveedores.id'))
-    proveedor = db.relationship('Proveedor', backref='insumos', lazy=True)
-
-
-
-class Proveedor(db.Model):
-    __tablename__ = 'proveedores'
-    id = db.Column(db.Integer, primary_key=True)
-    nombreProveedor = db.Column(db.String(50), nullable=False)
-    direccion = db.Column(db.String(100))
-    correo = db.Column(db.String(50), unique=True, nullable=False)
-    telefono = db.Column(db.String(15), nullable=False)
-
-class InsumosProveedor(db.Model):
-    __tablename__ = 'insumosProveedor'
-    id = db.Column(db.Integer, primary_key=True)
-    idProveedor = db.Column(db.Integer, db.ForeignKey('proveedores.id'), nullable=False)
-    idInsumo = db.Column(db.Integer, db.ForeignKey('insumos.id'), nullable=False)
-    precio = db.Column(db.Numeric(10, 2))
-
-class PagoProveedor(db.Model):
-    __tablename__ = 'pagoProveedor'
-    id = db.Column(db.Integer, primary_key=True)
-    idProveedor = db.Column(db.Integer, db.ForeignKey('proveedores.id'), nullable=False)
-    monto = db.Column(db.Numeric(10, 2), nullable=False)
-    fechaPago = db.Column(db.DateTime, default=datetime.datetime.now)
 
 class Receta(db.Model):
     __tablename__ = 'recetas'
@@ -199,13 +161,57 @@ class PedidosCliente(db.Model):
     usuario = db.relationship('Usuario', back_populates='pedidos_cliente')
     presentacion = db.relationship('PresentacionGalleta', backref='pedidos_clientes')
     
-    class CorteCaja(db.Model):
-        __tablename__ = 'cortes_caja'
-        id = db.Column(db.Integer, primary_key=True)
-        mes = db.Column(db.String(7), nullable=False)  # formato YYYY-MM
-        ingreso_total = db.Column(db.Numeric(10, 2), nullable=False)
-        egresos_total = db.Column(db.Numeric(10, 2), nullable=False)
-        monto_mermas = db.Column(db.Numeric(10, 2), nullable=False)
-        caja_reportada = db.Column(db.Numeric(10, 2), nullable=False)  # lo que el usuario ingresó manualmente
-        utilidad = db.Column(db.Numeric(10, 2), nullable=False)
-        fecha_creacion = db.Column(db.DateTime, default=datetime.now)
+class CorteCaja(db.Model):
+     __tablename__ = 'cortes_caja'
+     id = db.Column(db.Integer, primary_key=True)
+     mes = db.Column(db.String(7), nullable=False)  # formato YYYY-MM
+     ingreso_total = db.Column(db.Numeric(10, 2), nullable=False)
+     egresos_total = db.Column(db.Numeric(10, 2), nullable=False)
+     monto_mermas = db.Column(db.Numeric(10, 2), nullable=False)
+     caja_reportada = db.Column(db.Numeric(10, 2), nullable=False)  # lo que el usuario ingresó manualmente
+     utilidad = db.Column(db.Numeric(10, 2), nullable=False)
+     fecha_creacion = db.Column(db.DateTime, default=datetime.now)
+   
+
+
+class Insumo(db.Model):
+    __tablename__ = 'insumos'
+    id = db.Column(db.Integer, primary_key=True)
+    nombre = db.Column(db.String(50), nullable=False)
+    fechaIngreso = db.Column(db.TIMESTAMP, server_default=db.func.current_timestamp())
+    fechaCaducidad = db.Column(db.Date, nullable=False)
+    cantidad = db.Column(db.Numeric(10, 2, asdecimal=True), nullable=False)
+    unidadBase = db.Column(db.String(20), nullable=False)  # Unidad base (litros, kg, piezas)
+    costoPorUnidad = db.Column(db.Numeric(10, 2, asdecimal=True), nullable=False)  # Costo por unidad base
+    descripcion = db.Column(db.Text)
+    
+    # Relación con Proveedor
+    proveedor_id = db.Column(db.Integer, db.ForeignKey('proveedores.id'))
+    proveedor = db.relationship('Proveedor', backref='insumos', lazy=True)
+
+
+class Proveedor(db.Model):
+    __tablename__ = 'proveedores'
+    id = db.Column(db.Integer, primary_key=True)
+    nombreProveedor = db.Column(db.String(50), nullable=False)
+    direccion = db.Column(db.String(100))
+    correo = db.Column(db.String(50), unique=True, nullable=False)
+    telefono = db.Column(db.String(15), nullable=False)
+
+class InsumosProveedor(db.Model):
+    __tablename__ = 'insumosProveedor'
+    id = db.Column(db.Integer, primary_key=True)
+    idProveedor = db.Column(db.Integer, db.ForeignKey('proveedores.id'), nullable=False)
+    idInsumo = db.Column(db.Integer, db.ForeignKey('insumos.id'), nullable=False)
+    precio = db.Column(db.Numeric(10, 2))
+
+class PagoProveedor(db.Model):
+    __tablename__ = 'pagoProveedor'
+    id = db.Column(db.Integer, primary_key=True)
+    idProveedor = db.Column(db.Integer, db.ForeignKey('proveedores.id'), nullable=False)
+    monto = db.Column(db.Numeric(10, 2), nullable=False)
+    fechaPago = db.Column(db.DateTime, default=datetime.now)
+
+    # Relación con Proveedor
+    proveedor = db.relationship('Proveedor', backref='pagos', lazy=True)
+

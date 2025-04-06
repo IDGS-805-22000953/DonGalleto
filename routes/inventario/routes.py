@@ -2,7 +2,7 @@ from flask import Blueprint, render_template, request, redirect, url_for, flash
 from datetime import datetime, timedelta
 from flask_login import login_required
 from forms import RawMaterialForm, ProveedorForm
-from models.models import Proveedor, Insumo, PagoProveedor
+from models.models import Proveedor, Insumo, InsumosProveedor, PagoProveedor
 from models.models import db  # Importa la instancia de db
 from . import inventario_bp
 from sqlalchemy.orm import joinedload
@@ -18,7 +18,6 @@ def inventario():
     notification_weeks = int(request.args.get('weeks', 4))  # Obtener el parámetro de tiempo de alerta
 
     if search_term:
-        
         raw_materials = Insumo.query.filter(Insumo.nombre.ilike(f'%{search_term}%'))
     else:
         raw_materials = Insumo.query
@@ -42,7 +41,7 @@ def inventario():
 
     return render_template('inventario/inventario.html', raw_materials=raw_materials, notifications=notifications, notification_weeks=notification_weeks)
 
-# Ruta para agregar insumos 
+# Ruta para agregar insumos
 @inventario_bp.route('/agregar', methods=['GET', 'POST'])
 @login_required  # Protege esta ruta para usuarios autenticados
 def agregar_material():
@@ -50,18 +49,39 @@ def agregar_material():
     form.proveedor_id.choices = [(p.id, p.nombreProveedor) for p in Proveedor.query.all()]  # Llenar el select
 
     if form.validate_on_submit():
+        nombre = form.name.data
+        fecha_caducidad = form.expiration_date.data
+        cantidad = form.quantity.data
+        unidad = form.unit.data
+        costo_unidad = form.cost_per_unit.data
+        descripcion = form.description.data
+        proveedor_id = form.proveedor_id.data
+
         nuevo_material = Insumo(
-            nombre=form.name.data,
-            fechaCaducidad=form.expiration_date.data,
-            cantidad=form.quantity.data,
-            unidadBase=form.unit.data,
-            costoPorUnidad=form.cost_per_unit.data,
-            descripcion=form.description.data,
-            proveedor_id=form.proveedor_id.data  # Asigna el proveedor
+            nombre=nombre,
+            fechaCaducidad=fecha_caducidad,
+            cantidad=cantidad,
+            unidadBase=unidad,
+            costoPorUnidad=costo_unidad,
+            descripcion=descripcion,
+            proveedor_id=proveedor_id
         )
         db.session.add(nuevo_material)
+        db.session.flush()  # Para obtener el ID del nuevo insumo inmediatamente (opcional aquí)
+
+        # Calcular el monto total a pagar
+        monto_a_pagar = cantidad * costo_unidad
+
+        # Crear un nuevo registro de pago pendiente
+        nuevo_pago = PagoProveedor(
+            idProveedor=proveedor_id,
+            monto=monto_a_pagar,
+            fechaPago=None  # Indicamos que este pago aún no se ha realizado
+        )
+        db.session.add(nuevo_pago)
         db.session.commit()
-        flash('Materia prima agregada correctamente.', 'success')
+
+        flash('Materia prima agregada y pago pendiente registrado correctamente.', 'success')
         return redirect(url_for('inventario.inventario'))
 
     return render_template('inventario/agregar_material.html', form=form)
@@ -156,3 +176,41 @@ def eliminar_proveedor(proveedor_id):
     db.session.commit()
     flash('Proveedor eliminado correctamente.', 'danger')
     return redirect(url_for('inventario.agenda_proveedores'))
+
+@inventario_bp.route('/pagos-proveedores', methods=['GET'])
+@login_required
+def listar_pagos_proveedores():
+    pagos_pendientes = PagoProveedor.query.filter_by(fechaPago=None).join(Proveedor).all()
+
+    fecha_inicio = request.args.get('fecha_inicio')
+    fecha_fin = request.args.get('fecha_fin')
+
+    historial_query = PagoProveedor.query.filter(PagoProveedor.fechaPago.isnot(None)).join(Proveedor)
+
+    if fecha_inicio and fecha_fin:
+        try:
+            inicio = datetime.strptime(fecha_inicio, '%Y-%m-%d')
+            fin = datetime.strptime(fecha_fin, '%Y-%m-%d') + timedelta(days=1)
+            historial_query = historial_query.filter(PagoProveedor.fechaPago.between(inicio, fin))
+        except ValueError:
+            flash('Formato de fecha inválido.', 'danger')
+
+    historial_pagos = historial_query.order_by(PagoProveedor.fechaPago.desc()).all()
+    total_historial = sum(p.monto for p in historial_pagos)
+
+    return render_template('inventario/pago_proveedores.html',
+                           pagos_pendientes=pagos_pendientes,
+                           historial_pagos=historial_pagos,
+                           total_historial=total_historial,
+                           fecha_inicio=fecha_inicio,
+                           fecha_fin=fecha_fin)
+
+# Ruta para marcar un pago como realizado
+@inventario_bp.route('/pagos-proveedores/marcar-pagado/<int:pago_id>', methods=['POST'])
+@login_required
+def marcar_pago_realizado(pago_id):
+    pago = PagoProveedor.query.get_or_404(pago_id)
+    pago.fechaPago = datetime.now()
+    db.session.commit()
+    flash(f'El pago con ID {pago_id} ha sido marcado como realizado.', 'success')
+    return redirect(url_for('inventario.listar_pagos_proveedores'))

@@ -15,6 +15,7 @@ from models.models import (
     Proveedor,
     InsumosProveedor,
     PagoProveedor,
+    PedidosCliente,
     Receta,
     RecetaInsumos,
     Galleta,
@@ -537,74 +538,89 @@ def historial_merma():
 @cocina_bp.route("/eliminar_galleta/<int:id>", methods=["POST"])
 def eliminar_galleta(id):
     try:
-        # Desactivar autoflush para mayor control
-        with db.session.no_autoflush:
-            galleta = Galleta.query.get_or_404(id)
-            
-            # 1. Calcular el stock total en todas las presentaciones
-            total_galletas = 0
-            presentaciones = PresentacionGalleta.query.filter_by(idGalleta=id).all()
-            for presentacion in presentaciones:
-                if presentacion.tipoPresentacion == "1kg":
-                    total_galletas += presentacion.stock * 10  # 1kg = 10 unidades
-                elif presentacion.tipoPresentacion == "700g":
-                    total_galletas += presentacion.stock * 7   # 700g = 7 unidades
-                elif presentacion.tipoPresentacion == "Gramos":
-                    total_galletas += presentacion.stock / 100  # 100g por unidad
-                elif presentacion.tipoPresentacion == "Piezas":
-                    total_galletas += presentacion.stock        # 1 pieza = 1 unidad
+        # Iniciar una transacción explícita
+        db.session.begin()
+        
+        galleta = Galleta.query.get_or_404(id)
+        
+        # 1. Obtener todas las presentaciones de esta galleta
+        presentaciones = PresentacionGalleta.query.filter_by(idGalleta=id).all()
+        presentacion_ids = [p.id for p in presentaciones]
+        
+        # 2. Calcular el stock total para registrar merma
+        total_galletas = 0
+        for presentacion in presentaciones:
+            if presentacion.tipoPresentacion == "1kg":
+                total_galletas += presentacion.stock * 10
+            elif presentacion.tipoPresentacion == "700g":
+                total_galletas += presentacion.stock * 7
+            elif presentacion.tipoPresentacion == "Gramos":
+                total_galletas += presentacion.stock / 100
+            elif presentacion.tipoPresentacion == "Piezas":
+                total_galletas += presentacion.stock
 
-            # 2. Registrar merma si hay stock
-            if total_galletas > 0:
-                merma = Merma(
-                    idGalleta=galleta.id,
-                    cantidad=total_galletas,
-                    motivo="Eliminación de galleta y su stock",
-                    fechaRegistro=datetime.now()
-                )
-                db.session.add(merma)
-
-            # 3. Eliminar todas las relaciones en el orden correcto
+        # 3. Primero eliminar todas las relaciones que dependen de la galleta
+        
+        # a) Eliminar ventas locales asociadas a las presentaciones
+        VentaLocal.query.filter(VentaLocal.id_presentacion.in_(presentacion_ids)).delete()
+        
+        # b) Eliminar pedidos de clientes asociados a las presentaciones
+        if 'PedidosCliente' in globals():
+            PedidosCliente.query.filter(PedidosCliente.id_presentacion.in_(presentacion_ids)).delete()
+        
+        # c) Eliminar estatus de producción
+        EstatusProduccion.query.filter_by(idGalleta=id).delete()
+        
+        # d) Eliminar producciones
+        Produccion.query.filter_by(idGalleta=id).delete()
+        
+        # e) Eliminar presentaciones
+        PresentacionGalleta.query.filter_by(idGalleta=id).delete()
+        
+        # f) Eliminar mermas asociadas (DEBEMOS HACERLO ANTES de eliminar la galleta)
+        Merma.query.filter_by(idGalleta=id).delete()
+        
+        # 4. Registrar nueva merma por eliminación si hay stock
+        if total_galletas > 0:
+            merma = Merma(
+                idGalleta=galleta.id,  # Esto es válido porque aún no hemos eliminado la galleta
+                cantidad=total_galletas,
+                motivo="Eliminación de galleta y su stock",
+                fechaRegistro=datetime.now()
+            )
+            db.session.add(merma)
+            # Hacer commit intermedio para asegurar la merma
+            db.session.flush()
+        
+        # 5. Ahora podemos eliminar la galleta
+        db.session.delete(galleta)
+        
+        # 6. Verificar si la receta puede ser eliminada (solo si no hay otras galletas que la usen)
+        receta = Receta.query.get(galleta.idReceta)
+        if receta:
+            otras_galletas = Galleta.query.filter(
+                Galleta.idReceta == receta.id,
+                Galleta.id != id
+            ).count()
             
-            # Primero eliminar estatus de producción
-            EstatusProduccion.query.filter_by(idGalleta=id).delete()
-            
-            # Luego eliminar producciones
-            Produccion.query.filter_by(idGalleta=id).delete()
-            
-            # Eliminar presentaciones
-            PresentacionGalleta.query.filter_by(idGalleta=id).delete()
-            
-            # Eliminar mermas asociadas (si las hay)
-            Merma.query.filter_by(idGalleta=id).delete()
-            
-            # Eliminar relaciones de receta-insumo (si no se usa en otras galletas)
-            receta = Receta.query.get(galleta.idReceta)
-            if receta:
-                # Verificar si la receta es usada por otras galletas
-                otras_galletas = Galleta.query.filter(
-                    Galleta.idReceta == receta.id,
-                    Galleta.id != id
-                ).count()
-                
-                if otras_galletas == 0:
-                    RecetaInsumos.query.filter_by(idReceta=receta.id).delete()
-                    db.session.delete(receta)
-            
-            # Finalmente eliminar la galleta
-            db.session.delete(galleta)
-            
-            db.session.commit()
-            flash("Galleta eliminada correctamente y registrada en merma", "success")
-            
+            if otras_galletas == 0:
+                # Eliminar relaciones de receta-insumo
+                RecetaInsumos.query.filter_by(idReceta=receta.id).delete()
+                # Eliminar la receta
+                db.session.delete(receta)
+        
+        # Confirmar todos los cambios
+        db.session.commit()
+        flash("Galleta eliminada correctamente", "formulario1_success")
+        
     except Exception as e:
         db.session.rollback()
-        flash(f"Error al eliminar la galleta: {str(e)}", "error")
+        flash(f"Error al eliminar la galleta: {str(e)}", "formulario1_error")
         print(f"Error en eliminar_galleta: {str(e)}")
         import traceback
         traceback.print_exc()
     
-    return redirect(url_for("cocina.cocina"))
+    return redirect(url_for("cocina.nueva_galleta"))
 
 
 @cocina_bp.route("/editar_galleta/<int:id>", methods=["GET", "POST"])

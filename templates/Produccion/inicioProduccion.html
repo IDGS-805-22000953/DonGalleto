@@ -1,153 +1,146 @@
 {% extends "Central/layout.html" %}
 
 {% block content %}
-<div class="container mx-auto p-4 flex gap-6">
-    
-   
-    <div class="w-1/2">
-        <h1 class="text-3xl font-bold text-gray-800 mb-6">Produccion</h1>
-        
-        <div class="bg-white p-6 rounded-lg shadow-md mb-6">
-            <h2 class="text-xl font-semibold text-gray-700 mb-4">Galletas Disponibles</h2>
-            <table class="min-w-full bg-white border border-gray-200">
-                <thead>
-                    <tr>
-                        <th class="px-4 py-2 border-b">Galleta</th>
-                        <th class="px-4 py-2 border-b">Presentación</th>
-                        <th class="px-4 py-2 border-b">Cantidad</th>
-                        <th class="px-4 py-2 border-b">Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% if filtro %}
-                        <tr>
-                            <td colspan="4" class="text-center text-xl py-2">Filtrando por {{ filtro }}</td>
-                        </tr>
-                        {% endif %}
-                        {% for presentacion in presentaciones %}
-                        <tr>
-                            <td class="px-4 py-2 border-b">{{ presentacion.galleta.nombre }}</td>
-                            <td class="px-4 py-2 border-b">{{ presentacion.tipoPresentacion }}</td>
-                            <td class="px-4 py-2 border-b">
-                                {% if presentacion.tipoPresentacion == "Piezas" and presentacion.stock < 25 %}
-                                    <span class="text-red-500">{{ presentacion.stock }}</span>
-                                {% elif presentacion.tipoPresentacion == "Gramos" and presentacion.stock < 250 %}
-                                    <span class="text-red-500">{{ presentacion.stock }}</span>
-                                {% elif presentacion.tipoPresentacion == "1kg" and presentacion.stock < 6 %}
-                                    <span class="text-red-500">{{ presentacion.stock }}</span>
-                                {% elif presentacion.tipoPresentacion == "700g" and presentacion.stock < 6 %}
-                                    <span class="text-red-500">{{ presentacion.stock }}</span>
-                                {% else %}
-                                    {{ presentacion.stock }}
-                                {% endif %}
-                            </td>
-                            <td class="px-4 py-2 border-b">
-                                <form
-                                action="{{ url_for('produccion.iniciar_produccion', presentacion_id=presentacion.id) }}"
-                                method="POST">
-                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                                <button type="submit"
-                                    class="bg-blue-600 text-white rounded-lg px-5 py-2.5">Producir</button>
-                            </form>
-                            </td>
-                        </tr>
-                        {% endfor %}
-                </tbody>
-            </table>
-        
+<div class="container mx-auto p-4 lg:p-6 flex flex-col md:flex-row gap-6">
 
-            <h2 class="text-xl font-semibold text-gray-700 mb-4">Cantidades</h2>
-            <div class="flex gap-4">
-                <a href="{{ url_for('produccion.piezas') }}" 
-                    class="focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5">
-                    Piezas
-                </a>
-                <a href="{{ url_for('produccion.gramaje') }}"
-                    class="focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5">
-                    Gramaje
-                </a>
-                <a href="{{ url_for('produccion.paquete1') }}"
-                    class="focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5">
-                    Paquete 1kg
-                </a>
-                <a href="{{ url_for('produccion.paquete2') }}"
-                    class="focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5">
-                    Paquete 700g
-                </a>
+    <!-- Sección de Producción -->
+    <div class="w-full md:w-1/2 space-y-6">
+        <div class="flex items-center gap-3">
+            <svg class="w-8 h-8 text-[#9C6E66]" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+            </svg>
+            <h1 class="text-3xl font-bold text-gray-800">Producción</h1>
+        </div>
+
+        <!-- Galletas Disponibles -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+            <div style="background-color: #742c2c;" class="bg-[#F8F5F3] px-6 py-4 border-b border-gray-200">
+                <h2 class="text-xl font-semibold text-white">Galletas Disponibles</h2>
+            </div>
+            
+            <!-- Filtro de presentación (estilo de merma) -->
+            <div class="border-b border-gray-200">
+                <div class="flex">
+                    <a href="{{ url_for('produccion.piezas') }}"
+                        class="flex-1 py-3 px-4 text-center font-medium {% if filtro == 'Piezas' %}text-[#9C6E66] border-b-2 border-[#9C6E66]{% else %}text-gray-500 hover:text-gray-700{% endif %}">
+                        Piezas
+                    </a>
+                    <a href="{{ url_for('produccion.gramaje') }}"
+                        class="flex-1 py-3 px-4 text-center font-medium {% if filtro == 'Gramos' %}text-[#9C6E66] border-b-2 border-[#9C6E66]{% else %}text-gray-500 hover:text-gray-700{% endif %}">
+                        Gramos
+                    </a>
+                    <a href="{{ url_for('produccion.paquete1') }}"
+                        class="flex-1 py-3 px-4 text-center font-medium {% if filtro == '1kg' %}text-[#9C6E66] border-b-2 border-[#9C6E66]{% else %}text-gray-500 hover:text-gray-700{% endif %}">
+                        1kg
+                    </a>
+                    <a href="{{ url_for('produccion.paquete2') }}"
+                        class="flex-1 py-3 px-4 text-center font-medium {% if filtro == '700g' %}text-[#9C6E66] border-b-2 border-[#9C6E66]{% else %}text-gray-500 hover:text-gray-700{% endif %}">
+                        700g
+                    </a>
+                </div>
+            </div>
+            
+            {% if filtro %}
+            <div class="p-6 text-center text-lg font-medium bg-blue-50 text-blue-800">
+                Filtrando por {{ filtro }}
+            </div>
+            {% endif %}
+            
+            <div class="divide-y divide-gray-200">
+                {% for presentacion in presentaciones %}
+                <div class="p-6">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <h3 class="text-lg font-medium text-gray-900">{{ presentacion.galleta.nombre }}</h3>
+                            <p class="text-sm text-gray-500">{{ presentacion.tipoPresentacion }}</p>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-lg font-medium {% if ((presentacion.tipoPresentacion == 'Piezas' and presentacion.stock < 25) or 
+                                                              (presentacion.tipoPresentacion == 'Gramos' and presentacion.stock < 250) or 
+                                                              (presentacion.tipoPresentacion == '1kg' and presentacion.stock < 6) or 
+                                                              (presentacion.tipoPresentacion == '700g' and presentacion.stock < 6)) %}text-red-500{% endif %}">
+                                {{ presentacion.stock }}
+                            </p>
+                        </div>
+                    </div>
+                    <div class="mt-4">
+                        <form action="{{ url_for('produccion.iniciar_produccion', presentacion_id=presentacion.id) }}" method="POST">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                            <button style="background-color: #f7df92;" type="submit" class="w-full py-2 px-4 bg-blue-600 text-gray-700 rounded-lg hover:bg-blue-700 transition">
+                                Producir
+                            </button>
+                        </form>
+                    </div>
+                </div>
+                {% endfor %}
             </div>
         </div>
     </div>
 
-    
-    <div class="w-1/2">
-        
-        <div class="flex justify-end mb-4">
-            <a href="{{ url_for('cocina.cocina') }}"
-                class="focus:outline-none text-white bg-[#9C6E66] hover:bg-[#7A5A52] focus:ring-4 focus:ring-[#9C6E66] font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2">
+    <!-- Sección de Alertas y Producción -->
+    <div class="w-full md:w-1/2 space-y-6">
+        <div class="flex justify-between items-center">
+            <div>
+                <h1 class="text-3xl font-bold text-gray-800">Estado Actual</h1>
+            </div>
+            <a  style="background-color: #f7df92;" href="{{ url_for('cocina.cocina') }}" class="flex items-center py-2 px-4 bg-[#9C6E66] text-gray-700 rounded-lg hover:bg-[#7A5A52] transition">
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+                </svg>
                 Cocina
             </a>
         </div>
 
-      
-        <div class="bg-white p-6 rounded-lg shadow-md mb-6">
-            <h2 class="text-xl font-semibold text-gray-700 mb-4">Alertas de Cocina</h2>
-            <table class="min-w-full bg-white border border-gray-200">
-                <thead>
-                    <tr>
-                        <th class="px-4 py-2 border-b">Galleta</th>
-                        <th class="px-4 py-2 border-b">Estado</th>
-                        <th class="px-4 py-2 border-b">Presentacion</th>
-                        <th class="px-4 py-2 border-b">Tiempo Estimado</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for alerta, tipoPresentacion in alertas %}
-                    <tr class="bg-yellow-200 rounded-lg">
-                        <td class="px-4 py-2 border-b rounded-l-lg">{{ alerta.nombreGalleta }}</td>
-                        <td class="px-4 py-2 border-b">{{ alerta.estatus }}</td>
-                        <td class="px-4 py-2 border-b">{{ tipoPresentacion }}</td>
-                        <td class="px-4 py-2 border-b">{{ alerta.tiempoEstimado }} min</td>
-                          
-                    </tr>
-                    {% endfor %}
-                </tbody>
-                
-                
-                 
-            </table>
+        <!-- Alertas de Cocina -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+            <div style="background-color: #742c2c;" class="bg-[#F8F5F3] px-6 py-4 border-b border-gray-200">
+                <h2 class="text-xl font-semibold text-white">Alertas de Cocina</h2>
+            </div>
+            <div class="divide-y divide-gray-200">
+                {% for alerta, tipoPresentacion in alertas %}
+                <div class="p-6 bg-yellow-50">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <h3 class="font-medium text-gray-900">{{ alerta.nombreGalleta }}</h3>
+                            <p class="text-sm text-gray-500">{{ tipoPresentacion }}</p>
+                        </div>
+                        <div class="text-right">
+                            <span class="px-3 py-1 text-xs rounded-full bg-yellow-100 text-yellow-800">
+                                {{ alerta.estatus }}
+                            </span>
+                            <p class="text-sm font-medium mt-1">{{ alerta.tiempoEstimado }} min</p>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
         </div>
 
-        
-        <div class="bg-white p-6 rounded-lg shadow-md">
-            <h2 class="text-xl font-semibold text-gray-700 mb-4">Galletas Producidas Hoy</h2>
-            <table class="min-w-full bg-white border border-gray-200">
-                <thead>
-                    <tr>
-                        <th class="px-4 py-2 border-b">Nombre</th>
-                        <th class="px-4 py-2 border-b">Cantidad</th>
-                        <th class="px-4 py-2 border-b">Fecha</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% if producciones_hoy %}
-                        {% for produccion in producciones_hoy %}
-                        <tr>
-                            <td class="px-4 py-2 border-b">{{ produccion.galleta.nombre }}</td>
-                            <td class="px-4 py-2 border-b">{{ produccion.cantidadProducida }}</td>
-                            <td class="px-4 py-2 border-b">{{ produccion.fechaProduccion }}</td>
-                        </tr>
-                        {% endfor %}
-                    {% else %}
-                        <tr>
-                            <td colspan="3" class="text-center text-xl py-4 text-gray-500">
-                                No se han producido galletas hoy
-                            </td>
-                        </tr>
-                    {% endif %}
-                </tbody>
-            </table>
+        <!-- Galletas Producidas Hoy -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+            <div style="background-color: #742c2c;" class="bg-[#F8F5F3] px-6 py-4 border-b border-gray-200">
+                <h2 class="text-xl font-semibold text-white">Galletas Producidas Hoy</h2>
+            </div>
+            <div class="divide-y divide-gray-200">
+                {% if producciones_hoy %}
+                    {% for produccion in producciones_hoy %}
+                    <div class="p-6">
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <h3 class="font-medium text-gray-900">{{ produccion.galleta.nombre }}</h3>
+                                <p class="text-sm text-gray-500">{{ produccion.fechaProduccion }}</p>
+                            </div>
+                            <p class="text-lg font-medium">{{ produccion.cantidadProducida }}</p>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="p-6 text-center text-gray-500">
+                        No se han producido galletas hoy
+                    </div>
+                {% endif %}
+            </div>
         </div>
-        
     </div>
 </div>
 {% endblock %}

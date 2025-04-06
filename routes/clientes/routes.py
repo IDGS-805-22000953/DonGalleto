@@ -99,8 +99,11 @@ def eliminar_del_carrito(index):
     return redirect(url_for('clientes.clientes'))
 
 
+
 @clientes_bp.route('/procesar_pedido', methods=['POST'])
+@login_required  # Esto asegura que solo usuarios autenticados puedan acceder
 def procesar_pedido():
+    # Verificar si hay productos en el carrito
     if 'carrito' not in session or not session['carrito']:
         flash('El carrito está vacío', 'error')
         return redirect(url_for('clientes.clientes'))
@@ -109,7 +112,7 @@ def procesar_pedido():
     fecha_recogida_str = request.form.get('fecha_recogida')
     if not fecha_recogida_str:
         flash('Por favor selecciona una fecha de recogida', 'error')
-        return redirect(url_for('clientes.ventas'))
+        return redirect(url_for('clientes.clientes'))
     
     try:
         fecha_recogida = datetime.strptime(fecha_recogida_str, '%Y-%m-%d')
@@ -119,9 +122,7 @@ def procesar_pedido():
             flash('La fecha de recogida no puede ser en el pasado', 'error')
             return redirect(url_for('clientes.clientes'))
             
-        # Obtener el ID del cliente (asumiendo que está en la sesión)
-      #  id_cliente = session.get('user_id')  # Ajusta esto según tu sistema de autenticación
-        #id_cliente = 1
+        # Procesar cada item del carrito
         for item in session['carrito']:
             # Obtener la presentación de galleta
             presentacion = PresentacionGalleta.query.get(item['presentacion_id'])
@@ -140,7 +141,7 @@ def procesar_pedido():
             
             # Crear el pedido del cliente
             nuevo_pedido = PedidosCliente(
-                id_usuario=current_user.id,
+                id_usuario=current_user.id,  # Usamos current_user.id de Flask-Login
                 id_presentacion=item['presentacion_id'],
                 cantidadcomprado=item['cantidad'],
                 subtotal=item['subtotal'],
@@ -150,7 +151,10 @@ def procesar_pedido():
             )
             db.session.add(nuevo_pedido)
         
+        # Confirmar todos los cambios en la base de datos
         db.session.commit()
+        
+        # Limpiar el carrito de compras
         session.pop('carrito', None)
         session.pop('carrito_subtotal', None)
         session.pop('carrito_iva', None)
@@ -158,9 +162,9 @@ def procesar_pedido():
         
         flash('Pedido procesado con éxito. ¡Gracias por tu compra!', 'success')
         return redirect(url_for('clientes.clientes'))
+    
     except Exception as e:
+        # Si hay algún error, hacer rollback de la transacción
         db.session.rollback()
         flash(f'Error al procesar el pedido: {str(e)}', 'error')
         return redirect(url_for('clientes.clientes'))
-
-

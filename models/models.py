@@ -10,51 +10,38 @@ db = SQLAlchemy()
 
 from flask_login import UserMixin  # Importa UserMixin de Flask-Login
 
-class Usuario(db.Model, UserMixin):  # Asegúrate de heredar de UserMixin
+
+from werkzeug.security import generate_password_hash, check_password_hash
+from sqlalchemy.sql import func
+
+
+class Usuario(db.Model, UserMixin):
     __tablename__ = 'usuarios'
-    id = db.Column(db.Integer, primary_key=True)
-    nombreUsuario = db.Column(db.String(50), nullable=False)
-    apellidoPa = db.Column(db.String(50), nullable=False)
-    apellidoMa = db.Column(db.String(50))
-    correo = db.Column(db.String(50), unique=True, nullable=False)
-    contrasenia = db.Column(db.String(255), nullable=False)  # Contraseña hasheada
-    rol = db.Column(db.Enum('admin', 'cliente','cajero','cocina'), nullable=False)
-    fechaRegistro = db.Column(db.TIMESTAMP, server_default=db.func.current_timestamp())
 
-    def set_password(self, password):
-        """Este método establece la contraseña hasheada"""
-        self.contrasenia = generate_password_hash(password)
-
-    def check_password(self, password):
-        """Este método verifica la contraseña usando el hash"""
-        return check_password_hash(self.contrasenia, password)
-
-    # Métodos que Flask-Login espera para el manejo de la sesión
-    def get_id(self):
-        """Flask-Login requiere este método para obtener el ID del usuario"""
-        return str(self.id)
-
-    def is_active(self):
-        """Flask-Login requiere este método para verificar si el usuario está activo"""
-        return True  # Si quieres un control más complejo, aquí podrías verificar algún campo como "activo"
-
-    def is_authenticated(self):
-        """Flask-Login requiere este método para verificar si el usuario está autenticado"""
-        return True  # Siempre que el usuario haya iniciado sesión exitosamente, será autenticado
-
-    def is_anonymous(self):
-        """Flask-Login requiere este método para verificar si el usuario es anónimo"""
-        return False  # Si un usuario ha iniciado sesión, no es anónimo
-
-
-class Cliente(db.Model):
-    __tablename__ = 'clientes'
     id = db.Column(db.Integer, primary_key=True)
     nombre = db.Column(db.String(50), nullable=False)
-    apellidoPa = db.Column(db.String(50), nullable=False)
-    correo = db.Column(db.String(50), unique=True, nullable=False)
-    contrasenia = db.Column(db.String(255), nullable=False)
-    fechaRegistro = db.Column(db.TIMESTAMP, server_default=db.func.current_timestamp())
+    apellido_paterno = db.Column(db.String(50), nullable=False)
+    apellido_materno = db.Column(db.String(50))
+    correo = db.Column(db.String(120), unique=True, nullable=False)
+    contrasenia_hash = db.Column(db.String(255), nullable=False)
+    rol = db.Column(db.Enum('admin', 'cajero', 'inventario', 'cliente'), nullable=False)
+    telefono = db.Column(db.String(20), nullable=True)
+    direccion = db.Column(db.String(200), nullable=True)
+    fecha_contratacion = db.Column(db.Date, nullable=True)
+    salario = db.Column(db.Numeric(10, 2), nullable=True)
+    fecha_registro = db.Column(db.DateTime, server_default=func.now())
+
+    # Métodos de contraseña
+    def set_password(self, password):
+        self.contrasenia_hash = generate_password_hash(password)
+
+    def check_password(self, password):
+        return check_password_hash(self.contrasenia_hash, password)
+
+    # Relaciones CORREGIDAS
+    ventas = db.relationship('VentaLocal', back_populates='usuario', lazy=True)
+    pedidos_cliente = db.relationship('PedidosCliente', back_populates='usuario', lazy=True)
+
 
 class Insumo(db.Model):
     __tablename__ = 'insumos'
@@ -66,6 +53,12 @@ class Insumo(db.Model):
     unidadBase = db.Column(db.String(20), nullable=False)  # Unidad base (litros, kg, piezas)
     costoPorUnidad = db.Column(db.Numeric(10, 2, asdecimal=True), nullable=False)  # Costo por unidad base
     descripcion = db.Column(db.Text)
+    
+    # Relación con Proveedor
+    proveedor_id = db.Column(db.Integer, db.ForeignKey('proveedores.id'))
+    proveedor = db.relationship('Proveedor', backref='insumos', lazy=True)
+
+
 
 class Proveedor(db.Model):
     __tablename__ = 'proveedores'
@@ -174,6 +167,8 @@ class EstatusProduccion(db.Model):
     galleta = db.relationship('Galleta', backref='estatusProduccion', lazy=True)
     presentacion = db.relationship('PresentacionGalleta', backref='estatusProduccion', lazy=True) 
 
+from datetime import datetime  # Importación corregida en la parte superior
+
 class VentaLocal(db.Model):
     __tablename__ = 'ventaslocal'
     id = db.Column(db.Integer, primary_key=True)
@@ -182,15 +177,16 @@ class VentaLocal(db.Model):
     cantidadcomprado = db.Column(db.Integer, nullable=False)
     subtotal = db.Column(db.Numeric(10, 2), nullable=False)
     total = db.Column(db.Numeric(10, 2), nullable=False)
-    fechaCompra = db.Column(db.DateTime, default=datetime.now)
-
-    usuario = db.relationship('Usuario', backref='ventas_local')
-    presentacion = db.relationship('PresentacionGalleta', backref='ventas_local')
-
+    fechaCompra = db.Column(db.DateTime, default=datetime.now)  # Corregido aquí
+    
+    usuario = db.relationship('Usuario', back_populates='ventas')
+    presentacion = db.relationship('PresentacionGalleta', backref='ventas_locales')
+    
 class PedidosCliente(db.Model):
-    _tablename_ = 'pedidoscliente'
+    __tablename__ = 'pedidoscliente'  # Nombre corregido
+    
     id = db.Column(db.Integer, primary_key=True)
-    idCliente = db.Column(db.Integer, db.ForeignKey('usuarios.id'), nullable=False)
+    id_usuario = db.Column(db.Integer, db.ForeignKey('usuarios.id'), nullable=False)
     id_presentacion = db.Column(db.Integer, db.ForeignKey('presentacionesGalletas.id'), nullable=False)
     cantidadcomprado = db.Column(db.Integer, nullable=False)
     subtotal = db.Column(db.Numeric(10, 2), nullable=False)
@@ -199,17 +195,17 @@ class PedidosCliente(db.Model):
     fechaRecogida = db.Column(db.DateTime)
     estatus = db.Column(db.Enum('pendiente', 'completado', 'cancelado'), nullable=False, default='pendiente')
     
-    # Definir las relaciones
-    cliente = db.relationship('Usuario', backref='pedidos')
-    presentacion = db.relationship('PresentacionGalleta', backref='pedidos')
+    # Relaciones CORREGIDAS
+    usuario = db.relationship('Usuario', back_populates='pedidos_cliente')
+    presentacion = db.relationship('PresentacionGalleta', backref='pedidos_clientes')
     
-class CorteCaja(db.Model):
-    __tablename__ = 'cortes_caja'
-    id = db.Column(db.Integer, primary_key=True)
-    mes = db.Column(db.String(7), nullable=False)  # formato YYYY-MM
-    ingreso_total = db.Column(db.Numeric(10, 2), nullable=False)
-    egresos_total = db.Column(db.Numeric(10, 2), nullable=False)
-    monto_mermas = db.Column(db.Numeric(10, 2), nullable=False)
-    caja_reportada = db.Column(db.Numeric(10, 2), nullable=False)  # lo que el usuario ingresó manualmente
-    utilidad = db.Column(db.Numeric(10, 2), nullable=False)
-    fecha_creacion = db.Column(db.DateTime, default=datetime.now)
+    class CorteCaja(db.Model):
+        __tablename__ = 'cortes_caja'
+        id = db.Column(db.Integer, primary_key=True)
+        mes = db.Column(db.String(7), nullable=False)  # formato YYYY-MM
+        ingreso_total = db.Column(db.Numeric(10, 2), nullable=False)
+        egresos_total = db.Column(db.Numeric(10, 2), nullable=False)
+        monto_mermas = db.Column(db.Numeric(10, 2), nullable=False)
+        caja_reportada = db.Column(db.Numeric(10, 2), nullable=False)  # lo que el usuario ingresó manualmente
+        utilidad = db.Column(db.Numeric(10, 2), nullable=False)
+        fecha_creacion = db.Column(db.DateTime, default=datetime.now)

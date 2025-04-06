@@ -1,12 +1,13 @@
 from flask import Blueprint, render_template, redirect, url_for, flash, request
 from flask_login import login_user, logout_user, login_required, current_user
-from models.models import db, Usuario, Cliente
+from models.models import db, Usuario
 from forms import LoginForm, RegistrationForm
 from werkzeug.security import check_password_hash
 import requests
 import re
 
 auth_bp = Blueprint('auth', __name__)
+
 # Función para verificar el CAPTCHA
 def verify_recaptcha(recaptcha_response):
     secret_key = '6LdEuQUrAAAAABGCpdHiYk3-TBA1cgIxOJ61gzLN'  # Reemplaza con tu clave secreta
@@ -38,20 +39,26 @@ def login():
             flash('Por favor completa el CAPTCHA', 'danger')
             return redirect(url_for('auth.login'))
 
-        user = Usuario.query.filter_by(nombreUsuario=username).first()
+        # Buscar en Usuario (por nombreUsuario o correo)
+        user = Usuario.query.filter(
+            (Usuario.nombre == username) | (Usuario.correo == username)
+        ).first()
 
         if user and user.check_password(password):
             login_user(user)
             flash('Inicio de sesión exitoso', 'success')
 
-            # Redirección basada en el rol del usuario, cargando los HTML correspondientes
             if user.rol == 'admin':
-                return redirect(url_for('auth.admin_dashboard'))  # Redirige al dashboard del admin
+                return redirect(url_for('dashboard.mostrar_dashboard'))
             elif user.rol == 'cliente':
-                return redirect(url_for('auth.cliente_dashboard'))  # Redirige al dashboard del cliente
+                return redirect(url_for('clientes.clientes'))
+            elif user.rol == 'cajero':
+                return redirect(url_for('ventas.ventas'))
+            elif user.rol == 'cocina':
+                return redirect(url_for('produccion.produccion'))
             else:
                 flash('Rol desconocido', 'danger')
-                return redirect(url_for('auth.login'))  # Vuelve a la página de login
+                return redirect(url_for('auth.login'))
         else:
             flash('Usuario o contraseña incorrectos', 'danger')
     
@@ -61,41 +68,42 @@ def login():
 def register():
     form = RegistrationForm()
     if form.validate_on_submit():
-        try:
-            # Verificar si el cliente ya existe
-            existing_client = Cliente.query.filter_by(correo=form.email.data).first()
-            if existing_client:
-                flash('Este correo electrónico ya está registrado', 'danger')
-                return redirect(url_for('auth.register'))
+        username = form.username.data
+        password = form.password.data
+        email = form.email.data
+        apellidoPa = form.apellidoPa.data
+        recaptcha_response = request.form['g-recaptcha-response']
 
-            # Validación de contraseña
-            if len(form.password.data) < 8:
-                flash('La contraseña debe tener al menos 8 caracteres', 'danger')
-                return redirect(url_for('auth.register'))
-
-            # Crear nuevo cliente
-            new_client = Cliente(
-                nombre=form.username.data,
-                apellidoPa=form.apellidoPa.data,
-                correo=form.email.data,
-                contrasenia=generate_password_hash(form.password.data)
-            )
-
-            db.session.add(new_client)
-            db.session.commit()  # Asegurar el commit
-            
-            flash('Registro exitoso. Ahora puedes iniciar sesión', 'success')
-            return redirect(url_for('auth.login'))
-
-        except Exception as e:
-            db.session.rollback()
-            flash('Error al registrar. Por favor intenta nuevamente.', 'danger')
-            print(f"Error en registro: {str(e)}")  # Para depuración
+        if not verify_recaptcha(recaptcha_response):
+            flash('Por favor completa el CAPTCHA', 'danger')
             return redirect(url_for('auth.register'))
 
-    # Si hay errores en el formulario
-    elif request.method == 'POST':
-        flash('Por favor corrige los errores en el formulario', 'danger')
+        # Validaciones
+        if len(password) < 8:
+            flash('La contraseña debe tener al menos 8 caracteres', 'danger')
+            return redirect(url_for('auth.register'))
+
+        if not re.match(r"[^@]+@[^@]+\.[^@]+", email):
+            flash('El correo electrónico no es válido', 'danger')
+            return redirect(url_for('auth.register'))
+
+        if Usuario.query.filter_by(correo=email).first():
+            flash('El correo electrónico ya está registrado', 'warning')
+            return redirect(url_for('auth.register'))
+
+        # Crear nuevo usuario con rol de cliente
+        new_user = Usuario(
+            nombre=username,
+            apellido_paterno=apellidoPa,
+            correo=email,
+            rol='cliente'
+        )
+        new_user.set_password(password)
+        db.session.add(new_user)
+        db.session.commit()
+        
+        flash('Registro exitoso, ahora puedes iniciar sesión', 'success')
+        return redirect(url_for('auth.login'))
 
     return render_template('registro.html', form=form)
 
@@ -114,7 +122,7 @@ def admin_dashboard():
     if current_user.rol != 'admin':
         flash('No tienes permiso para acceder a esta página', 'danger')
         return redirect(url_for('auth.login'))
-    return redirect(url_for('dashboard.mostrar_dashboard'))
+    return render_template('Central/dashboard.html')
 
 @auth_bp.route('/cliente_dashboard')
 @login_required

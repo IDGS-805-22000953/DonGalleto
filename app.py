@@ -8,7 +8,7 @@ import logging
 from auth import auth_bp  
 import forms
 from models.models import (
-    db, Usuario, Cliente, Insumo, Proveedor, InsumosProveedor, PagoProveedor, Receta, RecetaInsumos,
+    db, Usuario, Insumo, Proveedor, InsumosProveedor, PagoProveedor, Receta, RecetaInsumos,
     Galleta, Produccion, Merma
 )
 from routes.clientes.routes import clientes_bp
@@ -19,6 +19,7 @@ from routes.central.routes import dashboard_bp
 from routes.inventario.routes import inventario_bp
 from routes.corte_caja.routes import corte_bp
 
+from routes.Empleados.routes import empleados_bp
 from auth.routes import auth_bp
 
 # Configuración del logging
@@ -50,6 +51,7 @@ app.register_blueprint(dashboard_bp, url_prefix='/dashboard')
 app.register_blueprint(inventario_bp, url_prefix='/inventario')
 app.register_blueprint(auth_bp, url_prefix='/auth')
 app.register_blueprint(corte_bp, url_prefix='/corte')
+app.register_blueprint(empleados_bp, url_prefix='/empleados')
 
 # =======================
 # Rutas principales

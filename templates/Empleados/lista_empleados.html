@@ -1,0 +1,272 @@
+{% extends "Central/layout.html" %}
+
+{% block content %}
+
+{% block container %}
+<div class="p-4 sm:p-6">
+    <!-- Header y botón -->
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
+        <h1 class="text-2xl font-bold text-gray-900 dark:text-white">
+            <span class="inline-flex items-center">
+                <svg class="w-6 h-6 mr-2 text-blue-600" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path>
+                </svg>
+                Gestión de empleados
+            </span>
+        </h1>
+        <a href="{{ url_for('empleados.registrar_empleado') }}" class="inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-all">
+            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+            </svg>
+            Nuevo empleado
+        </a>
+    </div>
+
+    <!-- Filtros -->
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4 mb-6">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <!-- Buscador -->
+            <div class="md:col-span-2">
+                <label for="search" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Buscar empleado...</label>
+                <div class="relative">
+                    <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                        <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                        </svg>
+                    </div>
+                    <input type="text" id="search" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white" placeholder="Nombre, apellido o correo">
+                </div>
+            </div>
+            
+            <!-- Filtro por rol -->
+            <div>
+                <label for="roles" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Rol</label>
+                <select id="roles" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                    <option selected value="">Todos los roles</option>
+                    <option value="admin">Administración</option>
+                    <option value="cajero">Cajero</option>
+                    <option value="inventario">Inventario</option>
+                </select>
+            </div>
+            
+            <!-- Botón limpiar -->
+            <div class="flex items-end">
+                <button id="reset-filters" class="text-gray-900 bg-white border border-gray-300 hover:bg-gray-100 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 w-full">
+                    Limpiar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tabla -->
+    <div class="bg-white dark:bg-gray-800 shadow rounded-lg overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+                <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                    <tr>
+                        <th scope="col" class="px-6 py-3">Nombre</th>
+                        <th scope="col" class="px-6 py-3">Apellidos</th>
+                        <th scope="col" class="px-6 py-3">Correo</th>
+                        <th scope="col" class="px-6 py-3">Rol</th>
+                        <th scope="col" class="px-6 py-3">Fecha de Registro</th>
+                        <th scope="col" class="px-6 py-3 text-right">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for empleado in empleados %}
+                    <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 employee-row" 
+                        data-role="{{ empleado.rol }}"
+                        data-search="{{ empleado.nombre.lower() }} {{ empleado.apellido_paterno.lower() }} {{ empleado.apellidoMa.lower() if empleado.apellidoMa else '' }}">
+                        <td class="px-6 py-4 font-medium text-gray-900 dark:text-white whitespace-nowrap">
+                            <div class="flex items-center">
+                                <div class="flex-shrink-0 h-10 w-10">
+                                    <div class="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-800 font-bold">
+                                        {{ empleado.nombre[0]|upper }}
+                                    </div>
+                                </div>
+                                <div class="ml-4">
+                                    <div class="text-sm font-medium">{{ empleado.nombre }}</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4">{{ empleado.apellido_paterno }} {{ empleado.apellidoMa or '' }}</td>
+                        <td class="px-6 py-4">
+                            <a href="mailto:{{ empleado.correo }}" class="text-blue-600 hover:underline">{{ empleado.correo }}</a>
+                        </td>
+                        <td class="px-6 py-4">
+    <form class="update-role-form" action="{{ url_for('empleados.actualizar_rol', id=empleado.id) }}" method="POST">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <select name="rol" class="text-xs font-medium rounded-full px-2.5 py-0.5 border 
+            {% if empleado.rol == 'admin' %}
+                bg-red-100 text-red-800 border-red-300 dark:bg-red-900 dark:text-red-300 dark:border-red-700
+            {% elif empleado.rol == 'cajero' %}
+                bg-blue-100 text-blue-800 border-blue-300 dark:bg-blue-900 dark:text-blue-300 dark:border-blue-700
+            {% elif empleado.rol == 'produccion' %}
+                bg-green-100 text-green-800 border-green-300 dark:bg-green-900 dark:text-green-300 dark:border-green-700
+            {% elif empleado.rol == 'inventario' %}
+                bg-yellow-100 text-yellow-800 border-yellow-300 dark:bg-yellow-900 dark:text-yellow-300 dark:border-yellow-700
+            {% else %}
+                bg-gray-100 text-gray-800 border-gray-300 dark:bg-gray-900 dark:text-gray-300 dark:border-gray-700
+            {% endif %}"
+            onchange="this.form.submit()" {% if current_user.rol != 'admin' %}disabled{% endif %}>
+            <option value="admin" {% if empleado.rol == 'admin' %}selected{% endif %}>Administración</option>
+            <option value="cajero" {% if empleado.rol == 'cajero' %}selected{% endif %}>Cajero</option>
+            <option value="produccion" {% if empleado.rol == 'produccion' %}selected{% endif %}>Producción</option>
+            <option value="inventario" {% if empleado.rol == 'inventario' %}selected{% endif %}>Inventario</option>
+        </select>
+    </form>
+</td>
+                        <td class="px-6 py-4">{{ empleado.fecha_registro.strftime('%d/%m/%Y') }}</td>
+                        <td class="px-6 py-4 text-right">
+                            <div class="flex justify-end space-x-2">
+                                <form action="{{ url_for('empleados.eliminar_empleado', id=empleado.id) }}" method="POST" class="inline">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                    <button type="submit" 
+                                            onclick="return confirm('¿Estás seguro de eliminar este empleado?')"
+                                            class="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300"
+                                            data-tooltip-target="tooltip-delete-{{ empleado.id }}">
+                                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                            <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                                        </svg>
+                                        <div id="tooltip-delete-{{ empleado.id }}" role="tooltip" class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-white bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
+                                            Eliminar
+                                            <div class="tooltip-arrow" data-popper-arrow></div>
+                                        </div>
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- Paginación -->
+        <nav class="flex items-center justify-between p-4 border-t border-gray-200 dark:border-gray-700">
+            <div class="text-sm text-gray-700 dark:text-gray-400">
+                Mostrando <span class="font-medium">1</span> a <span class="font-medium">10</span> de <span class="font-medium">100</span> empleados
+            </div>
+            <ul class="inline-flex items-center -space-x-px">
+                <li>
+                    <a href="#" class="block px-3 py-2 ml-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-l-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+                        <span class="sr-only">Anterior</span>
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                        </svg>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">1</a>
+                </li>
+                <li>
+                    <a href="#" class="px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">2</a>
+                </li>
+                <li>
+                    <a href="#" class="px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">3</a>
+                </li>
+                <li>
+                    <a href="#" class="block px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 rounded-r-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+                        <span class="sr-only">Siguiente</span>
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
+                        </svg>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Inicializar tooltips
+    const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-tooltip-target]'));
+    tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new Flowbite.Tooltip(tooltipTriggerEl);
+    });
+    
+    // Filtros
+    const searchInput = document.getElementById('search');
+    const roleFilter = document.getElementById('roles');
+    const resetButton = document.getElementById('reset-filters');
+    const employeeRows = document.querySelectorAll('.employee-row');
+    
+    function applyFilters() {
+        const searchText = searchInput.value.toLowerCase();
+        const selectedRole = roleFilter.value;
+        
+        employeeRows.forEach(row => {
+            const rowText = row.getAttribute('data-search');
+            const rowRole = row.getAttribute('data-role');
+            
+            const matchesSearch = searchText === '' || rowText.includes(searchText);
+            const matchesRole = selectedRole === '' || rowRole === selectedRole;
+            
+            row.style.display = (matchesSearch && matchesRole) ? '' : 'none';
+        });
+    }
+    
+    searchInput.addEventListener('input', applyFilters);
+    roleFilter.addEventListener('change', applyFilters);
+    
+    resetButton.addEventListener('click', function() {
+        searchInput.value = '';
+        roleFilter.value = '';
+        applyFilters();
+    });
+
+    // Manejar el cambio de rol
+    document.querySelectorAll('.update-role-form').forEach(form => {
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            fetch(form.action, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: new URLSearchParams(new FormData(form))
+            })
+            .then(response => {
+                if (!response.ok) throw new Error('Error al actualizar');
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    // Actualizar visualmente el select con el nuevo estilo
+                    const select = form.querySelector('select');
+                    select.className = `text-xs font-medium rounded-full px-2.5 py-0.5 border ${
+                        data.new_role === 'admin' ? 
+                            'bg-red-100 text-red-800 border-red-300 dark:bg-red-900 dark:text-red-300 dark:border-red-700' :
+                        data.new_role === 'cajero' ? 
+                            'bg-blue-100 text-blue-800 border-blue-300 dark:bg-blue-900 dark:text-blue-300 dark:border-blue-700' :
+                        data.new_role === 'inventario' ? 
+                            'bg-yellow-100 text-yellow-800 border-yellow-300 dark:bg-yellow-900 dark:text-yellow-300 dark:border-yellow-700' :
+                            'bg-green-100 text-green-800 border-green-300 dark:bg-green-900 dark:text-green-300 dark:border-green-700'
+                    }`;
+                    
+                    // Mostrar notificación
+                    const toast = document.createElement('div');
+                    toast.className = 'fixed bottom-4 right-4 bg-green-500 text-white px-4 py-2 rounded-lg shadow-lg';
+                    toast.textContent = 'Rol actualizado correctamente';
+                    document.body.appendChild(toast);
+                    
+                    setTimeout(() => {
+                        toast.remove();
+                    }, 3000);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error al actualizar el rol');
+            });
+        });
+    });
+});
+</script>
+{% endblock %}
+
+{% endblock %}

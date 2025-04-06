@@ -3,6 +3,8 @@ from wtforms import StringField, EmailField, PasswordField, DateField, TextAreaF
 from wtforms.validators import DataRequired, Email, Length, NumberRange
 from wtforms.widgets import NumberInput
 from flask_wtf.file import FileRequired, FileAllowed
+from wtforms.validators import DataRequired, Email, EqualTo, Length, ValidationError
+from models.models import Usuario
 
 
 
@@ -13,9 +15,16 @@ class GalletaForm(FlaskForm):
     descripcion = TextAreaField('Descripción', validators=[
                                 DataRequired(), Length(min=10, max=500)])
     rutaFoto = StringField('Ruta de la Imagen', validators=[Length(max=255)])
+
     submit = SubmitField('Guardar')
 
-
+class ProveedorForm(FlaskForm):
+    nombreProveedor = StringField('Nombre del Proveedor', validators=[DataRequired(), Length(max=50)])
+    direccion = StringField('Dirección', validators=[Length(max=100)])
+    correo = StringField('Correo Electrónico', validators=[DataRequired(), Length(max=50), Email()])
+    telefono = StringField('Teléfono', validators=[DataRequired(), Length(max=15)])
+    submit = SubmitField('Guardar')
+    
 class PresentacionForm(FlaskForm):
     tipoPresentacion = SelectField('Tipo de Presentación', choices=[('Piezas', 'Piezas'), (
         '1kg', '1kg'), ('700g', '700g'), ('Gramos', 'Gramos')], validators=[DataRequired()])
@@ -36,11 +45,9 @@ class AgregarAlCarritoForm(FlaskForm):
 
 class RegistrationForm(FlaskForm):
     email = StringField('Correo electrónico', validators=[DataRequired(), Email()])
-    username = StringField('Nombre de usuario', validators=[DataRequired(), Length(max=50)])
+    username = StringField('Nombre', validators=[DataRequired(), Length(max=50)])
     apellidoPa = StringField('Apellido Paterno', validators=[DataRequired(), Length(max=50)])
-    apellidoMa = StringField('Apellido Materno', validators=[Length(max=50)])  # Opcional
     password = PasswordField('Contraseña', validators=[DataRequired()])
-    rol = SelectField('Rol', choices=[('admin', 'Administrador'), ('cliente', 'Cliente')], validators=[DataRequired()])
     submit = SubmitField('Registrarme')
 
 
@@ -134,3 +141,53 @@ class CorteMensualForm(FlaskForm):
     fecha = DateField('Fecha del Corte', validators=[DataRequired()])
     mes = DateField('Mes del Corte', format='%Y-%m', validators=[DataRequired()])
     submit = SubmitField('Generar Corte')
+    
+
+
+class RegistroEmpleadoForm(FlaskForm):
+    nombreUsuario = StringField('Nombre', validators=[
+        DataRequired(message='El nombre es requerido'),
+        Length(min=2, max=50, message='El nombre debe tener entre 2 y 50 caracteres')
+    ])
+    
+    apellidoPa = StringField('Apellido Paterno', validators=[
+        DataRequired(message='El apellido paterno es requerido'),
+        Length(min=2, max=50, message='El apellido debe tener entre 2 y 50 caracteres')
+    ])
+    
+    apellidoMa = StringField('Apellido Materno', validators=[
+        Length(max=50, message='El apellido no puede exceder 50 caracteres')
+    ])
+    
+    correo = StringField('Correo Electrónico', validators=[
+        DataRequired(message='El correo electrónico es requerido'),
+        Email(message='Ingrese un correo electrónico válido'),
+        Length(max=50, message='El correo no puede exceder 50 caracteres')
+    ])
+    
+    contrasenia = PasswordField('Contraseña', validators=[
+        DataRequired(message='La contraseña es requerida'),
+        Length(min=8, message='La contraseña debe tener al menos 8 caracteres')
+    ])
+    
+    confirmar_contrasenia = PasswordField('Confirmar Contraseña', validators=[
+        DataRequired(message='Por favor confirme su contraseña'),
+        EqualTo('contrasenia', message='Las contraseñas no coinciden')
+    ])
+    
+    rol = SelectField('Rol', choices=[
+        ('admin', 'Administrador'),
+        ('cajero', 'Cajero'),
+        ('inventario', 'Inventario'),
+        ('produccion', 'Producción')
+    ], validators=[DataRequired(message='Seleccione un rol')])
+    
+    submit = SubmitField('Registrar Empleado')
+    
+    def validate_correo(self, field):
+        # Excluir el correo actual cuando se está editando
+        if hasattr(self, 'obj') and self.obj.correo == field.data:
+            return
+            
+        if Usuario.query.filter_by(correo=field.data).first():
+            raise ValidationError('Este correo electrónico ya está registrado. Por favor use otro.')

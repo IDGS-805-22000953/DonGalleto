@@ -54,13 +54,13 @@
         <table class="w-full table-auto text-center border-collapse border border-gray-300">
             <thead class="bg-brown text-white">
                 <tr>
-                    <th class="px-4 py-2">Nombre de insumo</th>
+                    <th class="px-4 py-2">Nombre</th>
                     <th class="px-4 py-2">Fecha de Caducidad</th>
                     <th class="px-4 py-2">Cantidad</th>
                     <th class="px-4 py-2">Unidad</th>
                     <th class="px-4 py-2">Descripción</th>
-                    <th class="px-4 py-2">Presentación</th>
-                    <th class="px-4 py-2">Merma (%)</th>
+                    <th class="px-4 py-2">Costo por Unidad</th>
+                    <th class="px-4 py-2">Proveedor</th> <!-- 🚀 NUEVA COLUMNA -->
                     <th class="px-4 py-2">Acciones</th>
                 </tr>
             </thead>
@@ -70,10 +70,12 @@
                     <td class="px-4 py-2 font-semibold">{{ material.nombre }}</td>
                     <td class="px-4 py-2">{{ material.fechaCaducidad }}</td>
                     <td class="px-4 py-2">{{ material.cantidad }}</td>
-                    <td class="px-4 py-2">{{ material.unidadMedida }}</td>
+                    <td class="px-4 py-2">{{ material.unidadBase }}</td>
                     <td class="px-4 py-2">{{ material.descripcion }}</td>
-                    <td class="px-4 py-2">{{ material.presentacion if material.presentacion else "N/A" }}</td>
-                    <td class="px-4 py-2">{{ material.porcentajeMerma }}</td>
+                    <td class="px-4 py-2">${{ "%.2f"|format(material.costoPorUnidad) }}</td>
+                    <td class="px-4 py-2">
+                        {{ material.proveedor.nombreProveedor if material.proveedor else 'Sin proveedor' }}
+                    </td> <!-- ✅ NUEVA CELDA CON EL NOMBRE DEL PROVEEDOR -->
                     <td class="px-4 py-2 flex gap-2 justify-center">
                         <a href="{{ url_for('inventario.editar_material', material_id=material.id) }}" class="btn-small text-blue-600">Editar</a>
                         <form method="POST" action="{{ url_for('inventario.eliminar_material', material_id=material.id)}}" 
@@ -89,6 +91,8 @@
                 </tr>
                 {% endfor %}
             </tbody>
+            
+            
         </table>
     </div>
 </div>
@@ -123,3 +127,6 @@
 </style>
 
 {% endblock %}
+
+
+

@@ -73,7 +73,6 @@ def cocina():
 def nueva_galleta():
     galletas = Galleta.query.all()
     insumos = Insumo.query.all()
-
     form = GalletaForm()
 
     if form.validate_on_submit():
@@ -102,7 +101,6 @@ def nueva_galleta():
 
             if cantidad and cantidad > 0:
                 insumo = Insumo.query.get(id_insumo)
-
                 cantidad_base = convertir_a_unidad_base(cantidad, unidad, insumo.unidadBase)
 
                 receta_insumo = RecetaInsumos(
@@ -118,21 +116,33 @@ def nueva_galleta():
         db.session.add(nueva_galleta)
         db.session.flush()
 
-        costo_total = calcular_costo_total(nueva_receta.id)
-        precio_sugerido = float(costo_total) * 1.5
-
+        # CÁLCULO ACTUALIZADO PARA 20g POR GALLETA
+        costo_total = calcular_costo_total(nueva_receta.id)  # Costo para 100 galletas
+        costo_por_galleta = costo_total / Decimal('100')
+        
+        # Margen de ganancia (50%) + costos indirectos ($0.30 por galleta)
+        precio_por_galleta = (costo_por_galleta * Decimal('1.5')) + Decimal('0.30')
+        
+        # Presentaciones actualizadas
         presentaciones = {
-            "Piezas": Decimal(str(precio_sugerido)),
-            "Gramos": Decimal(str(precio_sugerido)) / Decimal('100'),
-            "1kg": Decimal(str(precio_sugerido)) * Decimal('10'),
-            "700g": Decimal(str(precio_sugerido)) * Decimal('7'),
+            "Piezas": precio_por_galleta.quantize(Decimal('0.01')),  # 1 galleta (20g)
+            "Gramos": (precio_por_galleta * Decimal('5')).quantize(Decimal('0.01')),  # 100g (5 galletas)
+            "1kg": (precio_por_galleta * Decimal('50')).quantize(Decimal('0.01')),  # 1kg (50 galletas)
+            "700g": (precio_por_galleta * Decimal('35')).quantize(Decimal('0.01'))  # 700g (35 galletas)
         }
 
         for tipo, precio_presentacion in presentaciones.items():
+            cantidad_presentacion = {
+                "Piezas": 1,
+                "Gramos": 100,
+                "1kg": 1000,
+                "700g": 700
+            }[tipo]
+            
             nueva_presentacion = PresentacionGalleta(
                 idGalleta=nueva_galleta.id,
                 tipoPresentacion=tipo,
-                cantidad=0,
+                cantidad=cantidad_presentacion,
                 stock=0,
                 precio=precio_presentacion,
                 fechaCaducidad=datetime.now().date() + timedelta(days=30)
@@ -155,12 +165,35 @@ def nueva_galleta():
 
     return render_template("Cocina/nuevaGalleta.html", form=form, insumos=insumos, galletas=galletas)
 
+def calcular_costo_total(id_receta):
+    # 1. Obtener todos los insumos asociados a esta receta
+    receta_insumos = RecetaInsumos.query.filter_by(idReceta=id_receta).all()
+    
+    costo_total = Decimal('0.0')  # Inicializamos en 0
+    
+    # 2. Para cada relación receta-insumo
+    for ri in receta_insumos:
+        # 3. Obtener el insumo completo de la base de datos
+        insumo = Insumo.query.get(ri.idInsumo)
+        
+        # 4. Calcular costo de este insumo en la receta:
+        # cantidad (convertida a unidad base) × costo por unidad
+        costo_total += Decimal(str(ri.cantidadInsumo)) * insumo.costoPorUnidad
+    
+    return costo_total
 
 def convertir_a_unidad_base(cantidad, unidad_origen, unidad_destino):
     try:
+        print(f"Conversión solicitada: {cantidad} {unidad_origen} → {unidad_destino}")
+        
+        # Validación básica
+        if not cantidad or not unidad_origen or not unidad_destino:
+            flash("Datos de conversión incompletos", "error")
+            return Decimal('0')
+            
         cantidad = Decimal(str(cantidad))
         
-        # Tabla de conversiones mejorada
+        # Definición completa de conversiones
         conversiones = {
             'g': {'kg': Decimal('0.001'), 'g': Decimal('1'), 'mg': Decimal('1000')},
             'kg': {'g': Decimal('1000'), 'kg': Decimal('1'), 'mg': Decimal('1000000')},
@@ -171,23 +204,25 @@ def convertir_a_unidad_base(cantidad, unidad_origen, unidad_destino):
             'unidad': {'docena': Decimal('1')/Decimal('12'), 'unidad': Decimal('1')}
         }
         
+        # Validar unidades
         if unidad_origen == unidad_destino:
+            print("Mismas unidades, no se requiere conversión")
             return cantidad
+            
+        if unidad_origen not in conversiones:
+            flash(f"Unidad de origen '{unidad_origen}' no soportada", "error")
+            return Decimal('0')
+            
+        if unidad_destino not in conversiones[unidad_origen]:
+            flash(f"No se puede convertir de {unidad_origen} a {unidad_destino}", "error")
+            return Decimal('0')
         
-        if unidad_origen in conversiones and unidad_destino in conversiones[unidad_origen]:
-            return cantidad * conversiones[unidad_origen][unidad_destino]
+        resultado = cantidad * conversiones[unidad_origen][unidad_destino]
+        print(f"Resultado de conversión: {resultado} {unidad_destino}")
+        return resultado
         
-        # Si no hay conversión directa, intentar encontrar una ruta
-        # Por ejemplo: convertir de mg a kg pasando por g
-        if unidad_origen == 'mg' and unidad_destino == 'kg':
-            return cantidad * Decimal('0.000001')
-        if unidad_origen == 'kg' and unidad_destino == 'mg':
-            return cantidad * Decimal('1000000')
-        
-        flash(f"No se puede convertir de {unidad_origen} a {unidad_destino}", "error")
-        return cantidad
-    
     except Exception as e:
+        print(f"Error en conversión: {str(e)}")
         flash(f"Error en conversión de unidades: {str(e)}", "error")
         return Decimal('0')
 

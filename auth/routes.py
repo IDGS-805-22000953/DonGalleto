@@ -53,9 +53,9 @@ def login():
             elif user.rol == 'cliente':
                 return redirect(url_for('clientes.clientes'))
             elif user.rol == 'cajero':
-                return redirect(url_for('auth.admin_dashboard'))
+                return redirect(url_for('ventas.ventas'))
             elif user.rol == 'cocina':
-                return redirect(url_for('auth.admin_dashboard'))
+                return redirect(url_for('produccion.produccion'))
             else:
                 flash('Rol desconocido', 'danger')
                 return redirect(url_for('auth.login'))

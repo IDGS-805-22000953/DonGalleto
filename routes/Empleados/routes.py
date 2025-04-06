@@ -51,46 +51,36 @@ def registrar_empleado():
 def lista_empleados():
     if current_user.rol != 'admin':
         flash('No tienes permisos para acceder a esta página', 'danger')
-        return redirect(url_for('inicio'))
+        return redirect(url_for('index'))
     
     # Obtener solo empleados (excluyendo clientes si existen en el modelo)
     empleados = Usuario.query.filter(Usuario.rol.in_(['admin', 'cajero', 'inventario', 'produccion'])).all()
-    return render_template('lista_empleados.html', empleados=empleados)
+    return render_template('Empleados/lista_empleados.html', empleados=empleados)
 
-@empleados_bp.route('/editar/<int:id>', methods=['GET', 'POST'])
+
+from flask import jsonify
+
+@empleados_bp.route('/actualizar-rol/<int:id>', methods=['POST'])
 @login_required
-def editar_empleado(id):
+def actualizar_rol(id):
     if current_user.rol != 'admin':
-        flash('No tienes permisos para esta acción', 'danger')
-        return redirect(url_for('inicio'))
+        return jsonify({'success': False, 'error': 'No tienes permisos'}), 403
     
     empleado = Usuario.query.get_or_404(id)
-    form = RegistroEmpleadoForm(obj=empleado)
+    nuevo_rol = request.form.get('rol')
     
-    if request.method == 'GET':
-        form.rol.data = empleado.rol  # Asegurar que el rol se cargue correctamente
+    if nuevo_rol not in ['admin', 'cajero', 'produccion', 'inventario']:
+        return jsonify({'success': False, 'error': 'Rol no válido'}), 400
     
-    if form.validate_on_submit():
-        try:
-            empleado.nombreUsuario = form.nombreUsuario.data
-            empleado.apellidoPa = form.apellidoPa.data
-            empleado.apellidoMa = form.apellidoMa.data
-            empleado.correo = form.correo.data
-            empleado.rol = form.rol.data
-            
-            if form.contrasenia.data:
-                empleado.set_password(form.contrasenia.data)
-            
-            db.session.commit()
-            flash('Empleado actualizado exitosamente!', 'success')
-            return redirect(url_for('empleados.lista_empleados'))
-        
-        except Exception as e:
-            db.session.rollback()
-            flash(f'Error al actualizar empleado: {str(e)}', 'danger')
-    
-    return render_template('editar_empleado.html', form=form, empleado=empleado)
-
+    try:
+        empleado.rol = nuevo_rol
+        db.session.commit()
+        return redirect(url_for('empleados.lista_empleados'))
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'success': False, 'error': str(e)}), 500
+     
+                     
 @empleados_bp.route('/eliminar/<int:id>', methods=['POST'])
 @login_required
 def eliminar_empleado(id):

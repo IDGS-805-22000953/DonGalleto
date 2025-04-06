@@ -33,7 +33,14 @@ cocina_bp = Blueprint('cocina', __name__)
 
 
 @cocina_bp.route("/cocina")
+@login_required
 def cocina():
+    if current_user.rol != 'admin':
+        flash('No tienes permisos para acceder a esta página', 'danger')
+        return redirect(url_for('auth.login'))
+    if current_user.rol != 'produccion':
+        flash('No tienes permisos para acceder a esta página', 'danger')
+        return redirect(url_for('auth.login'))
     galletas = Galleta.query.all()  # Obtener todas las galletas de la base de datos
     presentaciones = PresentacionGalleta.query.all()
     insumos = Insumo.query.all()
@@ -71,7 +78,20 @@ def cocina():
 
 
 @cocina_bp.route("/nueva_galleta", methods=["GET", "POST"])
+@login_required
 def nueva_galleta():
+    if current_user.rol != 'admin':
+        flash('No tienes permisos para acceder a esta página', 'danger')
+        return redirect(url_for('auth.login'))
+    if current_user.rol != 'produccion':
+        flash('No tienes permisos para acceder a esta página', 'danger')
+        return redirect(url_for('auth.login'))
+    if current_user.rol != 'admin':
+        flash('No tienes permisos para acceder a esta página', 'danger')
+        return redirect(url_for('auth.login'))
+    if current_user.rol != 'produccion':
+        flash('No tienes permisos para acceder a esta página', 'danger')
+        return redirect(url_for('auth.login'))
     galletas = Galleta.query.all()
     insumos = Insumo.query.all()
     form = GalletaForm()
@@ -167,6 +187,7 @@ def nueva_galleta():
     return render_template("Cocina/nuevaGalleta.html", form=form, insumos=insumos, galletas=galletas)
 
 def calcular_costo_total(id_receta):
+    
     # 1. Obtener todos los insumos asociados a esta receta
     receta_insumos = RecetaInsumos.query.filter_by(idReceta=id_receta).all()
     
@@ -242,7 +263,14 @@ def calcular_costo_total(id_receta):
 
 
 @cocina_bp.route("/cambiar_estatus", methods=["POST"])
+@login_required
 def cambiar_estatus():
+    if current_user.rol != 'admin':
+        flash('No tienes permisos para acceder a esta página', 'danger')
+        return redirect(url_for('auth.login'))
+    if current_user.rol != 'produccion':
+        flash('No tienes permisos para acceder a esta página', 'danger')
+        return redirect(url_for('auth.login'))
     try:
         id_produccion = request.form.get("id_produccion")
         produccion = EstatusProduccion.query.get(id_produccion)
@@ -399,7 +427,14 @@ def actualizar_stock(id_galleta, id_presentacion):
         return False
 
 @cocina_bp.route("/ingresar_merma", methods=["GET", "POST"])
+@login_required
 def ingresar_merma():
+    if current_user.rol != 'admin':
+        flash('No tienes permisos para acceder a esta página', 'danger')
+        return redirect(url_for('auth.login'))
+    if current_user.rol != 'produccion':
+        flash('No tienes permisos para acceder a esta página', 'danger')
+        return redirect(url_for('auth.login'))
     galletas = Galleta.query.all()  # Obtener todas las galletas de la base de datos
     insumos = Insumo.query.all()  # Obtener todos los insumos
     
@@ -490,7 +525,14 @@ def ingresar_merma():
     return render_template("Cocina/cocina.html", galletas=galletas, insumos=insumos, alertas=alertas)
 
 @cocina_bp.route("/historial_merma", methods=["GET"])
+@login_required
 def historial_merma():
+    if current_user.rol != 'admin':
+        flash('No tienes permisos para acceder a esta página', 'danger')
+        return redirect(url_for('auth.login'))
+    if current_user.rol != 'produccion':
+        flash('No tienes permisos para acceder a esta página', 'danger')
+        return redirect(url_for('auth.login'))
     tipo_merma = request.args.get("tipo_merma", "galleta")  # Por defecto es 'galleta'
     alertas = db.session.query(
         EstatusProduccion,
@@ -535,7 +577,14 @@ def historial_merma():
 
 
 @cocina_bp.route("/eliminar_galleta/<int:id>", methods=["POST"])
+@login_required
 def eliminar_galleta(id):
+    if current_user.rol != 'admin':
+        flash('No tienes permisos para acceder a esta página', 'danger')
+        return redirect(url_for('auth.login'))
+    if current_user.rol != 'produccion':
+        flash('No tienes permisos para acceder a esta página', 'danger')
+        return redirect(url_for('auth.login'))
     try:
         # Iniciar una transacción explícita
         db.session.begin()
@@ -623,7 +672,14 @@ def eliminar_galleta(id):
 
 
 @cocina_bp.route("/editar_galleta/<int:id>", methods=["GET", "POST"])
+@login_required
 def editar_galleta(id):
+    if current_user.rol != 'admin':
+        flash('No tienes permisos para acceder a esta página', 'danger')
+        return redirect(url_for('auth.login'))
+    if current_user.rol != 'produccion':
+        flash('No tienes permisos para acceder a esta página', 'danger')
+        return redirect(url_for('auth.login'))
     galleta = Galleta.query.get_or_404(id)
     receta = Receta.query.get_or_404(galleta.idReceta)
     insumos = Insumo.query.all()
@@ -703,4 +759,4 @@ def editar_galleta(id):
         insumos=insumos,
         receta_insumos=receta_insumos
     )
-    #
+    

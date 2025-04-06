@@ -14,6 +14,8 @@ clientes_bp = Blueprint('clientes', __name__)
 
 @clientes_bp.route('/clientes', methods=['GET', 'POST'])
 def clientes():
+    
+    
     galletas = Galleta.query.options(db.joinedload(Galleta.presentaciones)).all()
     form = AgregarAlCarritoForm()
     
@@ -26,7 +28,14 @@ def clientes():
     return render_template('Cliente/pedidosOnline.html', galletas=galletas, form=form, now=datetime.now)
 
 @clientes_bp.route('/agregar_al_carrito', methods=['POST'])
+@login_required
 def agregar_al_carrito():
+    if current_user.rol != 'admin':
+        flash('No tienes permisos para acceder a esta página', 'danger')
+        return redirect(url_for('auth.login'))
+    if current_user.rol != 'cliente':
+        flash('No tienes permisos para acceder a esta página', 'danger')
+        return redirect(url_for('auth.login'))
     form = AgregarAlCarritoForm()
     if form.validate_on_submit():
         galleta_id = form.galleta_id.data
@@ -78,7 +87,14 @@ def agregar_al_carrito():
     return redirect(url_for('clientes.clientes'))
 
 @clientes_bp.route('/eliminar_del_carrito/<int:index>', methods=['POST'])
+@login_required
 def eliminar_del_carrito(index):
+    if current_user.rol != 'admin':
+        flash('No tienes permisos para acceder a esta página', 'danger')
+        return redirect(url_for('auth.login'))
+    if current_user.rol != 'cliente':
+        flash('No tienes permisos para acceder a esta página', 'danger')
+        return redirect(url_for('auth.login'))
     if 'carrito' in session and 0 <= index < len(session['carrito']):
         item_eliminado = session['carrito'].pop(index)
         
@@ -103,6 +119,12 @@ def eliminar_del_carrito(index):
 @clientes_bp.route('/procesar_pedido', methods=['POST'])
 @login_required  # Esto asegura que solo usuarios autenticados puedan acceder
 def procesar_pedido():
+    if current_user.rol != 'admin':
+        flash('No tienes permisos para acceder a esta página', 'danger')
+        return redirect(url_for('auth.login'))
+    if current_user.rol != 'cliente':
+        flash('No tienes permisos para acceder a esta página', 'danger')
+        return redirect(url_for('auth.login'))
     # Verificar si hay productos en el carrito
     if 'carrito' not in session or not session['carrito']:
         flash('El carrito está vacío', 'error')

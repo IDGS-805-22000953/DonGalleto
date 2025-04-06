@@ -4,18 +4,25 @@ from flask_login import login_required
 from datetime import datetime, date
 from sqlalchemy import extract
 from decimal import Decimal
+from flask_login import login_user, logout_user, login_required, current_user
 
 corte_bp = Blueprint('corte', __name__)
 
 @corte_bp.route('/cortes')
-# @login_required
+@login_required
 def listar_cortes():
+    if current_user.rol != 'admin':
+        flash('No tienes permisos para acceder a esta página', 'danger')
+        return redirect(url_for('auth.login'))
     cortes = CorteCaja.query.order_by(CorteCaja.fecha_creacion.desc()).all()
     return render_template('Corte_caja/corte_caja.html', cortes=cortes, date=date, datetime=datetime)
 
 @corte_bp.route('/cortes/calcular', methods=['POST'])
-# @login_required
+@login_required
 def calcular_corte():
+    if current_user.rol != 'admin':
+        flash('No tienes permisos para acceder a esta página', 'danger')
+        return redirect(url_for('auth.login'))
     fecha_str = request.form.get('mes')
     if not fecha_str:
         return jsonify({'error': 'Fecha no proporcionada'}), 400
@@ -65,8 +72,11 @@ def calcular_corte():
         return jsonify({'error': str(e)}), 500
 
 @corte_bp.route('/cortes/nuevo', methods=['POST'])
-# @login_required
+@login_required
 def nuevo_corte():
+    if current_user.rol != 'admin':
+        flash('No tienes permisos para acceder a esta página', 'danger')
+        return redirect(url_for('auth.login'))
     fecha_str = request.form.get('mes')
     caja_reportada = request.form.get('caja_reportada')
 

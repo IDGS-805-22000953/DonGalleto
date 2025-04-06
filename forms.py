@@ -161,7 +161,7 @@ class RegistroEmpleadoForm(FlaskForm):
         ('admin', 'Administrador'),
         ('cajero', 'Cajero'),
         ('inventario', 'Inventario'),
-        ('produccion', 'Producción')
+        ('produccion', 'Produccion')
     ], validators=[DataRequired(message='Seleccione un rol')])
     
     submit = SubmitField('Registrar Empleado')

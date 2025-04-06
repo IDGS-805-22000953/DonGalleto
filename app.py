@@ -61,8 +61,7 @@ from forms import LoginForm
 
 @app.route("/")
 def index():
-    form = LoginForm()  # Instancia del formulario
-    return render_template("index.html", form=form)
+    return redirect(url_for('clientes.clientes'))
 
 
 @app.route('/logout')

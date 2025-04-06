@@ -5,6 +5,7 @@ from forms import RawMaterialForm, ProveedorForm
 from models.models import Proveedor, Insumo, InsumosProveedor, PagoProveedor
 from models.models import db  # Importa la instancia de db
 from . import inventario_bp
+from flask_login import login_user, logout_user, login_required, current_user
 from sqlalchemy.orm import joinedload
 # Crear el Blueprint para el módulo de inventario
 inventario_bp = Blueprint('inventario', __name__, url_prefix='/inventario')
@@ -13,6 +14,12 @@ inventario_bp = Blueprint('inventario', __name__, url_prefix='/inventario')
 @inventario_bp.route('/', methods=['GET'])
 @login_required  # Protege esta ruta para usuarios autenticados
 def inventario():
+    if current_user.rol != 'admin':
+        flash('No tienes permisos para acceder a esta página', 'danger')
+        return redirect(url_for('auth.login'))
+    if current_user.rol != 'inventario':
+        flash('No tienes permisos para acceder a esta página', 'danger')
+        return redirect(url_for('auth.login'))
     search_term = request.args.get('search', '')  # Obtiene el término de búsqueda desde la URL
     sort_by = request.args.get('sort_by', '')  # Obtener el parámetro de ordenación
     notification_weeks = int(request.args.get('weeks', 4))  # Obtener el parámetro de tiempo de alerta
@@ -45,6 +52,12 @@ def inventario():
 @inventario_bp.route('/agregar', methods=['GET', 'POST'])
 @login_required  # Protege esta ruta para usuarios autenticados
 def agregar_material():
+    if current_user.rol != 'admin':
+        flash('No tienes permisos para acceder a esta página', 'danger')
+        return redirect(url_for('auth.login'))
+    if current_user.rol != 'inventario':
+        flash('No tienes permisos para acceder a esta página', 'danger')
+        return redirect(url_for('auth.login'))
     form = RawMaterialForm()
     form.proveedor_id.choices = [(p.id, p.nombreProveedor) for p in Proveedor.query.all()]  # Llenar el select
 
@@ -90,6 +103,12 @@ def agregar_material():
 @inventario_bp.route('/editar/<int:material_id>', methods=['GET', 'POST'])
 @login_required  # Protege esta ruta para usuarios autenticados
 def editar_material(material_id):
+    if current_user.rol != 'admin':
+        flash('No tienes permisos para acceder a esta página', 'danger')
+        return redirect(url_for('auth.login'))
+    if current_user.rol != 'inventario':
+        flash('No tienes permisos para acceder a esta página', 'danger')
+        return redirect(url_for('auth.login'))
     material = Insumo.query.get_or_404(material_id)
     form = RawMaterialForm(obj=material)
     form.proveedor_id.choices = [(p.id, p.nombreProveedor) for p in Proveedor.query.all()]
@@ -113,6 +132,12 @@ def editar_material(material_id):
 @inventario_bp.route('/eliminar/<int:material_id>', methods=['POST'])
 @login_required  # Protege esta ruta para usuarios autenticados
 def eliminar_material(material_id):
+    if current_user.rol != 'admin':
+        flash('No tienes permisos para acceder a esta página', 'danger')
+        return redirect(url_for('auth.login'))
+    if current_user.rol != 'inventario':
+        flash('No tienes permisos para acceder a esta página', 'danger')
+        return redirect(url_for('auth.login'))
     material = Insumo.query.get_or_404(material_id)
     db.session.delete(material)
     db.session.commit()
@@ -123,6 +148,12 @@ def eliminar_material(material_id):
 @inventario_bp.route('/proveedores', methods=['GET'])
 @login_required
 def agenda_proveedores():
+    if current_user.rol != 'admin':
+        flash('No tienes permisos para acceder a esta página', 'danger')
+        return redirect(url_for('auth.login'))
+    if current_user.rol != 'inventario':
+        flash('No tienes permisos para acceder a esta página', 'danger')
+        return redirect(url_for('auth.login'))
     proveedores = Proveedor.query.all()
     form_agregar = ProveedorForm()
     return render_template('inventario/agenda_proveedores.html', proveedores=proveedores, form=form_agregar)
@@ -131,6 +162,12 @@ def agenda_proveedores():
 @inventario_bp.route('/proveedores/agregar', methods=['POST'])
 @login_required
 def agregar_proveedor():
+    if current_user.rol != 'admin':
+        flash('No tienes permisos para acceder a esta página', 'danger')
+        return redirect(url_for('auth.login'))
+    if current_user.rol != 'inventario':
+        flash('No tienes permisos para acceder a esta página', 'danger')
+        return redirect(url_for('auth.login'))
     form = ProveedorForm()
     if form.validate_on_submit():
         nuevo_proveedor = Proveedor(
@@ -152,6 +189,12 @@ def agregar_proveedor():
 @inventario_bp.route('/proveedores/editar/<int:proveedor_id>', methods=['POST'])
 @login_required
 def editar_proveedor(proveedor_id):
+    if current_user.rol != 'admin':
+        flash('No tienes permisos para acceder a esta página', 'danger')
+        return redirect(url_for('auth.login'))
+    if current_user.rol != 'inventario':
+        flash('No tienes permisos para acceder a esta página', 'danger')
+        return redirect(url_for('auth.login'))
     proveedor = Proveedor.query.get_or_404(proveedor_id)
     form = ProveedorForm(obj=proveedor)
     if form.validate_on_submit():
@@ -171,6 +214,12 @@ def editar_proveedor(proveedor_id):
 @inventario_bp.route('/proveedores/eliminar/<int:proveedor_id>', methods=['POST'])
 @login_required
 def eliminar_proveedor(proveedor_id):
+    if current_user.rol != 'admin':
+        flash('No tienes permisos para acceder a esta página', 'danger')
+        return redirect(url_for('auth.login'))
+    if current_user.rol != 'inventario':
+        flash('No tienes permisos para acceder a esta página', 'danger')
+        return redirect(url_for('auth.login'))
     proveedor = Proveedor.query.get_or_404(proveedor_id)
     db.session.delete(proveedor)
     db.session.commit()
@@ -180,6 +229,12 @@ def eliminar_proveedor(proveedor_id):
 @inventario_bp.route('/pagos-proveedores', methods=['GET'])
 @login_required
 def listar_pagos_proveedores():
+    if current_user.rol != 'admin':
+        flash('No tienes permisos para acceder a esta página', 'danger')
+        return redirect(url_for('auth.login'))
+    if current_user.rol != 'inventario':
+        flash('No tienes permisos para acceder a esta página', 'danger')
+        return redirect(url_for('auth.login'))
     pagos_pendientes = PagoProveedor.query.filter_by(fechaPago=None).join(Proveedor).all()
 
     fecha_inicio = request.args.get('fecha_inicio')
@@ -209,6 +264,12 @@ def listar_pagos_proveedores():
 @inventario_bp.route('/pagos-proveedores/marcar-pagado/<int:pago_id>', methods=['POST'])
 @login_required
 def marcar_pago_realizado(pago_id):
+    if current_user.rol != 'admin':
+        flash('No tienes permisos para acceder a esta página', 'danger')
+        return redirect(url_for('auth.login'))
+    if current_user.rol != 'inventario':
+        flash('No tienes permisos para acceder a esta página', 'danger')
+        return redirect(url_for('auth.login'))
     pago = PagoProveedor.query.get_or_404(pago_id)
     pago.fechaPago = datetime.now()
     db.session.commit()

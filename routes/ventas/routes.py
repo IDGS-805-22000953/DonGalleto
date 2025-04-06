@@ -13,6 +13,12 @@ from flask import current_app
 
 @ventas_bp.route('/ventas', methods=['GET', 'POST'])
 def ventas():
+    if current_user.rol != 'admin':
+        flash('No tienes permisos para acceder a esta página', 'danger')
+        return redirect(url_for('auth.login'))
+    if current_user.rol != 'cajero':
+        flash('No tienes permisos para acceder a esta página', 'danger')
+        return redirect(url_for('auth.login'))
     galletas = Galleta.query.options(db.joinedload(Galleta.presentaciones)).all()
     
     # Convertir imágenes a base64
@@ -42,6 +48,12 @@ def ventas():
        
 @ventas_bp.route('/agregar_al_carrito', methods=['POST'])
 def agregar_al_carrito():
+    if current_user.rol != 'admin':
+        flash('No tienes permisos para acceder a esta página', 'danger')
+        return redirect(url_for('auth.login'))
+    if current_user.rol != 'cajero':
+        flash('No tienes permisos para acceder a esta página', 'danger')
+        return redirect(url_for('auth.login'))
     form = AgregarAlCarritoForm()
     if form.validate_on_submit():
         galleta_id = form.galleta_id.data
@@ -94,6 +106,12 @@ def agregar_al_carrito():
 
 @ventas_bp.route('/eliminar_del_carrito/<int:index>', methods=['POST'])
 def eliminar_del_carrito(index):
+    if current_user.rol != 'admin':
+        flash('No tienes permisos para acceder a esta página', 'danger')
+        return redirect(url_for('auth.login'))
+    if current_user.rol != 'cajero':
+        flash('No tienes permisos para acceder a esta página', 'danger')
+        return redirect(url_for('auth.login'))
     if 'carrito' in session and 0 <= index < len(session['carrito']):
         item_eliminado = session['carrito'].pop(index)
         
@@ -118,6 +136,12 @@ from flask_login import current_user  # Asegúrate de importar current_user
 
 @ventas_bp.route('/procesar_pedido', methods=['POST'])
 def procesar_pedido():
+    if current_user.rol != 'admin':
+        flash('No tienes permisos para acceder a esta página', 'danger')
+        return redirect(url_for('auth.login'))
+    if current_user.rol != 'cajero':
+        flash('No tienes permisos para acceder a esta página', 'danger')
+        return redirect(url_for('auth.login'))
     if 'carrito' not in session or not session['carrito']:
         flash('El carrito está vacío', 'error')
         return redirect(url_for('ventas.ventas'))
@@ -170,6 +194,12 @@ def procesar_pedido():
     
 @ventas_bp.route('/pedidos-pendientes')
 def mostrar_pedidos_pendientes():
+    if current_user.rol != 'admin':
+        flash('No tienes permisos para acceder a esta página', 'danger')
+        return redirect(url_for('auth.login'))
+    if current_user.rol != 'cajero':
+        flash('No tienes permisos para acceder a esta página', 'danger')
+        return redirect(url_for('auth.login'))
     try:
         pedidos_pendientes = PedidosCliente.query.filter_by(estatus='pendiente')\
             .options(
@@ -189,6 +219,12 @@ def mostrar_pedidos_pendientes():
 
 @ventas_bp.route('/marcar-como-completado/<int:pedido_id>', methods=['POST'])
 def marcar_como_completado(pedido_id):
+    if current_user.rol != 'admin':
+        flash('No tienes permisos para acceder a esta página', 'danger')
+        return redirect(url_for('auth.login'))
+    if current_user.rol != 'cajero':
+        flash('No tienes permisos para acceder a esta página', 'danger')
+        return redirect(url_for('auth.login'))
     pedido = PedidosCliente.query.get_or_404(pedido_id)
     
     if pedido.estatus != 'pendiente':

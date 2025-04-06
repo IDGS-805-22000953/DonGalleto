@@ -24,7 +24,7 @@ class Usuario(db.Model, UserMixin):
     apellido_materno = db.Column(db.String(50))
     correo = db.Column(db.String(120), unique=True, nullable=False)
     contrasenia_hash = db.Column(db.String(255), nullable=False)
-    rol = db.Column(db.Enum('admin', 'cajero', 'inventario', 'cliente'), nullable=False)
+    rol = db.Column(db.Enum('admin', 'cajero', 'inventario', 'cliente','produccion'), nullable=False)
     telefono = db.Column(db.String(20), nullable=True)
     direccion = db.Column(db.String(200), nullable=True)
     fecha_contratacion = db.Column(db.Date, nullable=True)

@@ -172,14 +172,20 @@
 
             <!-- Flash messages -->
             {% with messages = get_flashed_messages(with_categories=true) %}
-                {% if messages %}
-                    {% for category, message in messages %}
-                        <div class="alert alert-{{ category }}">
-                            <p>{{ message }}</p>
-                        </div>
-                    {% endfor %}
-                {% endif %}
-            {% endwith %}
+    {% if messages %}
+      {% set category, message = messages[-1] %}
+      <div class="mb-6">
+        <div class="px-4 py-3 rounded-lg text-sm font-medium 
+          {% if category == 'register_success' %} bg-green-100 text-green-800
+          {% elif category == 'register_error' %} bg-red-100 text-red-800
+          {% elif category == 'register_advertencia' %} bg-yellow-100 text-yellow-800
+          {% else %} bg-gray-100 text-gray-800
+          {% endif %}">
+          {{ message }}
+        </div>
+      </div>
+    {% endif %}
+  {% endwith %}
 
             <form method="POST" action="{{ url_for('auth.register') }}">
                 {{ form.hidden_tag() }}

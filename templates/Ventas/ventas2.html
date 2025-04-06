@@ -7,22 +7,20 @@
 <body class="bg-gray-50">
     <div class="fixed top-4 right-4 z-50 space-y-2">
         {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-        {% for category, message in messages %}
-        <div
-            class="flash-message flash-{{ category }} p-4 rounded-lg shadow-lg text-white flex items-center justify-between min-w-64 max-w-xs transform transition-all duration-300 translate-x-0 opacity-100">
-            <span>{{ message }}</span>
-            <button class="flash-close ml-2 text-white hover:text-gray-200" onclick="this.parentElement.remove()">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                    <path fill-rule="evenodd"
-                        d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-                        clip-rule="evenodd" />
-                </svg>
-            </button>
+    {% if messages %}
+      {% set category, message = messages[-1] %}
+      <div class="mb-6">
+        <div class="px-4 py-3 rounded-lg text-sm font-medium 
+          {% if category == 'ventas_success' %} bg-green-100 text-green-800
+          {% elif category == 'ventas_error' %} bg-red-100 text-red-800
+          {% elif category == 'ventas_advertencia' %} bg-yellow-100 text-yellow-800
+          {% else %} bg-gray-100 text-gray-800
+          {% endif %}">
+          {{ message }}
         </div>
-        {% endfor %}
-        {% endif %}
-        {% endwith %}
+      </div>
+    {% endif %}
+  {% endwith %}
     </div>
     <!-- Botón de pedidos pendientes (bolsita) - Fijo en esquina inferior derecha -->
     <div class="fixed bottom-6 right-6 z-50">

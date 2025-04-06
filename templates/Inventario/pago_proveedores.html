@@ -11,19 +11,19 @@
     <!-- Mensajes Flash -->
     {% with messages = get_flashed_messages(with_categories=true) %}
     {% if messages %}
-    <div class="space-y-4 mb-6">
-        {% for category, message in messages %}
-        <div class="p-4 rounded-lg text-white 
-            {% if category == 'success' %} bg-green-500
-            {% elif category == 'warning' %} bg-yellow-500 text-black
-            {% elif category == 'danger' or category == 'error' %} bg-red-600
-            {% else %} bg-gray-800 {% endif %}">
-            {{ message }}
+      {% set category, message = messages[-1] %}
+      <div class="mb-6">
+        <div class="px-4 py-3 rounded-lg text-sm font-medium 
+          {% if category == 'pago_success' %} bg-green-100 text-green-800
+          {% elif category == 'pago_error' %} bg-red-100 text-red-800
+          {% elif category == 'pago_advertencia' %} bg-yellow-100 text-yellow-800
+          {% else %} bg-gray-100 text-gray-800
+          {% endif %}">
+          {{ message }}
         </div>
-        {% endfor %}
-    </div>
+      </div>
     {% endif %}
-    {% endwith %}
+  {% endwith %}
 
     <!-- Título -->
     <h2 class="text-3xl font-bold text-center mb-8" style="color: #742c2c;">

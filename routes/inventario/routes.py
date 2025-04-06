@@ -9,7 +9,7 @@ from sqlalchemy.orm import joinedload
 # Crear el Blueprint para el módulo de inventario
 inventario_bp = Blueprint('inventario', __name__, url_prefix='/inventario')
 
-# Ruta para mostrar el inventario de insumos
+# inventario.html
 @inventario_bp.route('/', methods=['GET'])
 @login_required  # Protege esta ruta para usuarios autenticados
 def inventario():
@@ -41,7 +41,7 @@ def inventario():
 
     return render_template('inventario/inventario.html', raw_materials=raw_materials, notifications=notifications, notification_weeks=notification_weeks)
 
-# Ruta para agregar insumos
+# agregar_material.html
 @inventario_bp.route('/agregar', methods=['GET', 'POST'])
 @login_required  # Protege esta ruta para usuarios autenticados
 def agregar_material():
@@ -81,12 +81,12 @@ def agregar_material():
         db.session.add(nuevo_pago)
         db.session.commit()
 
-        flash('Materia prima agregada y pago pendiente registrado correctamente.', 'success')
+        flash('Materia prima agregada y pago pendiente registrado correctamente.', 'agregarM_success')
         return redirect(url_for('inventario.inventario'))
 
     return render_template('inventario/agregar_material.html', form=form)
 
-# Ruta para editar insumos
+# editar_material.html
 @inventario_bp.route('/editar/<int:material_id>', methods=['GET', 'POST'])
 @login_required  # Protege esta ruta para usuarios autenticados
 def editar_material(material_id):
@@ -103,23 +103,23 @@ def editar_material(material_id):
         material.descripcion = form.description.data
         material.proveedor_id = form.proveedor_id.data  # Actualiza el proveedor
         db.session.commit()
-        flash('Materia prima actualizada correctamente.', 'success')
+        flash('Materia prima actualizada correctamente.', 'editarI_success')
         return redirect(url_for('inventario.inventario'))
 
     form.proveedor_id.data = material.proveedor_id  # Preseleccionar proveedor
     return render_template('inventario/editar_material.html', form=form, material=material)
 
-# Ruta para eliminar un insumo
+# inventario.html
 @inventario_bp.route('/eliminar/<int:material_id>', methods=['POST'])
 @login_required  # Protege esta ruta para usuarios autenticados
 def eliminar_material(material_id):
     material = Insumo.query.get_or_404(material_id)
     db.session.delete(material)
     db.session.commit()
-    flash('Materia prima eliminada correctamente.', 'danger')
+    flash('Materia prima eliminada correctamente.', 'inventario_error')
     return redirect(url_for('inventario.inventario'))
 
-# Ruta para mostrar la agenda de proveedores
+# agenda_proveedores.html
 @inventario_bp.route('/proveedores', methods=['GET'])
 @login_required
 def agenda_proveedores():
@@ -127,7 +127,7 @@ def agenda_proveedores():
     form_agregar = ProveedorForm()
     return render_template('inventario/agenda_proveedores.html', proveedores=proveedores, form=form_agregar)
 
-# Ruta para agregar un nuevo proveedor (modal)
+# agenda_proveedores.html
 @inventario_bp.route('/proveedores/agregar', methods=['POST'])
 @login_required
 def agregar_proveedor():
@@ -141,14 +141,14 @@ def agregar_proveedor():
         )
         db.session.add(nuevo_proveedor)
         db.session.commit()
-        flash('Proveedor agregado correctamente.', 'success')
+        flash('Proveedor agregado correctamente.', 'agendaP_success')
     else:
         for field, errors in form.errors.items():
             for error in errors:
-                flash(f'Error en el campo {getattr(form, field).label.text}: {error}', 'danger')
+                flash(f'Error en el campo {getattr(form, field).label.text}: {error}', 'agendaP_error')
     return redirect(url_for('inventario.agenda_proveedores'))
 
-# Ruta para editar un proveedor existente (modal)
+# agenda_proveedores.html
 @inventario_bp.route('/proveedores/editar/<int:proveedor_id>', methods=['POST'])
 @login_required
 def editar_proveedor(proveedor_id):
@@ -160,23 +160,23 @@ def editar_proveedor(proveedor_id):
         proveedor.correo = form.correo.data
         proveedor.telefono = form.telefono.data
         db.session.commit()
-        flash('Proveedor actualizado correctamente.', 'success')
+        flash('Proveedor actualizado correctamente.', 'agendaP_success')
     else:
         for field, errors in form.errors.items():
             for error in errors:
-                flash(f'Error en el campo {getattr(form, field).label.text}: {error}', 'danger')
+                flash(f'Error en el campo {getattr(form, field).label.text}: {error}', 'agendaP_error')
     return redirect(url_for('inventario.agenda_proveedores'))
 
-# Ruta para eliminar un proveedor
+# agenda_proveedores.html
 @inventario_bp.route('/proveedores/eliminar/<int:proveedor_id>', methods=['POST'])
 @login_required
 def eliminar_proveedor(proveedor_id):
     proveedor = Proveedor.query.get_or_404(proveedor_id)
     db.session.delete(proveedor)
     db.session.commit()
-    flash('Proveedor eliminado correctamente.', 'danger')
+    flash('Proveedor eliminado correctamente.', 'agendaP_error')
     return redirect(url_for('inventario.agenda_proveedores'))
-
+# pago_proveedores.html
 @inventario_bp.route('/pagos-proveedores', methods=['GET'])
 @login_required
 def listar_pagos_proveedores():
@@ -193,7 +193,7 @@ def listar_pagos_proveedores():
             fin = datetime.strptime(fecha_fin, '%Y-%m-%d') + timedelta(days=1)
             historial_query = historial_query.filter(PagoProveedor.fechaPago.between(inicio, fin))
         except ValueError:
-            flash('Formato de fecha inválido.', 'danger')
+            flash('Formato de fecha inválido.', 'pago_error')
 
     historial_pagos = historial_query.order_by(PagoProveedor.fechaPago.desc()).all()
     total_historial = sum(p.monto for p in historial_pagos)
@@ -205,12 +205,12 @@ def listar_pagos_proveedores():
                            fecha_inicio=fecha_inicio,
                            fecha_fin=fecha_fin)
 
-# Ruta para marcar un pago como realizado
+# pago_proveedores.html
 @inventario_bp.route('/pagos-proveedores/marcar-pagado/<int:pago_id>', methods=['POST'])
 @login_required
 def marcar_pago_realizado(pago_id):
     pago = PagoProveedor.query.get_or_404(pago_id)
     pago.fechaPago = datetime.now()
     db.session.commit()
-    flash(f'El pago con ID {pago_id} ha sido marcado como realizado.', 'success')
+    flash(f'El pago con ID {pago_id} ha sido marcado como realizado.', 'pago_success')
     return redirect(url_for('inventario.listar_pagos_proveedores'))

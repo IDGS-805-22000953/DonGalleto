@@ -50,7 +50,7 @@ def agregar_al_carrito():
         
         presentacion = PresentacionGalleta.query.get(presentacion_id)
         if not presentacion:
-            flash('Presentación no válida', 'error')
+            flash('Presentación no válida', 'ventas_error')
             return redirect(url_for('ventas.ventas'))
         
         if 'carrito' not in session:
@@ -87,9 +87,9 @@ def agregar_al_carrito():
         session['carrito_total'] = total
         session.modified = True
         
-        flash('Producto agregado al carrito', 'success')
+        flash('Producto agregado al carrito', 'ventas_success')
     else:
-        flash('Error en el formulario', 'error')
+        flash('Error en el formulario', 'ventas_error')
     return redirect(url_for('ventas.ventas'))
 
 @ventas_bp.route('/eliminar_del_carrito/<int:index>', methods=['POST'])
@@ -107,9 +107,9 @@ def eliminar_del_carrito(index):
         session['carrito_total'] = total
         session.modified = True
         
-        flash(f'Producto {item_eliminado["presentacion_texto"]} eliminado del carrito', 'success')
+        flash(f'Producto {item_eliminado["presentacion_texto"]} eliminado del carrito', 'ventas_success')
     else:
-        flash('Error al eliminar el producto: índice no válido', 'error')
+        flash('Error al eliminar el producto: índice no válido', 'ventas_error')
 
     return redirect(url_for('ventas.ventas'))
 
@@ -119,7 +119,7 @@ from flask_login import current_user  # Asegúrate de importar current_user
 @ventas_bp.route('/procesar_pedido', methods=['POST'])
 def procesar_pedido():
     if 'carrito' not in session or not session['carrito']:
-        flash('El carrito está vacío', 'error')
+        flash('El carrito está vacío', 'ventas_error')
         return redirect(url_for('ventas.ventas'))
     
     # Verificar si el usuario está autenticado
@@ -132,12 +132,12 @@ def procesar_pedido():
             presentacion = PresentacionGalleta.query.get(item['presentacion_id'])
             
             if not presentacion:
-                flash(f'Presentación de galleta no encontrada (ID: {item["presentacion_id"]})', 'error')
+                flash(f'Presentación de galleta no encontrada (ID: {item["presentacion_id"]})', 'ventas_error')
                 return redirect(url_for('ventas.ventas'))
                 
             # Verificar que haya suficiente stock
             if presentacion.stock < item['cantidad']:
-                flash(f'No hay suficiente stock para {presentacion.tipoPresentacion}', 'error')
+                flash(f'No hay suficiente stock para {presentacion.tipoPresentacion}', 'ventas_error')
                 return redirect(url_for('ventas.ventas'))
             
             # Restar el stock
@@ -160,11 +160,11 @@ def procesar_pedido():
         session.pop('carrito_iva', None)
         session.pop('carrito_total', None)
         
-        flash('Pedido procesado con éxito', 'success')
+        flash('Pedido procesado con éxito', 'ventas_success')
         return redirect(url_for('ventas.ventas'))
     except Exception as e:
         db.session.rollback()
-        flash(f'Error al procesar el pedido: {str(e)}', 'error')
+        flash(f'Error al procesar el pedido: {str(e)}', 'ventas_error')
         return redirect(url_for('ventas.ventas'))
         
     
@@ -181,7 +181,7 @@ def mostrar_pedidos_pendientes():
         return render_template('Ventas/pedidos_pendientes.html',
                             pedidos_pendientes=pedidos_pendientes)
     except Exception as e:
-        flash(f'Error al cargar pedidos pendientes: {str(e)}', 'error')
+        flash(f'Error al cargar pedidos pendientes: {str(e)}', 'pedidos_error')
         return redirect(url_for('ventas.ventas'))
    
    
@@ -192,16 +192,16 @@ def marcar_como_completado(pedido_id):
     pedido = PedidosCliente.query.get_or_404(pedido_id)
     
     if pedido.estatus != 'pendiente':
-        flash('Solo se pueden completar pedidos pendientes', 'error')
+        flash('Solo se pueden completar pedidos pendientes', 'pedidos_error')
         return redirect(url_for('ventas.mostrar_pedidos_pendientes'))
     
     try:
         pedido.estatus = 'completado'
         pedido.fechaRecogida = datetime.now()
         db.session.commit()
-        flash('Pedido marcado como completado con éxito', 'success')
+        flash('Pedido marcado como completado con éxito', 'pedidos_success')
     except Exception as e:
         db.session.rollback()
-        flash(f'Error al actualizar el pedido: {str(e)}', 'error')
+        flash(f'Error al actualizar el pedido: {str(e)}', 'pedidos_error')
     
     return redirect(url_for('ventas.mostrar_pedidos_pendientes'))

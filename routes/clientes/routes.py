@@ -35,7 +35,7 @@ def agregar_al_carrito():
         
         presentacion = PresentacionGalleta.query.get(presentacion_id)
         if not presentacion:
-            flash('Presentación no válida', 'error')
+            flash('Presentación no válida', 'cliente_error')
             return redirect(url_for('ventas.ventas'))
         
         if 'carrito' not in session:
@@ -72,9 +72,9 @@ def agregar_al_carrito():
         session['carrito_total'] = total
         session.modified = True
         
-        flash('Producto agregado al carrito', 'success')
+        flash('Producto agregado al carrito', 'cliente_success')
     else:
-        flash('Error en el formulario', 'error')
+        flash('Error en el formulario', 'cliente_error')
     return redirect(url_for('clientes.clientes'))
 
 @clientes_bp.route('/eliminar_del_carrito/<int:index>', methods=['POST'])
@@ -92,7 +92,7 @@ def eliminar_del_carrito(index):
         session['carrito_total'] = total
         session.modified = True
         
-        flash(f'Producto {item_eliminado["presentacion_texto"]} eliminado del carrito', 'success')
+        flash(f'Producto {item_eliminado["presentacion_texto"]} eliminado del carrito', 'cliente_success')
     else:
         flash('Error al eliminar el producto: índice no válido', 'error')
 
@@ -105,13 +105,13 @@ def eliminar_del_carrito(index):
 def procesar_pedido():
     # Verificar si hay productos en el carrito
     if 'carrito' not in session or not session['carrito']:
-        flash('El carrito está vacío', 'error')
+        flash('El carrito está vacío', 'cliente_error')
         return redirect(url_for('clientes.clientes'))
     
     # Obtener la fecha de recogida del formulario
     fecha_recogida_str = request.form.get('fecha_recogida')
     if not fecha_recogida_str:
-        flash('Por favor selecciona una fecha de recogida', 'error')
+        flash('Por favor selecciona una fecha de recogida', 'cliente_error')
         return redirect(url_for('clientes.clientes'))
     
     try:
@@ -119,7 +119,7 @@ def procesar_pedido():
         
         # Verificar que la fecha no sea en el pasado
         if fecha_recogida.date() < datetime.now().date():
-            flash('La fecha de recogida no puede ser en el pasado', 'error')
+            flash('La fecha de recogida no puede ser en el pasado', 'cliente_error')
             return redirect(url_for('clientes.clientes'))
             
         # Procesar cada item del carrito
@@ -128,12 +128,12 @@ def procesar_pedido():
             presentacion = PresentacionGalleta.query.get(item['presentacion_id'])
             
             if not presentacion:
-                flash(f'Presentación de galleta no encontrada (ID: {item["presentacion_id"]})', 'error')
+                flash(f'Presentación de galleta no encontrada (ID: {item["presentacion_id"]})', 'cliente_error')
                 return redirect(url_for('clientes.clientes'))
                 
             # Verificar que haya suficiente stock
             if presentacion.stock < item['cantidad']:
-                flash(f'No hay suficiente stock para {presentacion.tipoPresentacion}', 'error')
+                flash(f'No hay suficiente stock para {presentacion.tipoPresentacion}', 'cliente_error')
                 return redirect(url_for('clientes.clientes'))
             
             # Restar el stock
@@ -160,11 +160,11 @@ def procesar_pedido():
         session.pop('carrito_iva', None)
         session.pop('carrito_total', None)
         
-        flash('Pedido procesado con éxito. ¡Gracias por tu compra!', 'success')
+        flash('Pedido procesado con éxito. ¡Gracias por tu compra!', 'cliente_success')
         return redirect(url_for('clientes.clientes'))
     
     except Exception as e:
         # Si hay algún error, hacer rollback de la transacción
         db.session.rollback()
-        flash(f'Error al procesar el pedido: {str(e)}', 'error')
+        flash(f'Error al procesar el pedido: {str(e)}', 'cliente_error')
         return redirect(url_for('clientes.clientes'))

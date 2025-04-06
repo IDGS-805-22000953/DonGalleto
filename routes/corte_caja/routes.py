@@ -71,7 +71,7 @@ def nuevo_corte():
     caja_reportada = request.form.get('caja_reportada')
 
     if not fecha_str or not caja_reportada:
-        flash('Todos los campos son requeridos', 'error')
+        flash('Todos los campos son requeridos', 'corte_error')
         return redirect(url_for('corte.listar_cortes'))
 
     try:
@@ -81,7 +81,7 @@ def nuevo_corte():
         mes_formateado = f"{año}-{mes_num:02d}"
 
         if CorteCaja.query.filter_by(mes=mes_formateado).first():
-            flash('Ya se ha realizado el corte de este mes.', 'warning')
+            flash('Ya se ha realizado el corte de este mes.', 'corte_advertencia')
             return redirect(url_for('corte.listar_cortes'))
 
         # Los cálculos se hacen igual que en la función calcular_corte
@@ -122,9 +122,9 @@ def nuevo_corte():
 
         db.session.add(nuevo_corte)
         db.session.commit()
-        flash('Corte de caja registrado exitosamente.', 'success')
+        flash('Corte de caja registrado exitosamente.', 'corte_success')
     except Exception as e:
         db.session.rollback()
-        flash(f'Error al registrar el corte: {str(e)}', 'error')
+        flash(f'Error al registrar el corte: {str(e)}', 'corte_error')
 
     return redirect(url_for('corte.listar_cortes'))

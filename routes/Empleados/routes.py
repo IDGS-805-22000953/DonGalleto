@@ -17,7 +17,7 @@ empleados_bp = Blueprint('empleados', __name__)
 def registrar_empleado():
     # Verificar que solo los administradores pueden registrar empleados
     if current_user.rol != 'admin':
-        flash('No tienes permisos para acceder a esta página', 'danger')
+        flash('No tienes permisos para acceder a esta página', 'registro_error')
         return redirect(url_for('index'))
     
     form = RegistroEmpleadoForm()
@@ -37,12 +37,12 @@ def registrar_empleado():
             db.session.add(nuevo_empleado)
             db.session.commit()
             
-            flash('Empleado registrado exitosamente!', 'success')
+            flash('Empleado registrado exitosamente!', 'registro_success')
             return redirect(url_for('empleados.lista_empleados'))
         
         except Exception as e:
             db.session.rollback()
-            flash(f'Error al registrar empleado: {str(e)}', 'danger')
+            flash(f'Error al registrar empleado: {str(e)}', 'registro_error')
     
     return render_template('Empleados/registro_empleado.html', form=form)
 
@@ -50,7 +50,7 @@ def registrar_empleado():
 @login_required
 def lista_empleados():
     if current_user.rol != 'admin':
-        flash('No tienes permisos para acceder a esta página', 'danger')
+        flash('No tienes permisos para acceder a esta página', 'registro_error')
         return redirect(url_for('index'))
     
     # Obtener solo empleados (excluyendo clientes si existen en el modelo)
@@ -85,22 +85,22 @@ def actualizar_rol(id):
 @login_required
 def eliminar_empleado(id):
     if current_user.rol != 'admin':
-        flash('No tienes permisos para esta acción', 'danger')
+        flash('No tienes permisos para esta acción', 'lista_error')
         return redirect(url_for('inicio'))
     
     empleado = Usuario.query.get_or_404(id)
     
     # No permitir eliminarse a sí mismo
     if empleado.id == current_user.id:
-        flash('No puedes eliminar tu propio usuario', 'danger')
+        flash('No puedes eliminar tu propio usuario', 'lista_error')
         return redirect(url_for('empleados.lista_empleados'))
     
     try:
         db.session.delete(empleado)
         db.session.commit()
-        flash('Empleado eliminado exitosamente', 'success')
+        flash('Empleado eliminado exitosamente', 'lista_error')
     except Exception as e:
         db.session.rollback()
-        flash(f'Error al eliminar empleado: {str(e)}', 'danger')
+        flash(f'Error al eliminar empleado: {str(e)}', 'lista_error')
     
     return redirect(url_for('empleados.lista_empleados'))

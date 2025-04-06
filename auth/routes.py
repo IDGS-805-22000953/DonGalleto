@@ -36,7 +36,7 @@ def login():
         recaptcha_response = request.form['g-recaptcha-response']
 
         if not verify_recaptcha(recaptcha_response):
-            flash('Por favor completa el CAPTCHA', 'danger')
+            flash('Por favor completa el CAPTCHA', 'login_error')
             return redirect(url_for('auth.login'))
 
         # Buscar en Usuario (por nombreUsuario o correo)
@@ -46,7 +46,7 @@ def login():
 
         if user and user.check_password(password):
             login_user(user)
-            flash('Inicio de sesión exitoso', 'success')
+            flash('Inicio de sesión exitoso', 'login_success')
 
             if user.rol == 'admin':
                 return redirect(url_for('dashboard.mostrar_dashboard'))
@@ -57,10 +57,10 @@ def login():
             elif user.rol == 'cocina':
                 return redirect(url_for('produccion.produccion'))
             else:
-                flash('Rol desconocido', 'danger')
+                flash('Rol desconocido', 'login_advertencia')
                 return redirect(url_for('auth.login'))
         else:
-            flash('Usuario o contraseña incorrectos', 'danger')
+            flash('Usuario o contraseña incorrectos', 'login_error')
     
     return render_template('index.html', form=form)
 
@@ -75,20 +75,20 @@ def register():
         recaptcha_response = request.form['g-recaptcha-response']
 
         if not verify_recaptcha(recaptcha_response):
-            flash('Por favor completa el CAPTCHA', 'danger')
+            flash('Por favor completa el CAPTCHA', 'register_error')
             return redirect(url_for('auth.register'))
 
         # Validaciones
         if len(password) < 8:
-            flash('La contraseña debe tener al menos 8 caracteres', 'danger')
+            flash('La contraseña debe tener al menos 8 caracteres', 'register_error')
             return redirect(url_for('auth.register'))
 
         if not re.match(r"[^@]+@[^@]+\.[^@]+", email):
-            flash('El correo electrónico no es válido', 'danger')
+            flash('El correo electrónico no es válido', 'register_error')
             return redirect(url_for('auth.register'))
 
         if Usuario.query.filter_by(correo=email).first():
-            flash('El correo electrónico ya está registrado', 'warning')
+            flash('El correo electrónico ya está registrado', 'register_error')
             return redirect(url_for('auth.register'))
 
         # Crear nuevo usuario con rol de cliente
@@ -102,7 +102,7 @@ def register():
         db.session.add(new_user)
         db.session.commit()
         
-        flash('Registro exitoso, ahora puedes iniciar sesión', 'success')
+        flash('Registro exitoso, ahora puedes iniciar sesión', 'register_success')
         return redirect(url_for('auth.login'))
 
     return render_template('registro.html', form=form)
@@ -112,7 +112,7 @@ def register():
 @login_required
 def logout():
     logout_user()
-    flash('Has cerrado sesión exitosamente', 'success')
+    flash('Has cerrado sesión exitosamente', 'login_success')
     return redirect(url_for('auth.login'))
 
 # Protege las rutas para que sólo los usuarios autenticados puedan acceder
@@ -120,7 +120,7 @@ def logout():
 @login_required
 def admin_dashboard():
     if current_user.rol != 'admin':
-        flash('No tienes permiso para acceder a esta página', 'danger')
+        flash('No tienes permiso para acceder a esta página', 'login_error')
         return redirect(url_for('auth.login'))
     return render_template('Central/dashboard.html')
 
@@ -128,6 +128,6 @@ def admin_dashboard():
 @login_required
 def cliente_dashboard():
     if current_user.rol != 'cliente':
-        flash('No tienes permiso para acceder a esta página', 'danger')
+        flash('No tienes permiso para acceder a esta página', 'login_error')
         return redirect(url_for('auth.login'))
     return render_template('Cliente/pedidosOnline.html')

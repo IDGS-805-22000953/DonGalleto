@@ -5,6 +5,22 @@
 {% block container %}
 
 <body class="bg-gray-50">
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      {% set category, message = messages[-1] %}
+      <div class="mb-6">
+        <div class="px-4 py-3 rounded-lg text-sm font-medium 
+          {% if category == 'pedidos_success' %} bg-green-100 text-green-800
+          {% elif category == 'pedidos_error' %} bg-red-100 text-red-800
+          {% elif category == 'pedidos_advertencia' %} bg-yellow-100 text-yellow-800
+          {% else %} bg-gray-100 text-gray-800
+          {% endif %}">
+          {{ message }}
+        </div>
+      </div>
+    {% endif %}
+  {% endwith %}
     <div class="container mx-auto px-4 py-8">
         <div class="bg-white p-6 rounded-xl shadow-md">
             <div class="flex justify-between items-center border-b pb-3 mb-4">

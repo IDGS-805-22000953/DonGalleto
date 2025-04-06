@@ -14,6 +14,7 @@ from models.models import (
     Proveedor,
     InsumosProveedor,
     PagoProveedor,
+    PedidosCliente,
     Receta,
     RecetaInsumos,
     Galleta,
@@ -82,7 +83,7 @@ def nueva_galleta():
         insumos_seleccionados = request.form.getlist("insumos")
 
         if len(insumos_seleccionados) < 6:
-            flash("Debes seleccionar al menos 6 insumos", "error")
+            flash("Debes seleccionar al menos 6 insumos", "formulario1_error")
             return render_template("Cocina/nuevaGalleta.html", form=form, insumos=insumos, galletas=galletas)
 
         if imagen:
@@ -160,8 +161,8 @@ def nueva_galleta():
             db.session.add(nueva_produccion)
 
         db.session.commit()
-        flash("Galleta creada correctamente", "success")
-        return redirect(url_for("cocina.cocina"))
+        flash("Galleta creada correctamente", "formulario1_success")
+        return redirect(url_for("cocina.nueva_galleta"))
 
     return render_template("Cocina/nuevaGalleta.html", form=form, insumos=insumos, galletas=galletas)
 
@@ -188,7 +189,7 @@ def convertir_a_unidad_base(cantidad, unidad_origen, unidad_destino):
         
         # Validación básica
         if not cantidad or not unidad_origen or not unidad_destino:
-            flash("Datos de conversión incompletos", "error")
+            flash("Datos de conversión incompletos", "formulario1_error")
             return Decimal('0')
             
         cantidad = Decimal(str(cantidad))
@@ -210,11 +211,11 @@ def convertir_a_unidad_base(cantidad, unidad_origen, unidad_destino):
             return cantidad
             
         if unidad_origen not in conversiones:
-            flash(f"Unidad de origen '{unidad_origen}' no soportada", "error")
+            flash(f"Unidad de origen '{unidad_origen}' no soportada", "cocina_error")
             return Decimal('0')
             
         if unidad_destino not in conversiones[unidad_origen]:
-            flash(f"No se puede convertir de {unidad_origen} a {unidad_destino}", "error")
+            flash(f"No se puede convertir de {unidad_origen} a {unidad_destino}", "cocina_error")
             return Decimal('0')
         
         resultado = cantidad * conversiones[unidad_origen][unidad_destino]
@@ -247,7 +248,7 @@ def cambiar_estatus():
         produccion = EstatusProduccion.query.get(id_produccion)
 
         if not produccion:
-            flash("Producción no encontrada", "error")
+            flash("Producción no encontrada", "cocina_success")
             return redirect(url_for("cocina.cocina"))
 
         estatus_orden = ["En preparacion", "Horneando", "Enfriando"]
@@ -259,7 +260,7 @@ def cambiar_estatus():
                 # Avanzar al siguiente estado normal
                 produccion.estatus = estatus_orden[indice_actual + 1]
                 db.session.commit()
-                flash(f"Estado cambiado a {produccion.estatus}", "success")
+                flash(f"Estado cambiado a {produccion.estatus}", "cocina_succes")
             else:
                 # Estado final - completar producción
                 if not registrar_produccion(produccion.idGalleta, produccion.idPresentacion):
@@ -270,11 +271,11 @@ def cambiar_estatus():
                 
                 db.session.delete(produccion)
                 db.session.commit()
-                flash("Producción completada correctamente", "success")
+                flash("Producción completada correctamente", "cocina_success")
 
     except Exception as e:
         db.session.rollback()
-        flash(f"Error al cambiar estatus: {str(e)}", "error")
+        flash(f"Error al cambiar estatus: {str(e)}", "cocina_error")
         print(f"Error en cambiar_estatus: {str(e)}")
 
     return redirect(url_for("cocina.cocina"))
@@ -318,17 +319,17 @@ def actualizar_stock(id_galleta, id_presentacion):
         # Obtener todos los objetos necesarios
         presentacion = PresentacionGalleta.query.get(id_presentacion)
         if not presentacion:
-            flash("Presentación no encontrada", "error")
+            flash("Presentación no encontrada", "cocina_error")
             return False
 
         galleta = Galleta.query.get(id_galleta)
         if not galleta:
-            flash("Galleta no encontrada", "error")
+            flash("Galleta no encontrada", "cocina_error")
             return False
 
         receta = Receta.query.get(galleta.idReceta)
         if not receta:
-            flash("Receta no encontrada", "error")
+            flash("Receta no encontrada", "cocina_error")
             return False
 
         # Determinar cuántas unidades producimos (basado en la presentación)
@@ -341,7 +342,7 @@ def actualizar_stock(id_galleta, id_presentacion):
         elif presentacion.tipoPresentacion == "Piezas":
             unidades_producidas = 1  # 1 pieza = 100g
         else:
-            flash("Tipo de presentación no válido", "error")
+            flash("Tipo de presentación no válido", "cocina_error")
             return False
 
         # Obtener todos los insumos de la receta
@@ -362,7 +363,7 @@ def actualizar_stock(id_galleta, id_presentacion):
                 cantidad_necesaria = cantidad_base * Decimal(str(unidades_producidas))
                 
                 if insumo.cantidad < cantidad_necesaria:
-                    flash(f"No hay suficiente {insumo.nombre}. Necesitas {cantidad_necesaria} {insumo.unidadBase} pero solo tienes {insumo.cantidad}", "error")
+                    flash(f"No hay suficiente {insumo.nombre}. Necesitas {cantidad_necesaria} {insumo.unidadBase} pero solo tienes {insumo.cantidad}", "cocina_error")
                     return False
 
         # Si tenemos suficiente stock para todos, procedemos a descontar
@@ -393,7 +394,7 @@ def actualizar_stock(id_galleta, id_presentacion):
 
     except Exception as e:
         db.session.rollback()
-        flash(f"Error al actualizar stock: {str(e)}", "error")
+        flash(f"Error al actualizar stock: {str(e)}", "cocina_error")
         print(f"Error en actualizar_stock: {str(e)}")
         return False
 
@@ -483,7 +484,7 @@ def ingresar_merma():
 
         # Confirmación y redirección
         db.session.commit()
-        flash("Merma registrada correctamente", "success")
+        flash("Merma registrada correctamente", "cocina_success")
         return redirect(url_for("cocina.cocina"))
 
     return render_template("Cocina/cocina.html", galletas=galletas, insumos=insumos, alertas=alertas)
@@ -536,74 +537,89 @@ def historial_merma():
 @cocina_bp.route("/eliminar_galleta/<int:id>", methods=["POST"])
 def eliminar_galleta(id):
     try:
-        # Desactivar autoflush para mayor control
-        with db.session.no_autoflush:
-            galleta = Galleta.query.get_or_404(id)
-            
-            # 1. Calcular el stock total en todas las presentaciones
-            total_galletas = 0
-            presentaciones = PresentacionGalleta.query.filter_by(idGalleta=id).all()
-            for presentacion in presentaciones:
-                if presentacion.tipoPresentacion == "1kg":
-                    total_galletas += presentacion.stock * 10  # 1kg = 10 unidades
-                elif presentacion.tipoPresentacion == "700g":
-                    total_galletas += presentacion.stock * 7   # 700g = 7 unidades
-                elif presentacion.tipoPresentacion == "Gramos":
-                    total_galletas += presentacion.stock / 100  # 100g por unidad
-                elif presentacion.tipoPresentacion == "Piezas":
-                    total_galletas += presentacion.stock        # 1 pieza = 1 unidad
+        # Iniciar una transacción explícita
+        db.session.begin()
+        
+        galleta = Galleta.query.get_or_404(id)
+        
+        # 1. Obtener todas las presentaciones de esta galleta
+        presentaciones = PresentacionGalleta.query.filter_by(idGalleta=id).all()
+        presentacion_ids = [p.id for p in presentaciones]
+        
+        # 2. Calcular el stock total para registrar merma
+        total_galletas = 0
+        for presentacion in presentaciones:
+            if presentacion.tipoPresentacion == "1kg":
+                total_galletas += presentacion.stock * 10
+            elif presentacion.tipoPresentacion == "700g":
+                total_galletas += presentacion.stock * 7
+            elif presentacion.tipoPresentacion == "Gramos":
+                total_galletas += presentacion.stock / 100
+            elif presentacion.tipoPresentacion == "Piezas":
+                total_galletas += presentacion.stock
 
-            # 2. Registrar merma si hay stock
-            if total_galletas > 0:
-                merma = Merma(
-                    idGalleta=galleta.id,
-                    cantidad=total_galletas,
-                    motivo="Eliminación de galleta y su stock",
-                    fechaRegistro=datetime.now()
-                )
-                db.session.add(merma)
-
-            # 3. Eliminar todas las relaciones en el orden correcto
+        # 3. Primero eliminar todas las relaciones que dependen de la galleta
+        
+        # a) Eliminar ventas locales asociadas a las presentaciones
+        VentaLocal.query.filter(VentaLocal.id_presentacion.in_(presentacion_ids)).delete()
+        
+        # b) Eliminar pedidos de clientes asociados a las presentaciones
+        if 'PedidosCliente' in globals():
+            PedidosCliente.query.filter(PedidosCliente.id_presentacion.in_(presentacion_ids)).delete()
+        
+        # c) Eliminar estatus de producción
+        EstatusProduccion.query.filter_by(idGalleta=id).delete()
+        
+        # d) Eliminar producciones
+        Produccion.query.filter_by(idGalleta=id).delete()
+        
+        # e) Eliminar presentaciones
+        PresentacionGalleta.query.filter_by(idGalleta=id).delete()
+        
+        # f) Eliminar mermas asociadas (DEBEMOS HACERLO ANTES de eliminar la galleta)
+        Merma.query.filter_by(idGalleta=id).delete()
+        
+        # 4. Registrar nueva merma por eliminación si hay stock
+        if total_galletas > 0:
+            merma = Merma(
+                idGalleta=galleta.id,  # Esto es válido porque aún no hemos eliminado la galleta
+                cantidad=total_galletas,
+                motivo="Eliminación de galleta y su stock",
+                fechaRegistro=datetime.now()
+            )
+            db.session.add(merma)
+            # Hacer commit intermedio para asegurar la merma
+            db.session.flush()
+        
+        # 5. Ahora podemos eliminar la galleta
+        db.session.delete(galleta)
+        
+        # 6. Verificar si la receta puede ser eliminada (solo si no hay otras galletas que la usen)
+        receta = Receta.query.get(galleta.idReceta)
+        if receta:
+            otras_galletas = Galleta.query.filter(
+                Galleta.idReceta == receta.id,
+                Galleta.id != id
+            ).count()
             
-            # Primero eliminar estatus de producción
-            EstatusProduccion.query.filter_by(idGalleta=id).delete()
-            
-            # Luego eliminar producciones
-            Produccion.query.filter_by(idGalleta=id).delete()
-            
-            # Eliminar presentaciones
-            PresentacionGalleta.query.filter_by(idGalleta=id).delete()
-            
-            # Eliminar mermas asociadas (si las hay)
-            Merma.query.filter_by(idGalleta=id).delete()
-            
-            # Eliminar relaciones de receta-insumo (si no se usa en otras galletas)
-            receta = Receta.query.get(galleta.idReceta)
-            if receta:
-                # Verificar si la receta es usada por otras galletas
-                otras_galletas = Galleta.query.filter(
-                    Galleta.idReceta == receta.id,
-                    Galleta.id != id
-                ).count()
-                
-                if otras_galletas == 0:
-                    RecetaInsumos.query.filter_by(idReceta=receta.id).delete()
-                    db.session.delete(receta)
-            
-            # Finalmente eliminar la galleta
-            db.session.delete(galleta)
-            
-            db.session.commit()
-            flash("Galleta eliminada correctamente y registrada en merma", "success")
-            
+            if otras_galletas == 0:
+                # Eliminar relaciones de receta-insumo
+                RecetaInsumos.query.filter_by(idReceta=receta.id).delete()
+                # Eliminar la receta
+                db.session.delete(receta)
+        
+        # Confirmar todos los cambios
+        db.session.commit()
+        flash("Galleta eliminada correctamente", "formulario1_success")
+        
     except Exception as e:
         db.session.rollback()
-        flash(f"Error al eliminar la galleta: {str(e)}", "error")
+        flash(f"Error al eliminar la galleta: {str(e)}", "formulario1_error")
         print(f"Error en eliminar_galleta: {str(e)}")
         import traceback
         traceback.print_exc()
     
-    return redirect(url_for("cocina.cocina"))
+    return redirect(url_for("cocina.nueva_galleta"))
 
 
 @cocina_bp.route("/editar_galleta/<int:id>", methods=["GET", "POST"])
@@ -618,7 +634,7 @@ def editar_galleta(id):
             # Validar que se seleccionen al menos 6 insumos
             insumos_seleccionados = request.form.getlist("insumos")
             if len(insumos_seleccionados) < 6:
-                flash("Debes seleccionar al menos 6 insumos.", "error")
+                flash("Debes seleccionar al menos 6 insumos.", "formulario2_error")
                 return redirect(url_for("cocina.editar_galleta", id=galleta.id))
             
             # Actualizar datos básicos
@@ -673,12 +689,12 @@ def editar_galleta(id):
                             db.session.add(receta_insumo)
             
             db.session.commit()
-            flash("Galleta actualizada correctamente", "success")
+            flash("Galleta actualizada correctamente", "formulario2_success")
             return redirect(url_for("cocina.cocina"))
             
         except Exception as e:
             db.session.rollback()
-            flash(f"Error al actualizar galleta: {str(e)}", "error")
+            flash(f"Error al actualizar galleta: {str(e)}", "formulario2_error")
             print(f"Error en editar_galleta: {str(e)}")
     
     return render_template(
@@ -687,3 +703,4 @@ def editar_galleta(id):
         insumos=insumos,
         receta_insumos=receta_insumos
     )
+    #

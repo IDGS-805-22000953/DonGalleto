@@ -145,3 +145,4 @@ def iniciar_produccion(presentacion_id):
         flash(f"Producción de {galleta.nombre} ({presentacion.tipoPresentacion}) iniciada con éxito.", "success")
     
     return redirect(url_for('produccion.produccion'))
+# hola

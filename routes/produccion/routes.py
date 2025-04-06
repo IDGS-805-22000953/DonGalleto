@@ -19,17 +19,15 @@ from models.models import (
     EstatusProduccion
 
 )
+
 produccion_bp = Blueprint('produccion', __name__)
 
 @produccion_bp.route("/produccion")
 @login_required
 def produccion():
-    if current_user.rol != 'admin':
-        flash('No tienes permisos para acceder a esta página', 'danger')
-        return redirect(url_for('auth.login'))
-    if current_user.rol != 'inventario':
-        flash('No tienes permisos para acceder a esta página', 'danger')
-        return redirect(url_for('auth.login'))
+    if current_user.rol not in ['admin', 'produccion']:
+      flash('No tienes permisos para acceder a esta página', 'danger')
+      return redirect(url_for('auth.login'))
     galletas = Galleta.query.all()
     presentaciones = PresentacionGalleta.query.filter_by(tipoPresentacion="Piezas").all()
     
@@ -62,12 +60,9 @@ def produccion():
 @produccion_bp.route("/piezas")
 @login_required
 def piezas():
-    if current_user.rol != 'admin':
-        flash('No tienes permisos para acceder a esta página', 'danger')
-        return redirect(url_for('auth.login'))
-    if current_user.rol != 'inventario':
-        flash('No tienes permisos para acceder a esta página', 'danger')
-        return redirect(url_for('auth.login'))
+    if current_user.rol not in ['admin', 'produccion']:
+      flash('No tienes permisos para acceder a esta página', 'danger')
+      return redirect(url_for('auth.login'))
     presentaciones = PresentacionGalleta.query.filter_by(tipoPresentacion="Piezas").all()
     alertas = db.session.query(
         EstatusProduccion,
@@ -85,12 +80,9 @@ def piezas():
 @produccion_bp.route("/gramaje")
 @login_required
 def gramaje():
-    if current_user.rol != 'admin':
-        flash('No tienes permisos para acceder a esta página', 'danger')
-        return redirect(url_for('auth.login'))
-    if current_user.rol != 'inventario':
-        flash('No tienes permisos para acceder a esta página', 'danger')
-        return redirect(url_for('auth.login'))
+    if current_user.rol not in ['admin', 'produccion']:
+      flash('No tienes permisos para acceder a esta página', 'danger')
+      return redirect(url_for('auth.login'))
     presentaciones = PresentacionGalleta.query.filter_by(tipoPresentacion="Gramos").all()
     alertas = db.session.query(
         EstatusProduccion,
@@ -108,12 +100,9 @@ def gramaje():
 @produccion_bp.route("/paquete1")
 @login_required
 def paquete1():
-    if current_user.rol != 'admin':
-        flash('No tienes permisos para acceder a esta página', 'danger')
-        return redirect(url_for('auth.login'))
-    if current_user.rol != 'inventario':
-        flash('No tienes permisos para acceder a esta página', 'danger')
-        return redirect(url_for('auth.login'))
+    if current_user.rol not in ['admin', 'produccion']:
+      flash('No tienes permisos para acceder a esta página', 'danger')
+      return redirect(url_for('auth.login'))
     presentaciones = PresentacionGalleta.query.filter_by(tipoPresentacion="1kg").all()
     alertas = db.session.query(
         EstatusProduccion,
@@ -131,12 +120,9 @@ def paquete1():
 @produccion_bp.route("/paquete2")
 @login_required
 def paquete2():
-    if current_user.rol != 'admin':
-        flash('No tienes permisos para acceder a esta página', 'danger')
-        return redirect(url_for('auth.login'))
-    if current_user.rol != 'inventario':
-        flash('No tienes permisos para acceder a esta página', 'danger')
-        return redirect(url_for('auth.login'))
+    if current_user.rol not in ['admin', 'produccion']:
+      flash('No tienes permisos para acceder a esta página', 'danger')
+      return redirect(url_for('auth.login'))
     presentaciones = PresentacionGalleta.query.filter_by(tipoPresentacion="700g").all()
     alertas = db.session.query(
         EstatusProduccion,
@@ -154,12 +140,9 @@ def paquete2():
 @produccion_bp.route("/iniciar_produccion/<int:presentacion_id>", methods=["POST"])
 @login_required
 def iniciar_produccion(presentacion_id):
-    if current_user.rol != 'admin':
-        flash('No tienes permisos para acceder a esta página', 'danger')
-        return redirect(url_for('auth.login'))
-    if current_user.rol != 'inventario':
-        flash('No tienes permisos para acceder a esta página', 'danger')
-        return redirect(url_for('auth.login'))
+    if current_user.rol not in ['admin', 'produccion']:
+      flash('No tienes permisos para acceder a esta página', 'danger')
+      return redirect(url_for('auth.login'))
     
     presentacion = PresentacionGalleta.query.get_or_404(presentacion_id)
     
@@ -187,3 +170,4 @@ def iniciar_produccion(presentacion_id):
         flash(f"Producción de {galleta.nombre} ({presentacion.tipoPresentacion}) iniciada con éxito.", "success")
     
     return redirect(url_for('produccion.produccion'))
+# hola

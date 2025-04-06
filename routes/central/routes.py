@@ -65,3 +65,4 @@ def mostrar_dashboard():
 
     return render_template('Central/dashboard.html',ventas_diarias=ventas_totales,fecha=hoy.strftime('%d/%m/%Y'),top_galletas=top_galletas,top_presentaciones=top_presentaciones
     )
+    #hola

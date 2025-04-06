@@ -9,7 +9,7 @@ from forms import AgregarAlCarritoForm
 
 from flask_login import login_user, logout_user, login_required, current_user
 from datetime import datetime
-
+#hola
 clientes_bp = Blueprint('clientes', __name__)
 
 @clientes_bp.route('/clientes', methods=['GET', 'POST'])

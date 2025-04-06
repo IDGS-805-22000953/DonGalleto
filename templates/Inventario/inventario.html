@@ -21,7 +21,7 @@
   {% endwith %}
     <div class="text-center mb-6">
         <h2 class="text-brown text-4xl font-bold flex items-center justify-center gap-2">
-            🍪 Inventario de Materias Primas 🍪
+            Inventario de Materias Primas
         </h2>
 
         <form method="GET" action="{{ url_for('inventario.inventario') }}" class="flex justify-center gap-2 my-4">
@@ -90,7 +90,7 @@
                     <td class="px-4 py-2">${{ "%.2f"|format(material.costoPorUnidad) }}</td>
                     <td class="px-4 py-2">
                         {{ material.proveedor.nombreProveedor if material.proveedor else 'Sin proveedor' }}
-                    </td> <!-- ✅ NUEVA CELDA CON EL NOMBRE DEL PROVEEDOR -->
+                    </td> <!--  NUEVA CELDA CON EL NOMBRE DEL PROVEEDOR -->
                     <td class="px-4 py-2 flex gap-2 justify-center">
                         <a href="{{ url_for('inventario.editar_material', material_id=material.id) }}" class="btn-small text-blue-600">Editar</a>
                         <form method="POST" action="{{ url_for('inventario.eliminar_material', material_id=material.id)}}" 

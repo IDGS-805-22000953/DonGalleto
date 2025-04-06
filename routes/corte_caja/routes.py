@@ -128,3 +128,4 @@ def nuevo_corte():
         flash(f'Error al registrar el corte: {str(e)}', 'corte_error')
 
     return redirect(url_for('corte.listar_cortes'))
+#hola

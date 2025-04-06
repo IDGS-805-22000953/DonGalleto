@@ -115,7 +115,7 @@ def logout():
     flash('Has cerrado sesión exitosamente', 'login_success')
     return redirect(url_for('auth.login'))
 
-# Protege las rutas para que sólo los usuarios autenticados puedan acceder
+# Protege las rutas para quue sólo los usuarios autenticados puedan acceder
 @auth_bp.route('/admin_dashboard')
 @login_required
 def admin_dashboard():

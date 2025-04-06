@@ -59,7 +59,7 @@ def lista_empleados():
 
 
 from flask import jsonify
-
+#hola
 @empleados_bp.route('/actualizar-rol/<int:id>', methods=['POST'])
 @login_required
 def actualizar_rol(id):

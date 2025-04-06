@@ -205,3 +205,4 @@ def marcar_como_completado(pedido_id):
         flash(f'Error al actualizar el pedido: {str(e)}', 'pedidos_error')
     
     return redirect(url_for('ventas.mostrar_pedidos_pendientes'))
+#hola

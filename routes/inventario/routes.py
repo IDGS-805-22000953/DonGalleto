@@ -214,3 +214,4 @@ def marcar_pago_realizado(pago_id):
     db.session.commit()
     flash(f'El pago con ID {pago_id} ha sido marcado como realizado.', 'pago_success')
     return redirect(url_for('inventario.listar_pagos_proveedores'))
+#hola

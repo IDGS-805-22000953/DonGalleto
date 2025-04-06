@@ -27,7 +27,7 @@ from models.models import (
 )
 from forms import GalletaForm
 
-
+#hola
 
 cocina_bp = Blueprint('cocina', __name__)
 

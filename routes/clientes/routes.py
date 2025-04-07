@@ -30,7 +30,7 @@ def clientes():
 @clientes_bp.route('/agregar_al_carrito', methods=['POST'])
 @login_required
 def agregar_al_carrito():
-    if current_user.rol not in ['admin', 'produccion']:
+    if current_user.rol not in ['admin', 'cliente']:
       flash('No tienes permisos para acceder a esta página', 'danger')
       return redirect(url_for('auth.login'))
     
@@ -182,3 +182,15 @@ def procesar_pedido():
         db.session.rollback()
         flash(f'Error al procesar el pedido: {str(e)}', 'cliente_error')
         return redirect(url_for('clientes.clientes'))
+
+@clientes_bp.route('/historial_pedidos')
+@login_required
+def historial_pedidos():
+    if current_user.rol not in ['admin', 'cliente']:
+        flash('No tienes permisos para acceder a esta página', 'danger')
+        return redirect(url_for('auth.login'))
+    
+    # Obtener los pedidos del cliente actual
+    pedidos = PedidosCliente.query.filter_by(id_usuario=current_user.id).order_by(PedidosCliente.fechaRecogida.desc()).all()
+    
+    return render_template('Cliente/historialPedidos.html', pedidos=pedidos)

@@ -7,20 +7,20 @@
 <body class="bg-gray-50">
     <div class="fixed top-4 right-4 z-50 space-y-2">
         {% with messages = get_flashed_messages(with_categories=true) %}
-    {% if messages %}
-      {% set category, message = messages[-1] %}
-      <div class="mb-6">
-        <div class="px-4 py-3 rounded-lg text-sm font-medium 
+        {% if messages %}
+        {% set category, message = messages[-1] %}
+        <div class="mb-6">
+            <div class="px-4 py-3 rounded-lg text-sm font-medium 
           {% if category == 'cliente_success' %} bg-green-100 text-green-800
           {% elif category == 'cliente_error' %} bg-red-100 text-red-800
           {% elif category == 'cliente_advertencia' %} bg-yellow-100 text-yellow-800
           {% else %} bg-gray-100 text-gray-800
           {% endif %}">
-          {{ message }}
+                {{ message }}
+            </div>
         </div>
-      </div>
-    {% endif %}
-  {% endwith %}
+        {% endif %}
+        {% endwith %}
     </div>
     <div class="container mx-auto px-4 py-8">
         <!-- Header -->
@@ -30,8 +30,20 @@
             <div class="w-24 h-1.5 bg-yellow-400 mx-auto mt-4 rounded-full"></div>
         </div>
 
-        <!-- Botón para mostrar/ocultar carrito (ahora en negro) -->
-        <div class="fixed bottom-6 right-6 z-50">
+        <!-- Botones flotantes -->
+        <div class="fixed bottom-6 right-6 z-50 flex flex-col space-y-4">
+            <!-- Botón del historial -->
+            <a href="{{ url_for('clientes.historial_pedidos') }}"
+                class="bg-gray-800 hover:bg-gray-700 text-white font-bold py-3 px-6 rounded-full shadow-lg transition duration-200 flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                </svg>
+                Historial
+            </a>
+
+            <!-- Botón del carrito -->
             <button id="cart-toggle"
                 class="bg-black hover:bg-gray-800 text-white font-bold py-3 px-6 rounded-full shadow-lg transition duration-200 flex items-center">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24"
@@ -52,7 +64,8 @@
                 class="bg-white rounded-xl shadow-md overflow-hidden transition-all duration-300 hover:-translate-y-2 hover:shadow-lg">
                 <!-- Cookie Image -->
                 {% if galleta.rutaFoto %}
-                <img src="data:image/png;base64,{{ galleta.rutaFoto }}" class="w-full h-48 object-cover" alt="{{ galleta.nombre }}">
+                <img src="data:image/png;base64,{{ galleta.rutaFoto }}" class="w-full h-48 object-cover"
+                    alt="{{ galleta.nombre }}">
                 {% else %}
                 <div class="w-full h-48 bg-gray-100 flex items-center justify-center">
                     <i class="fas fa-cookie text-6xl text-gray-400"></i>

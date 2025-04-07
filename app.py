@@ -59,6 +59,7 @@ app.register_blueprint(empleados_bp, url_prefix='/empleados')
 from flask import Flask, render_template
 from forms import LoginForm  
 
+
 @app.route("/")
 def index():
     return redirect(url_for('clientes.clientes'))

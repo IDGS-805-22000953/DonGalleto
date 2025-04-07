@@ -158,7 +158,7 @@ class RegistroEmpleadoForm(FlaskForm):
     ])
     
     rol = SelectField('Rol', choices=[
-        ('admin', 'Administrador'),
+       # ('admin', 'Administrador'),
         ('cajero', 'Cajero'),
         ('inventario', 'Inventario'),
         ('produccion', 'Produccion')

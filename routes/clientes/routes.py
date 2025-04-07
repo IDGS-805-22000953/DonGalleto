@@ -15,7 +15,7 @@ clientes_bp = Blueprint('clientes', __name__)
 @clientes_bp.route('/clientes', methods=['GET', 'POST'])
 def clientes():
     
-    
+    session.modified = True
     galletas = Galleta.query.options(db.joinedload(Galleta.presentaciones)).all()
     form = AgregarAlCarritoForm()
     
@@ -192,5 +192,7 @@ def historial_pedidos():
     
     # Obtener los pedidos del cliente actual
     pedidos = PedidosCliente.query.filter_by(id_usuario=current_user.id).order_by(PedidosCliente.fechaRecogida.desc()).all()
-    
     return render_template('Cliente/historialPedidos.html', pedidos=pedidos)
+
+
+

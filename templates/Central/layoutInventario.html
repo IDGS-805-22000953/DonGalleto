@@ -47,19 +47,19 @@
       </button>
       <div class="hidden w-full md:block md:w-auto" id="navbar">
         <ul class="flex flex-col md:flex-row md:space-x-6 mt-4 md:mt-0 font-medium text-white text-lg">
-          {% if current_user.rol == 'admin' %}
-            <li><a href="{{ url_for('produccion.produccion') }}" class="flex items-center gap-2 hover:text-yellow-200"><i class="fas fa-industry"></i>Producción</a></li>
-            <li><a href="{{ url_for('ventas.ventas') }}" class="flex items-center gap-2 hover:text-yellow-200"><i class="fas fa-cash-register"></i>Ventas</a></li>
-            <li><a href="{{ url_for('empleados.lista_empleados') }}" class="flex items-center gap-2 hover:text-yellow-200"><i class="fas fa-users"></i>Registro Empleado</a></li>
-            <li><a href="{{ url_for('inventario.inventario') }}" class="flex items-center gap-2 hover:text-yellow-200"><i class="fas fa-boxes"></i>Inventario</a></li>
-            <li><a href="{{ url_for('inventario.agenda_proveedores') }}" class="flex items-center gap-2 hover:text-yellow-200"><i class="fas fa-truck"></i>Proveedores</a></li>
-            <li><a href="{{ url_for('inventario.listar_pagos_proveedores') }}" class="flex items-center gap-2 hover:text-yellow-200"><i class="fas fa-money-bill-wave"></i>Pago Proveedores</a></li>
-          {% elif current_user.rol == 'inventario' %}
-            <li><a href="{{ url_for('inventario.listar_pagos_proveedores') }}" class="flex items-center gap-2 hover:text-yellow-200"><i class="fas fa-money-bill-wave"></i>Pago Proveedores</a></li>
+          {% if current_user.is_authenticated %}
+          <a href="{{ url_for('inventario.agenda_proveedores') }}" class="flex items-center gap-2 hover:text-yellow-200">
+            <i class="fas fa-sign-in-alt"></i> Inventario
+          </a>
+            <li><a href="{{ url_for('auth.logout') }}" class="flex items-center gap-2 hover:text-yellow-200"><i class="fas fa-sign-out-alt"></i>Cerrar sesión</a></li>
+          {% else %}
+            <li>
+              
+              <a href="{{ url_for('auth.login') }}" class="flex items-center gap-2 hover:text-yellow-200">
+                <i class="fas fa-sign-in-alt"></i> Iniciar sesión
+              </a>
+            </li>
           {% endif %}
-          
-          <!-- Common option for all roles -->
-          <li><a href="{{ url_for('auth.logout') }}" class="flex items-center gap-2 hover:text-yellow-200"><i class="fas fa-sign-out-alt"></i>Cerrar sesión</a></li>
         </ul>
       </div>
     </div>

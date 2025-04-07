@@ -47,12 +47,15 @@
       </button>
       <div class="hidden w-full md:block md:w-auto" id="navbar">
         <ul class="flex flex-col md:flex-row md:space-x-6 mt-4 md:mt-0 font-medium text-white text-lg">
+          {% if current_user.is_authenticated %}
+            <li><a href="{{ url_for('auth.logout') }}" class="flex items-center gap-2 hover:text-yellow-200"><i class="fas fa-sign-out-alt"></i>Cerrar sesión</a></li>
+          {% else %}
             <li>
-                <a href="{{ url_for('auth.login') }}" class="flex items-center gap-2 hover:text-yellow-200">
-                  <i class="fas fa-sign-in-alt"></i> Iniciar sesión
-                </a>
-              </li>
-         <li><a href="{{ url_for('auth.logout') }}" class="flex items-center gap-2 hover:text-yellow-200"><i class="fas fa-sign-out-alt"></i>Cerrar sesión</a></li>
+              <a href="{{ url_for('auth.login') }}" class="flex items-center gap-2 hover:text-yellow-200">
+                <i class="fas fa-sign-in-alt"></i> Iniciar sesión
+              </a>
+            </li>
+          {% endif %}
         </ul>
       </div>
     </div>

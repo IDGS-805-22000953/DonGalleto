@@ -53,6 +53,11 @@
                 class="fas fa-industry"></i>Producción</a></li>
           <li><a href="{{ url_for('ventas.ventas') }}" class="flex items-center gap-2 hover:text-yellow-200"><i
                 class="fas fa-cash-register"></i>Ventas</a></li>
+          <li>
+            <a href="{{ url_for('corte.listar_cortes') }}" class="flex items-center gap-2 hover:text-yellow-200">
+              <i class="fas fa-calculator"></i>Corte
+            </a>
+          </li>
           <li><a href="{{ url_for('empleados.lista_empleados') }}"
               class="flex items-center gap-2 hover:text-yellow-200"><i class="fas fa-users"></i>Registro Empleado</a>
           </li>

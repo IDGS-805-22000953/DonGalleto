@@ -11,6 +11,11 @@ from sqlalchemy.orm import joinedload
 inventario_bp = Blueprint('inventario', __name__, url_prefix='/inventario')
 
 # inventario.html
+
+  
+
+    # Generar notificaciones
+    # inventario.html
 @inventario_bp.route('/', methods=['GET'])
 @login_required  # Protege esta ruta para usuarios autenticados
 def inventario():
@@ -43,8 +48,23 @@ def inventario():
                 'fechaCaducidad': caducidad
             })
 
-    return render_template('inventario/inventario.html', raw_materials=raw_materials, notifications=notifications, notification_weeks=notification_weeks)
+                # Nueva alerta: insumo con cantidad baja
+        if material.cantidad <= 10: 
+            notifications.append({
+                'nombre': material.nombre,
+                'status': f'con bajo stock ({material.cantidad} unidades restantes)'
+            
+            })
 
+        if int(material.cantidad) == 0:
+             notifications.append({
+            'nombre': material.nombre,
+            'status': 'SE HA AGOTADO',
+            'fechaCaducidad': material.fechaCaducidad
+        })
+
+     
+    return render_template('inventario/inventario.html', raw_materials=raw_materials, notifications=notifications, notification_weeks=notification_weeks)
 # agregar_material.html
 @inventario_bp.route('/agregar', methods=['GET', 'POST'])
 @login_required  # Protege esta ruta para usuarios autenticados

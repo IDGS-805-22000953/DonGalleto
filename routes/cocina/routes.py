@@ -38,10 +38,11 @@ def cocina():
     if current_user.rol not in ['admin', 'produccion']:
       flash('No tienes permisos para acceder a esta página', 'danger')
       return redirect(url_for('auth.login'))
-    galletas = Galleta.query.all()  # Obtener todas las galletas de la base de datos
+    galletas = Galleta.query.all()
     presentaciones = PresentacionGalleta.query.all()
     insumos = Insumo.query.all()
-    
+
+    # Obtener alertas de producción
     alertas = db.session.query(
         EstatusProduccion,
         PresentacionGalleta.tipoPresentacion
@@ -49,7 +50,31 @@ def cocina():
         PresentacionGalleta, EstatusProduccion.idPresentacion == PresentacionGalleta.id
     ).all()
 
-    historial_merma = (
+    # Obtener alertas de "caducidad" basadas en producción
+    alertas_caducidad = []
+    hoy = datetime.now().date()
+
+    # 1. Obtener todas las producciones recientes (últimos 30 días)
+    producciones_recientes = Produccion.query.filter(
+        Produccion.fechaProduccion >= hoy - timedelta(days=30))
+
+    # 2. Para cada producción, verificar si está cerca de "caducar" (2 días antes)
+    for produccion in producciones_recientes:
+        dias_desde_produccion=(hoy - produccion.fechaProduccion).days
+        dias_para_alerta=28  # Alertar cuando faltan 2 días para los 30 días de "caducidad"
+
+        if dias_desde_produccion >= dias_para_alerta:
+            galleta=Galleta.query.get(produccion.idGalleta)
+            if galleta:
+                dias_restantes=30 - dias_desde_produccion
+                alertas_caducidad.append({
+                    'galleta': galleta.nombre,
+                    'fecha_produccion': produccion.fechaProduccion,
+                    'dias_restantes': dias_restantes,
+                    'cantidad': produccion.cantidadProducida
+                })
+
+    historial_merma=(
         db.session.query(
             Galleta.nombre,
             Merma.cantidad,
@@ -62,16 +87,16 @@ def cocina():
     )
 
     # Obtener todos los tipos de galletas
-    tipos_galletas = [galleta.nombre for galleta in galletas]
+    tipos_galletas=[galleta.nombre for galleta in galletas]
 
     return render_template(
         "Cocina/cocina.html",
         alertas=alertas,
+        alertas_caducidad=alertas_caducidad,  # Pasar las alertas al template
         historial_merma=historial_merma,
         tipos_galletas=tipos_galletas,
         insumos=insumos
     )
-
 
 
 @cocina_bp.route("/nueva_galleta", methods=["GET", "POST"])
@@ -194,63 +219,48 @@ def calcular_costo_total(id_receta):
         costo_total += Decimal(str(ri.cantidadInsumo)) * insumo.costoPorUnidad
     
     return costo_total
-
 def convertir_a_unidad_base(cantidad, unidad_origen, unidad_destino):
     try:
-        print(f"Conversión solicitada: {cantidad} {unidad_origen} → {unidad_destino}")
-        
-        # Validación básica
-        if not cantidad or not unidad_origen or not unidad_destino:
-            flash("Datos de conversión incompletos", "formulario1_error")
-            return Decimal('0')
-            
+        # Convertir a Decimal para mayor precisión
         cantidad = Decimal(str(cantidad))
         
-        # Definición completa de conversiones
-        conversiones = {
-            'g': {'kg': Decimal('0.001'), 'g': Decimal('1'), 'mg': Decimal('1000')},
-            'kg': {'g': Decimal('1000'), 'kg': Decimal('1'), 'mg': Decimal('1000000')},
-            'mg': {'g': Decimal('0.001'), 'kg': Decimal('0.000001'), 'mg': Decimal('1')},
-            'l': {'ml': Decimal('1000'), 'l': Decimal('1')},
-            'ml': {'l': Decimal('0.001'), 'ml': Decimal('1')},
-            'docena': {'unidad': Decimal('12'), 'docena': Decimal('1')},
-            'unidad': {'docena': Decimal('1')/Decimal('12'), 'unidad': Decimal('1')}
-        }
-        
-        # Validar unidades
+        # Si las unidades son iguales, no hay conversión
         if unidad_origen == unidad_destino:
-            print("Mismas unidades, no se requiere conversión")
             return cantidad
-            
-        if unidad_origen not in conversiones:
-            flash(f"Unidad de origen '{unidad_origen}' no soportada", "cocina_error")
-            return Decimal('0')
-            
-        if unidad_destino not in conversiones[unidad_origen]:
-            flash(f"No se puede convertir de {unidad_origen} a {unidad_destino}", "cocina_error")
-            return Decimal('0')
+
+        # Conversiones de masa
+        if unidad_origen == 'g' and unidad_destino == 'kg':
+            return cantidad / Decimal('1000')
+        elif unidad_origen == 'kg' and unidad_destino == 'g':
+            return cantidad * Decimal('1000')
+        elif unidad_origen == 'mg' and unidad_destino == 'g':
+            return cantidad / Decimal('1000')
+        elif unidad_origen == 'g' and unidad_destino == 'mg':
+            return cantidad * Decimal('1000')
+        elif unidad_origen == 'mg' and unidad_destino == 'kg':
+            return cantidad / Decimal('1000000')
+        elif unidad_origen == 'kg' and unidad_destino == 'mg':
+            return cantidad * Decimal('1000000')
         
-        resultado = cantidad * conversiones[unidad_origen][unidad_destino]
-        print(f"Resultado de conversión: {resultado} {unidad_destino}")
-        return resultado
+        # Conversiones de volumen
+        elif unidad_origen == 'ml' and unidad_destino == 'l':
+            return cantidad / Decimal('1000')
+        elif unidad_origen == 'l' and unidad_destino == 'ml':
+            return cantidad * Decimal('1000')
+        
+        # Conversiones de unidades
+        elif unidad_origen == 'unidad' and unidad_destino == 'docena':
+            return cantidad / Decimal('12')
+        elif unidad_origen == 'docena' and unidad_destino == 'unidad':
+            return cantidad * Decimal('12')
+        
+        # Si no hay conversión definida
+        flash(f"No se puede convertir de {unidad_origen} a {unidad_destino}", "error")
+        return Decimal('0')
         
     except Exception as e:
-        print(f"Error en conversión: {str(e)}")
         flash(f"Error en conversión de unidades: {str(e)}", "error")
         return Decimal('0')
-
-def calcular_costo_total(id_receta):
-    receta_insumos = RecetaInsumos.query.filter_by(idReceta=id_receta).all()
-    costo_total = Decimal('0.0')  # Inicializar como Decimal
-    
-    for ri in receta_insumos:
-        insumo = Insumo.query.get(ri.idInsumo)
-        # Convertir ambos valores a Decimal antes de operar
-        cantidad = Decimal(str(ri.cantidadInsumo))
-        costo_por_unidad = insumo.costoPorUnidad  # Ya debería ser Decimal
-        costo_total += cantidad * costo_por_unidad
-    
-    return costo_total
 
 
 @cocina_bp.route("/cambiar_estatus", methods=["POST"])
@@ -304,12 +314,12 @@ def registrar_produccion(id_galleta, id_presentacion):
         print("Galleta o presentación no encontrada.")
         return False
 
-    # Calcular cantidad producida basada en presentación
+    # Definir cantidades producidas consistentes
     cantidad_producida = {
-        "1kg": 10,
-        "700g": 14,
-        "Gramos": 10000,
-        "Piezas": 100
+        "1kg": 10,      # 10 paquetes de 1kg
+        "700g": 14,     # 14 paquetes de 700g
+        "Gramos": 100,  # 100 porciones de 100g
+        "Piezas": 100   # 100 galletas individuales
     }.get(presentacion.tipoPresentacion, 0)
 
     if cantidad_producida <= 0:
@@ -321,7 +331,7 @@ def registrar_produccion(id_galleta, id_presentacion):
             idReceta=galleta.idReceta,
             idGalleta=galleta.id, 
             cantidadProducida=cantidad_producida,
-            fechaProduccion=datetime.now()
+            fechaProduccion=datetime.now().date()
         )
         db.session.add(nueva_produccion)
         return True
@@ -329,46 +339,53 @@ def registrar_produccion(id_galleta, id_presentacion):
         print(f"Error al registrar producción: {str(e)}")
         return False
     
-    
 def actualizar_stock(id_galleta, id_presentacion):
     try:
-        # Obtener todos los objetos necesarios
+        print(f"Iniciando actualización de stock para galleta {id_galleta}, presentación {id_presentacion}")
+        
         presentacion = PresentacionGalleta.query.get(id_presentacion)
         if not presentacion:
-            flash("Presentación no encontrada", "cocina_error")
+            print("Presentación no encontrada")
             return False
 
         galleta = Galleta.query.get(id_galleta)
         if not galleta:
-            flash("Galleta no encontrada", "cocina_error")
+            print("Galleta no encontrada")
             return False
 
         receta = Receta.query.get(galleta.idReceta)
         if not receta:
-            flash("Receta no encontrada", "cocina_error")
+            print("Receta no encontrada")
             return False
 
-        # Determinar cuántas unidades producimos (basado en la presentación)
+        # Definir cantidades consistentes con registrar_produccion()
         if presentacion.tipoPresentacion == "1kg":
-            unidades_producidas = 10  # 10 paquetes de 1kg
+            unidades_producidas = 10     # 10 paquetes de 1kg
+            incremento_stock = 10        # +10 unidades de 1kg
         elif presentacion.tipoPresentacion == "700g":
-            unidades_producidas = 14  # 14 paquetes de 700g
+            unidades_producidas = 14    # 14 paquetes de 700g
+            incremento_stock = 14       # +14 unidades de 700g
         elif presentacion.tipoPresentacion == "Gramos":
-            unidades_producidas = 100  # 10000g = 100x100g
+            unidades_producidas = 100    # 100 porciones de 100g
+            incremento_stock = 10000     # +10000g (100x100g)
         elif presentacion.tipoPresentacion == "Piezas":
-            unidades_producidas = 1  # 1 pieza = 100g
+            unidades_producidas = 100    # 100 galletas individuales
+            incremento_stock = 100       # +100 unidades
         else:
-            flash("Tipo de presentación no válido", "cocina_error")
+            print("Tipo de presentación no válido")
             return False
 
-        # Obtener todos los insumos de la receta
+        print(f"Unidades a producir: {unidades_producidas}")
+
+        # Verificar y descontar insumos
         receta_insumos = RecetaInsumos.query.filter_by(idReceta=receta.id).all()
         
-        # Primero validar que tenemos suficiente stock para todos los insumos
         for receta_insumo in receta_insumos:
             insumo = Insumo.query.get(receta_insumo.idInsumo)
             if insumo:
-                # Convertir a unidad base del insumo
+                print(f"Procesando insumo: {insumo.nombre}")
+                
+                # Convertir a unidad base
                 cantidad_base = convertir_a_unidad_base(
                     receta_insumo.cantidadSeleccionada,
                     receta_insumo.unidadSeleccionada,
@@ -376,13 +393,14 @@ def actualizar_stock(id_galleta, id_presentacion):
                 )
                 
                 # Calcular cantidad total necesaria
-                cantidad_necesaria = cantidad_base * Decimal(str(unidades_producidas))
-                
+                cantidad_necesaria = cantidad_base * Decimal(unidades_producidas) / Decimal(100)
+                print(f"Necesario: {cantidad_necesaria} {insumo.unidadBase} de {insumo.nombre} (Stock actual: {insumo.cantidad})")
+
                 if insumo.cantidad < cantidad_necesaria:
-                    flash(f"No hay suficiente {insumo.nombre}. Necesitas {cantidad_necesaria} {insumo.unidadBase} pero solo tienes {insumo.cantidad}", "cocina_error")
+                    print(f"No hay suficiente {insumo.nombre}")
                     return False
 
-        # Si tenemos suficiente stock para todos, procedemos a descontar
+        # Descontar insumos
         for receta_insumo in receta_insumos:
             insumo = Insumo.query.get(receta_insumo.idInsumo)
             if insumo:
@@ -391,26 +409,20 @@ def actualizar_stock(id_galleta, id_presentacion):
                     receta_insumo.unidadSeleccionada,
                     insumo.unidadBase
                 )
-                cantidad_total = cantidad_base * Decimal(str(unidades_producidas))
+                cantidad_total = cantidad_base * Decimal(unidades_producidas) / Decimal(100)
                 insumo.cantidad -= cantidad_total
                 print(f"Descontados {cantidad_total} {insumo.unidadBase} de {insumo.nombre}")
 
         # Actualizar stock de la presentación
-        if presentacion.tipoPresentacion == "1kg":
-            presentacion.stock += 10
-        elif presentacion.tipoPresentacion == "700g":
-            presentacion.stock += 14
-        elif presentacion.tipoPresentacion == "Gramos":
-            presentacion.stock += 10000
-        elif presentacion.tipoPresentacion == "Piezas":
-            presentacion.stock += 100
+        presentacion.stock += incremento_stock
+        presentacion.fechaCaducidad = datetime.now().date() + timedelta(days=30)
+        print(f"Stock actualizado: {presentacion.tipoPresentacion} ahora tiene {presentacion.stock}")
 
         db.session.commit()
         return True
 
     except Exception as e:
         db.session.rollback()
-        flash(f"Error al actualizar stock: {str(e)}", "cocina_error")
         print(f"Error en actualizar_stock: {str(e)}")
         return False
 

@@ -133,3 +133,10 @@ def cliente_dashboard():
         flash('No tienes permiso para acceder a esta página', 'login_error')
         return redirect(url_for('auth.login'))
     return render_template('Cliente/pedidosOnline.html')
+
+from flask import jsonify
+
+@auth_bp.route('/check_session')
+@login_required
+def check_session():
+    return jsonify({'active': True})

@@ -37,7 +37,8 @@
   <nav class="shadow-md" style="background-color: #742c2c">
     <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
       <a href="{{ url_for('dashboard.mostrar_dashboard') }}" class="flex items-center space-x-3">
-        <img src="{{ url_for('static', filename='img/MellowLogo.jpeg') }}" class="h-16 rounded-full shadow-sm" alt="Logo Mellow" />
+        <img src="{{ url_for('static', filename='img/MellowLogo.jpeg') }}" class="h-16 rounded-full shadow-sm"
+          alt="Logo Mellow" />
         <span class="self-center text-3xl font-bold text-white tracking-wide">MELLOW</span>
       </a>
       <button data-collapse-toggle="navbar" type="button"
@@ -48,17 +49,19 @@
       <div class="hidden w-full md:block md:w-auto" id="navbar">
         <ul class="flex flex-col md:flex-row md:space-x-6 mt-4 md:mt-0 font-medium text-white text-lg">
           {% if current_user.is_authenticated %}
-          <a href="{{ url_for('inventario.agenda_proveedores') }}" class="flex items-center gap-2 hover:text-yellow-200">
+          <a href="{{ url_for('inventario.agenda_proveedores') }}"
+            class="flex items-center gap-2 hover:text-yellow-200">
             <i class="fas fa-sign-in-alt"></i> Inventario
           </a>
-            <li><a href="{{ url_for('auth.logout') }}" class="flex items-center gap-2 hover:text-yellow-200"><i class="fas fa-sign-out-alt"></i>Cerrar sesión</a></li>
+          <li><a href="{{ url_for('auth.logout') }}" class="flex items-center gap-2 hover:text-yellow-200"><i
+                class="fas fa-sign-out-alt"></i>Cerrar sesión</a></li>
           {% else %}
-            <li>
-              
-              <a href="{{ url_for('auth.login') }}" class="flex items-center gap-2 hover:text-yellow-200">
-                <i class="fas fa-sign-in-alt"></i> Iniciar sesión
-              </a>
-            </li>
+          <li>
+
+            <a href="{{ url_for('auth.login') }}" class="flex items-center gap-2 hover:text-yellow-200">
+              <i class="fas fa-sign-in-alt"></i> Iniciar sesión
+            </a>
+          </li>
           {% endif %}
         </ul>
       </div>
@@ -83,7 +86,43 @@
       </ul>
     </div>
   </footer>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      // Obtener todos los mensajes flash
+      const flashMessages = document.querySelectorAll('.flash-message');
 
+      // Configurar el tiempo de visualización en milisegundos (5000ms = 5s)
+      const displayTime = 5000;
+
+      // Función para eliminar un mensaje con efecto fade out
+      function removeFlashMessage(message) {
+        message.style.opacity = '0';
+        setTimeout(() => {
+          message.remove();
+
+          // Si no quedan mensajes, eliminar el contenedor
+          const container = document.getElementById('flash-messages-container');
+          if (container && container.children.length === 0) {
+            container.remove();
+          }
+        }, 500); // Tiempo de la transición (0.5s)
+      }
+
+      // Configurar temporizador para cada mensaje
+      flashMessages.forEach(message => {
+        setTimeout(() => {
+          removeFlashMessage(message);
+        }, displayTime);
+      });
+
+      // Opcional: Permitir cerrar manualmente haciendo click
+      flashMessages.forEach(message => {
+        message.addEventListener('click', function () {
+          removeFlashMessage(this);
+        });
+      });
+    });
+  </script>
 </body>
 
 </html>

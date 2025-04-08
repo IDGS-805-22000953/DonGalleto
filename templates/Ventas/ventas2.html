@@ -6,6 +6,19 @@
 
 <body class="bg-gray-50">
     <div class="fixed top-4 right-4 z-50 space-y-2">
+        {% if alertas_caducidad %}
+        <div class="alertas-caducidad">
+            <h3>Alertas de Galletas Próximas a Caducar</h3>
+            {% for alerta in alertas_caducidad %}
+            <div class="alert alert-warning">
+                ¡ATENCIÓN! Las galletas {{ alerta.galleta }} producidas el 
+                {{ alerta.fecha_produccion.strftime('%d/%m/%Y') }} 
+                ({{ alerta.cantidad }} unidades) están por caducar en 
+                {{ alerta.dias_restantes }} días.
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
         {% with messages = get_flashed_messages(with_categories=true) %}
     {% if messages %}
       {% set category, message = messages[-1] %}

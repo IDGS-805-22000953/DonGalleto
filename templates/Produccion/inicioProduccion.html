@@ -2,7 +2,19 @@
 
 {% block content %}
 <div class="container mx-auto p-4 lg:p-6 flex flex-col md:flex-row gap-6">
-
+    {% if alertas_caducidad %}
+    <div class="alertas-caducidad">
+        <h3>Alertas de Galletas Próximas a Caducar</h3>
+        {% for alerta in alertas_caducidad %}
+        <div class="alert alert-warning">
+            ¡ATENCIÓN! Las galletas {{ alerta.galleta }} producidas el 
+            {{ alerta.fecha_produccion.strftime('%d/%m/%Y') }} 
+            ({{ alerta.cantidad }} unidades) están por caducar en 
+            {{ alerta.dias_restantes }} días.
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
     <!-- Sección de Producción -->
     <div class="w-full md:w-1/2 space-y-6">
         <div class="flex items-center gap-3">

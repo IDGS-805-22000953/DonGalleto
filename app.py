@@ -57,8 +57,11 @@ app.register_blueprint(empleados_bp, url_prefix='/empleados')
 # Rutas principales
 # =======================
 from flask import Flask, render_template
-from forms import LoginForm  
+from forms import LoginForm
+from datetime import timedelta  
 
+app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=10)
+app.config['SESSION_REFRESH_EACH_REQUEST'] = True
 
 @app.route("/")
 def index():
